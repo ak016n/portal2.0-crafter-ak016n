@@ -1,0 +1,114 @@
+loadEnvSpecificConfig()
+
+apply plugin: 'war'
+apply plugin: 'eclipse-wtp'
+apply plugin: 'groovy'
+
+configurations.all {
+	resolutionStrategy {
+		failOnVersionConflict()
+		force 'org.springframework:spring-context:4.0.2.RELEASE', 'org.springframework:spring-beans:4.0.2.RELEASE','org.springframework:spring-core:4.0.2.RELEASE',
+		'org.springframework:spring-expression:4.0.2.RELEASE','org.springframework:spring-aop:4.0.2.RELEASE'
+	}
+	exclude group: 'commons-logging'
+}
+
+repositories {
+    mavenCentral()
+}
+
+sourceSets {
+	integration {
+		java {
+			compileClasspath += main.output
+			runtimeClasspath += main.output
+		}
+	}
+}
+
+dependencies {
+    compile group: 'commons-io', name: 'commons-io', version: '1.4'
+    compile group: 'log4j', name: 'log4j', version: '1.2.15', ext: 'jar'
+	compile 'org.springframework.security:spring-security-web:3.2.1.RELEASE'
+	compile 'org.springframework:spring-context:4.0.2.RELEASE'
+	compile 'org.springframework:spring-orm:4.0.2.RELEASE'
+	compile 'org.springframework.security:spring-security-config:3.2.1.RELEASE'
+	compile 'org.hibernate:hibernate-entitymanager:4.3.4.Final'
+	compile 'org.apache.commons:commons-lang3:3.3'
+	compile 'org.slf4j:jcl-over-slf4j:1.7.6'
+	
+	testCompile 'junit:junit:4.11'
+	testCompile 'org.mockito:mockito-all:1.9.5'
+	testCompile 'org.springframework:spring-test:4.0.2.RELEASE'
+	testCompile 'mysql:mysql-connector-java:5.1.21'
+	
+	integrationCompile sourceSets.main.output
+	integrationCompile configurations.testCompile
+	integrationCompile sourceSets.test.output
+	integrationRuntime configurations.testRuntime
+}
+
+def loadEnvSpecificConfig() {
+			def environment = project.hasProperty('env') ? project.env : 'local'
+			println "Environment is set to $environment"
+			def envSpecFile = file('/config/envt.config')
+			def config = new ConfigSlurper(environment).parse(envSpecFile.toURI().toURL())
+			project.ext.set('env', config)
+}
+
+task integrationTest(type: Test, dependsOn: jar) {
+	testClassesDir = sourceSets.integration.output.classesDir
+	classpath = sourceSets.integration.runtimeClasspath
+	systemProperties['jar.path'] = jar.archivePath
+}
+
+check.dependsOn integrationTest
+
+/** Flyway settings */
+
+buildscript {
+	repositories {
+		mavenCentral()
+	}
+	dependencies {
+		classpath "com.googlecode.flyway:flyway-gradle-plugin:2.3"
+		classpath 'mysql:mysql-connector-java:5.1.29'
+	}
+}
+
+apply plugin: 'flyway'
+
+println "flyway.url = $env.flyway.url"
+println "flyway.url = $env.flyway.schemas"
+
+flyway {
+	url = env.flyway.url
+	user = env.flyway.user
+	password = env.flyway.password
+	schemas = env.flyway.schemas
+	initVersion = env.flyway.version
+	//driver = flyway.driver
+}
+
+/** Eclipse settings */
+
+eclipse {
+	project {
+		natures.add 'org.eclipse.jdt.groovy.core.groovyNature'
+		natures.add 'org.springsource.ide.eclipse.gradle.core.nature'
+	}
+	classpath {
+		file {
+			withXml {
+				Node node = it.asNode()
+				node.appendNode('classpathentry',[exported:"true",kind:"con",path:"GROOVY_SUPPORT"])
+				node.appendNode('classpathentry',[exported:"true",kind:"con",path:"GROOVY_DSL_SUPPORT"])
+			}
+			whenMerged { classpath ->
+				classpath.entries.findAll { it.path.contains('JRE_CONTAINER') }.each {
+					it.path += "/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"
+				}
+			}
+		}
+	}
+}
