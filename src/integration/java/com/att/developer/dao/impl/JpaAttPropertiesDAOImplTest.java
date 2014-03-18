@@ -1,9 +1,10 @@
 package com.att.developer.dao.impl;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 import javax.annotation.Resource;
 import javax.transaction.Transactional;
 
@@ -11,15 +12,17 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 
 import com.att.developer.bean.AttProperties;
 import com.att.developer.bean.builder.AttPropertiesBuilder;
+import com.att.developer.config.IntegrationConfig;
 import com.att.developer.dao.AttPropertiesDAO;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:applicationContext.xml"})
-@TransactionConfiguration(transactionManager="txManager", defaultRollback = true)
+@ContextConfiguration(classes=IntegrationConfig.class, loader=AnnotationConfigContextLoader.class)
+@TransactionConfiguration(transactionManager="transactionManager", defaultRollback = true)
 @Transactional
 public class JpaAttPropertiesDAOImplTest {
 
