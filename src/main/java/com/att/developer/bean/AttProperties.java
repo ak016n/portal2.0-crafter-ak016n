@@ -6,6 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -22,12 +23,19 @@ public class AttProperties {
 
 	@Id
 	private String id;
+	
+	@NotNull
 	@Column(name = "item_key")
 	private String itemKey;
+	
+	@NotNull
 	@Column(name = "field_key")
 	private String fieldKey;
+	
 	private String description;
+	
 	private int version;
+	
 	@Column(name = "date_created")
 	private Date dateCreated;
 

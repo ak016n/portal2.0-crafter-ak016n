@@ -5,6 +5,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import com.att.developer.bean.AttProperties;
+
 public interface GlobalScopedParamService {
 	public abstract Properties getPropertiesMapFromText(String propertiesText);
 
@@ -34,4 +36,6 @@ public interface GlobalScopedParamService {
 	public abstract Map<String, Object> getMap(String itemKey, String fieldKey);
 
 	public abstract void reset(String itemKey, String fieldKey);
+	
+	public abstract AttProperties getProperties(String itemKey, String fieldKey);
 }

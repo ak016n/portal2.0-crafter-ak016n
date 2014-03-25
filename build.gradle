@@ -3,12 +3,14 @@ loadEnvSpecificConfig()
 apply plugin: 'war'
 apply plugin: 'eclipse-wtp'
 apply plugin: 'groovy'
+apply plugin: 'tomcat'
 
 configurations.all {
 	resolutionStrategy {
 		failOnVersionConflict()
 		force 'org.springframework:spring-context:4.0.2.RELEASE', 'org.springframework:spring-beans:4.0.2.RELEASE','org.springframework:spring-core:4.0.2.RELEASE',
-		'org.springframework:spring-expression:4.0.2.RELEASE','org.springframework:spring-aop:4.0.2.RELEASE'
+		'org.springframework:spring-expression:4.0.2.RELEASE','org.springframework:spring-aop:4.0.2.RELEASE','org.springframework:spring-web:4.0.2.RELEASE',
+		'javax.servlet:servlet-api:2.5'
 	}
 	exclude group: 'commons-logging'
 }
@@ -24,18 +26,31 @@ sourceSets {
 			runtimeClasspath += main.output
 		}
 	}
+	main {
+		java {
+			output.classesDir='src/main/webapp/WEB-INF/classes'
+		}
+	}
 }
 
 dependencies {
     compile group: 'commons-io', name: 'commons-io', version: '1.4'
     compile group: 'log4j', name: 'log4j', version: '1.2.15', ext: 'jar'
-	compile 'org.springframework.security:spring-security-web:3.2.1.RELEASE'
 	compile 'org.springframework:spring-context:4.0.2.RELEASE'
 	compile 'org.springframework:spring-orm:4.0.2.RELEASE'
+	compile 'org.springframework:spring-webmvc:4.0.2.RELEASE'
 	compile 'org.springframework.security:spring-security-config:3.2.1.RELEASE'
-	compile 'org.hibernate:hibernate-entitymanager:4.3.4.Final'
+	compile 'org.springframework.security:spring-security-web:3.2.1.RELEASE'
+	compile('org.hibernate:hibernate-entitymanager:4.3.4.Final') {
+		exclude group: 'org.jboss.spec.javax.transaction'
+	}
 	compile 'org.apache.commons:commons-lang3:3.3'
-	compile 'org.slf4j:jcl-over-slf4j:1.7.6'
+	providedCompile 'org.slf4j:jcl-over-slf4j:1.7.6'
+	//compile 'javax.servlet:javax.servlet-api:3.0.1'
+	providedCompile 'javax.servlet:servlet-api:2.5', 'javax.servlet:jsp-api:2.0'
+	compile 'org.hibernate:hibernate-validator:5.1.0.Final'
+	compile 'javax.inject:javax.inject:1'
+	compile 'com.fasterxml.jackson.core:jackson-databind:2.3.2'
 	
 	testCompile 'junit:junit:4.11'
 	testCompile 'org.mockito:mockito-all:1.9.5'
@@ -46,6 +61,21 @@ dependencies {
 	integrationCompile configurations.testCompile
 	integrationCompile sourceSets.test.output
 	integrationRuntime configurations.testRuntime
+	
+	def tomcatVersion = '7.0.52'
+	tomcat "org.apache.tomcat.embed:tomcat-embed-core:${tomcatVersion}",
+			"org.apache.tomcat.embed:tomcat-embed-logging-juli:${tomcatVersion}",
+			"org.apache.tomcat:dbcp:6.0.37"
+    tomcat("org.ow2.jotm:ow2-jotm-dist:2.2.1") {
+		exclude group: 'org.ow2.carol'
+		exclude group: 'commons-cli'
+		exclude group: 'org.apache.geronimo.specs'
+		exclude group: 'org.objectweb.monolog'
+		exclude group: 'com.experlog'
+	}
+	tomcat("org.apache.tomcat.embed:tomcat-embed-jasper:${tomcatVersion}") {
+	  exclude group: 'org.eclipse.jdt.core.compiler', module: 'ecj'
+	}
 }
 
 def loadEnvSpecificConfig() {
@@ -63,6 +93,24 @@ task integrationTest(type: Test, dependsOn: jar) {
 }
 
 check.dependsOn integrationTest
+
+task explodedWar(dependsOn: ['clean', 'war']) << {
+	File exploded = "$buildDir/exploded/developer.war" as File
+	ant.unzip(src: war.archivePath, dest: exploded)
+}
+
+task copyResourceBundle(type: Copy) {
+	from 'src/main/webapp/WEB-INF/i18n'
+	into 'build/exploded/developer.war/resources/properties'
+}
+
+war {
+	from('src/main/webapp/WEB-INF/i18n') {
+		into 'resources'
+	}
+}
+
+copyResourceBundle.dependsOn explodedWar
 
 /** Flyway settings */
 
@@ -90,6 +138,30 @@ flyway {
 	//driver = flyway.driver
 }
 
+/** Tomcat settings */
+
+buildscript {
+	repositories {
+		jcenter()
+	}
+
+	dependencies {
+		classpath 'org.gradle.api.plugins:gradle-tomcat-plugin:1.2.2'
+	}
+}
+
+tomcat {
+	httpPort = 9080
+	httpsPort = 9443
+	ajpPort=9001
+	stopPort=9008
+	enableSSL = false
+}
+
+tomcatRun {
+	reloadable=true
+}
+
 /** Eclipse settings */
 
 eclipse {
@@ -110,5 +182,7 @@ eclipse {
 				}
 			}
 		}
+		defaultOutputDir = file('src/main/webapp/WEB-INF/classes')
+		downloadSources = true
 	}
 }

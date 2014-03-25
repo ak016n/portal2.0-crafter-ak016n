@@ -7,6 +7,8 @@ import org.apache.commons.io.IOUtils;
 public class Greeter {
     public String getGreeting() throws Exception {
         LogManager.getRootLogger().info("generating greeting.");
+        LogManager.getRootLogger().info("better");
+        LogManager.getRootLogger().info("even better");
         InputStream greetingStr = getClass().getResourceAsStream("/greeting.txt");
         try {
             return IOUtils.toString(greetingStr).trim();

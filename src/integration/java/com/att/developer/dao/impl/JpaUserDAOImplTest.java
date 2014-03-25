@@ -20,7 +20,7 @@ import com.att.developer.dao.UserDAO;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes=IntegrationConfig.class, loader=AnnotationConfigContextLoader.class)
-@TransactionConfiguration(transactionManager="transactionManager", defaultRollback = true)
+@TransactionConfiguration(transactionManager="txManager", defaultRollback = true)
 @Transactional
 public class JpaUserDAOImplTest {
 

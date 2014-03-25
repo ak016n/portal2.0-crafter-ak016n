@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context>
+  <!-- <Resource name="jdbc/devcore"
+  	type="javax.sql.DataSource"
+  	defaultAutoCommit = "true"
+  	jdbcDriver = "com.mysql.jdbc.Driver"
+  	jdbcUrl = "jdbc:mysql://localhost:3306/dev_core"
+  	jtaManaged = "true"
+  	maxActive = "5"
+    maxIdle = "5"
+    username = "dev_core"
+    password = "dev_core"
+    />
+	
+	<Transaction
+    factory="org.objectweb.jotm.UserTransactionFactory"
+    jotm.timeout="60"/>-->
+     <Resource name="jdbc/devcore"
+              auth="Container"
+              type="javax.sql.DataSource"
+              username="dev_core"
+              password="dev_core"
+              driverClassName="com.mysql.jdbc.Driver"
+              url="jdbc:mysql://localhost:3306/dev_core"
+              validationQuery="select 1"
+              maxActive="10"
+              maxIdle="4"/> 
+			  
+	<Transaction factory="org.objectweb.jotm.UserTransactionFactory" jotm.timeout="60"/>
+	
+	<Resource
+    name="TransactionSynchronizationRegistry"
+    auth="Container"
+    type="javax.transaction.TransactionSynchronizationRegistry"
+    factory="org.objectweb.jotm.TransactionSynchronizationRegistryFactory"/>
+</Context>
+

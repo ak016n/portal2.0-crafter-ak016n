@@ -1,33 +1,48 @@
 package com.att.developer.config;
 
 import java.util.Properties;
-import javax.persistence.EntityManagerFactory;
+
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.sql.DataSource;
+
+import org.apache.log4j.Logger;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.jta.JtaTransactionManager;
 
 @Configuration
 @EnableTransactionManagement
-@ComponentScan({"com.att.developer.dao"})
-public class IntegrationConfig {
+public class AppContext {
 
+	private static Logger logger = Logger.getLogger(AppContext.class);
+	
 	@Bean
 	public DataSource dataSource() {
-		DriverManagerDataSource dataSource = new DriverManagerDataSource();
-		dataSource.setUrl("jdbc:mysql://localhost:3306/dev_core");
-		dataSource.setDriverClassName("com.mysql.jdbc.Driver");
-		dataSource.setUsername("dev_core");
-		dataSource.setPassword("dev_core");
+		DataSource dataSource = null;
+		try {
+			Context ctx = new InitialContext();
+			dataSource = (DataSource) ctx.lookup("java:comp/env/jdbc/devcore");
+		} catch (NamingException e) {
+			logger.error(e);
+			new RuntimeException(e);
+		}
 		return dataSource;
+	}
+
+	@Bean
+	public PlatformTransactionManager txManager() {
+		JtaTransactionManager transactionManager = new JtaTransactionManager();
+		transactionManager.setTransactionSynchronizationRegistryName("java:comp/env/TransactionSynchronizationRegistry");
+		transactionManager.setTransactionManagerName("java:comp/UserTransaction");
+		return transactionManager;
 	}
 
 	@Bean
@@ -44,21 +59,14 @@ public class IntegrationConfig {
 	}
 
 	@Bean
-	public PlatformTransactionManager txManager(EntityManagerFactory emf) {
-		JpaTransactionManager transactionManager = new JpaTransactionManager();
-		transactionManager.setEntityManagerFactory(emf);
-		return transactionManager;
-	}
-
-	@Bean
 	public PersistenceExceptionTranslationPostProcessor exceptionTranslation() {
 		return new PersistenceExceptionTranslationPostProcessor();
 	}
-	
+
 	Properties additionalProperties() {
 		return new Properties() {
 			private static final long serialVersionUID = 4240657154170582110L;
-			{ // Hibernate Specific:
+			{
 				setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL5Dialect");
 			}
 		};

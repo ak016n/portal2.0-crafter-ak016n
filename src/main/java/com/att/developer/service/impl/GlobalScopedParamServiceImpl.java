@@ -216,6 +216,11 @@ public class GlobalScopedParamServiceImpl implements GlobalScopedParamService {
 		}
 		return propertiesMap.get(buildKeyFromIKFK(itemKey, fieldKey));
 	}
+
+	
+	public AttProperties getProperties(String itemKey, String fieldKey) {
+		return attPropertiesDAO.findActiveProp(itemKey, fieldKey);
+	}
 	
 	@Override
 	public void reset(String itemKey, String fieldKey) {
@@ -226,4 +231,5 @@ public class GlobalScopedParamServiceImpl implements GlobalScopedParamService {
 			propertiesMap.put(buildKeyFromIKFK(itemKey, fieldKey), null);
 		}
 	}
+	
 }
