@@ -1,7 +1,9 @@
 package com.att.developer.config;
 
+import org.springframework.core.annotation.Order;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
+@Order(1)
 public class WebInit extends AbstractAnnotationConfigDispatcherServletInitializer {
 
 	@Override
@@ -11,7 +13,7 @@ public class WebInit extends AbstractAnnotationConfigDispatcherServletInitialize
 
 	@Override
 	protected Class<?>[] getServletConfigClasses() {
-		return new Class[] {WebContext.class};
+		return new Class[] {WebContext.class, AppContext.class};
 	}
 
 	@Override

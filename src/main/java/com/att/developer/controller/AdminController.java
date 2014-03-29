@@ -66,10 +66,10 @@ public class AdminController {
 		if(violationsPresent) {
 			throw new ServerSideException(errorColl);
 		} else {
-			lclAttProperties = globalScopedParamService.getProperties(attProperties.getItemKey(), attProperties.getFieldKey());
+			lclAttProperties = globalScopedParamService.createProperties(attProperties);
 			
 			if(lclAttProperties == null) {
-				ServerSideError error = new ServerSideError.Builder().id("general").message("item key or field key not found").build();
+				ServerSideError error = new ServerSideError.Builder().id("ssGeneralError").message("No data found for item key/field key combination").build();
 				throw new ServerSideException(errorColl.add(error));
 			}
 		}

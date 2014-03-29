@@ -198,7 +198,7 @@
 
 	.customForm label.required, .customForm span.required {
 		padding-left: 20px;
-		background: url("/developer/images/star-required.png") no-repeat scroll transparent;
+		background: url("/developer/resources/images/star-required.png") no-repeat scroll transparent;
 		vertical-align: top;
 	}
 
@@ -209,7 +209,7 @@
 	}
 
 	.customForm label.required::after {
-		content:url(/developer/images/star-required.png);
+		content:url(/developer/resources/images/star-required.png);
 		margin-left:5px;
 		vertical-align: top;
 	}
@@ -217,7 +217,7 @@
 	.customForm  input[type="radio"] ~ span.required ::after,
 	.customForm  input[type="checkbox"] ~ span.required::after
 	 {
-		content:url(/developer/images/star-required.png);
+		content:url(/developer/resources/images/star-required.png);
 		margin-left:5px;
 		vertical-align: middle;
 	}

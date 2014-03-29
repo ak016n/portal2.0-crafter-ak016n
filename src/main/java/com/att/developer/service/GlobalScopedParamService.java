@@ -38,4 +38,8 @@ public interface GlobalScopedParamService {
 	public abstract void reset(String itemKey, String fieldKey);
 	
 	public abstract AttProperties getProperties(String itemKey, String fieldKey);
+	
+	public abstract AttProperties createProperties(AttProperties attProperties);
+	
+	public abstract AttProperties updateProperties(AttProperties attProperties);
 }

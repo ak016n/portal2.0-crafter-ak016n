@@ -13,6 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
+import javax.transaction.Transactional;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -47,8 +48,6 @@ public class GlobalScopedParamServiceImpl implements GlobalScopedParamService {
 	private AttPropertiesDAO attPropertiesDAO;
 	
 	private ConcurrentHashMap<String, Map<String, Object>> propertiesMap = new ConcurrentHashMap<>(); 
-	
-	
 	
 	public void setAttPropertiesDAO(AttPropertiesDAO attPropertiesDAO) {
 		this.attPropertiesDAO = attPropertiesDAO;
@@ -217,9 +216,19 @@ public class GlobalScopedParamServiceImpl implements GlobalScopedParamService {
 		return propertiesMap.get(buildKeyFromIKFK(itemKey, fieldKey));
 	}
 
-	
+	@Transactional
 	public AttProperties getProperties(String itemKey, String fieldKey) {
 		return attPropertiesDAO.findActiveProp(itemKey, fieldKey);
+	}
+	
+	@Transactional
+	public AttProperties createProperties(AttProperties attProperties) {
+		return attPropertiesDAO.create(attProperties);
+	}
+	
+	@Transactional
+	public AttProperties updateProperties(AttProperties attProperties) {
+		return attPropertiesDAO.update(attProperties);
 	}
 	
 	@Override

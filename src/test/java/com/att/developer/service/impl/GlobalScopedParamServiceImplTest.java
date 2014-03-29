@@ -1,10 +1,5 @@
 package com.att.developer.service.impl;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -33,7 +28,7 @@ public class GlobalScopedParamServiceImplTest {
 	@Test
 	public void testGetTrimmedStringArray() {
 		String[] array = globalScopedParamService.getTrimmedStringArray("a,b,c,d");
-		assertThat(array[0], is(equalTo("a")));
+		Assert.assertEquals(array[0], "a");
 	}
 
 	@Test
@@ -44,7 +39,7 @@ public class GlobalScopedParamServiceImplTest {
 		
 		String value = globalScopedParamService.get("status");
 		
-		assertThat(value, is(equalTo("complex")));
+		Assert.assertEquals(value, "complex");
 	}
 	
 	@Test
@@ -55,7 +50,7 @@ public class GlobalScopedParamServiceImplTest {
 		
 		String value = globalScopedParamService.get("unknown");
 		
-		assertThat(value, is(nullValue()));
+		Assert.assertNull(value);
 	}
 	
 	@Test
@@ -68,7 +63,7 @@ public class GlobalScopedParamServiceImplTest {
 		
 		String value = globalScopedParamService.get("status");
 		
-		assertThat(value, is(equalTo("together")));
+		Assert.assertEquals(value, "together");
 	}
 
 	@Test
@@ -117,7 +112,7 @@ public class GlobalScopedParamServiceImplTest {
 		
 		String[] value = globalScopedParamService.getArray("COLL","ARRAY","setOfValue");
 		
-		assertThat(value[0], is(equalTo("a")));
+		Assert.assertEquals(value[0], "a");
 	}
 	
 	@Test
@@ -141,7 +136,7 @@ public class GlobalScopedParamServiceImplTest {
 		
 		Map<String, String> value = globalScopedParamService.getMap("COLL","MAP","setOfValue");
 		
-		assertThat(value.get("a"), is(equalTo("v1")));
+		Assert.assertEquals(value.get("a"), "v1");
 	}
 	
 }

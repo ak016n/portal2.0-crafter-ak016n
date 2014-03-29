@@ -27,7 +27,10 @@
  */
 
 var debug = false;
-window.onload = processServerErrorMessage;
+
+$(document).ready( function() {
+	processServerErrorMessage();
+});
 
 function processServerErrorMessage() {
 	debug_message("getting invoked");
@@ -35,7 +38,7 @@ function processServerErrorMessage() {
 	try{
 		isI18NAware();
 	}catch(error){
-		//Providing default implementation
+		// Providing default implementation
 		isI18NAware = function(){
 			return false;
 		};
@@ -48,13 +51,13 @@ function processServerErrorMessage() {
 	try{
 		init();
 	}catch(error){
-		//hook method, if there is no override then no issues
+		// hook method, if there is no override then no issues
 	}
 	
 	try{
 		$('.field_error:first').children().focus();
 	}catch(error){
-		//try_catch to handle old code implementation relying on it
+		// try_catch to handle old code implementation relying on it
 	}
 	
 }

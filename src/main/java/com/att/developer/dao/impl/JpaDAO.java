@@ -46,6 +46,7 @@ public class JpaDAO<T> implements GenericDAO<T> {
 
 	public T create(T entityBean) {
 		entityManager.persist(entityBean);
+		entityManager.flush();
 		/**
 		 * Should not be an issue as if there are any problem with persistence
 		 * we would have got an exception

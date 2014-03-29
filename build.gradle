@@ -1,9 +1,14 @@
+
 loadEnvSpecificConfig()
 
 apply plugin: 'war'
 apply plugin: 'eclipse-wtp'
 apply plugin: 'groovy'
 apply plugin: 'tomcat'
+apply plugin: 'java'
+
+targetCompatibility = 1.7
+sourceCompatibility = 1.7
 
 configurations.all {
 	resolutionStrategy {
@@ -34,20 +39,42 @@ sourceSets {
 }
 
 dependencies {
-    compile group: 'commons-io', name: 'commons-io', version: '1.4'
-    compile group: 'log4j', name: 'log4j', version: '1.2.15', ext: 'jar'
+	def tomcatVersion = '7.0.42'
+	tomcat "org.apache.tomcat.embed:tomcat-embed-core:${tomcatVersion}",
+		   "org.apache.tomcat.embed:tomcat-embed-logging-juli:${tomcatVersion}",
+		   "javax.transaction:javax.transaction-api:1.2",
+		   "com.atomikos:transactions:3.9.3",
+		   "com.atomikos:transactions-hibernate3:3.9.3"
+	
+	tomcat files("lib/atomikos/atomikos-integration-extension.jar", "lib/atomikos/transactions.properties")
+    //tomcat files("lib/atomikos/atomikos-integration-extension.jar", "lib/atomikos/atomikos-util-3.9.3.jar", "lib/atomikos/transactions-3.9.3.jar"
+	//	, "lib/atomikos/transactions-api-3.9.3.jar", "lib/atomikos/transactions-hibernate3-3.9.3.jar", "lib/atomikos/transactions-jdbc-3.9.3.jar", "lib/atomikos/transactions-jta-3.9.3.jar")
+				
+	tomcat("org.apache.tomcat.embed:tomcat-embed-jasper:${tomcatVersion}") {
+		exclude group: 'org.eclipse.jdt.core.compiler', module: 'ecj'
+	}
+	
+	compile group: 'commons-io', name: 'commons-io', version: '1.4'
 	compile 'org.springframework:spring-context:4.0.2.RELEASE'
 	compile 'org.springframework:spring-orm:4.0.2.RELEASE'
 	compile 'org.springframework:spring-webmvc:4.0.2.RELEASE'
+	//compile 'org.springframework:spring-tx:4.0.2.RELEASE'
+
 	compile 'org.springframework.security:spring-security-config:3.2.1.RELEASE'
 	compile 'org.springframework.security:spring-security-web:3.2.1.RELEASE'
+	
 	compile('org.hibernate:hibernate-entitymanager:4.3.4.Final') {
 		exclude group: 'org.jboss.spec.javax.transaction'
 	}
-	compile 'org.apache.commons:commons-lang3:3.3'
+	
+	providedCompile 'javax.transaction:javax.transaction-api:1.2'
+	providedCompile 'com.atomikos:transactions-hibernate3:3.9.3'
 	providedCompile 'org.slf4j:jcl-over-slf4j:1.7.6'
-	//compile 'javax.servlet:javax.servlet-api:3.0.1'
 	providedCompile 'javax.servlet:servlet-api:2.5', 'javax.servlet:jsp-api:2.0'
+	
+	compile 'org.apache.commons:commons-lang3:3.3'
+	compile 'org.slf4j:slf4j-api:1.7.6'
+	compile 'org.slf4j:slf4j-log4j12:1.7.6'
 	compile 'org.hibernate:hibernate-validator:5.1.0.Final'
 	compile 'javax.inject:javax.inject:1'
 	compile 'com.fasterxml.jackson.core:jackson-databind:2.3.2'
@@ -61,29 +88,6 @@ dependencies {
 	integrationCompile configurations.testCompile
 	integrationCompile sourceSets.test.output
 	integrationRuntime configurations.testRuntime
-	
-	def tomcatVersion = '7.0.52'
-	tomcat "org.apache.tomcat.embed:tomcat-embed-core:${tomcatVersion}",
-			"org.apache.tomcat.embed:tomcat-embed-logging-juli:${tomcatVersion}",
-			"org.apache.tomcat:dbcp:6.0.37"
-    tomcat("org.ow2.jotm:ow2-jotm-dist:2.2.1") {
-		exclude group: 'org.ow2.carol'
-		exclude group: 'commons-cli'
-		exclude group: 'org.apache.geronimo.specs'
-		exclude group: 'org.objectweb.monolog'
-		exclude group: 'com.experlog'
-	}
-	tomcat("org.apache.tomcat.embed:tomcat-embed-jasper:${tomcatVersion}") {
-	  exclude group: 'org.eclipse.jdt.core.compiler', module: 'ecj'
-	}
-}
-
-def loadEnvSpecificConfig() {
-			def environment = project.hasProperty('env') ? project.env : 'local'
-			println "Environment is set to $environment"
-			def envSpecFile = file('/config/envt.config')
-			def config = new ConfigSlurper(environment).parse(envSpecFile.toURI().toURL())
-			project.ext.set('env', config)
 }
 
 task integrationTest(type: Test, dependsOn: jar) {
@@ -94,23 +98,16 @@ task integrationTest(type: Test, dependsOn: jar) {
 
 check.dependsOn integrationTest
 
-task explodedWar(dependsOn: ['clean', 'war']) << {
-	File exploded = "$buildDir/exploded/developer.war" as File
-	ant.unzip(src: war.archivePath, dest: exploded)
+def loadEnvSpecificConfig() {
+	def environment = project.hasProperty('env') ? project.env : 'local'
+	println "Environment is set to $environment"
+	def envSpecFile = file('/config/env.json')
+	def slurper = new groovy.json.JsonSlurper();
+	def config = slurper.parseText(envSpecFile.text)
+	def prop = config[environment]
+	println "config $prop"
+	project.ext.set('env', prop)
 }
-
-task copyResourceBundle(type: Copy) {
-	from 'src/main/webapp/WEB-INF/i18n'
-	into 'build/exploded/developer.war/resources/properties'
-}
-
-war {
-	from('src/main/webapp/WEB-INF/i18n') {
-		into 'resources'
-	}
-}
-
-copyResourceBundle.dependsOn explodedWar
 
 /** Flyway settings */
 
@@ -135,36 +132,38 @@ flyway {
 	password = env.flyway.password
 	schemas = env.flyway.schemas
 	initVersion = env.flyway.version
-	//driver = flyway.driver
 }
 
 /** Tomcat settings */
 
 buildscript {
-	repositories {
-		jcenter()
-	}
+  repositories {
+    mavenCentral()
+  }
 
-	dependencies {
-		classpath 'org.gradle.api.plugins:gradle-tomcat-plugin:1.2.2'
-	}
+  dependencies {
+    classpath 'org.gradle.api.plugins:gradle-tomcat-plugin:0.9.8'
+  }
 }
 
-tomcat {
+tomcatRun {
 	httpPort = 9080
 	httpsPort = 9443
-	ajpPort=9001
+	//ajpPort=9001
+	stopPort=9008
+	enableSSL = false
+	reloadable=true
+}
+
+tomcatRunWar {
+	httpPort = 9080
+	httpsPort = 9443
+	//ajpPort=9001
 	stopPort=9008
 	enableSSL = false
 }
 
-tomcatRun {
-	reloadable=true
-}
-
-/** Eclipse settings */
-
-eclipse {
+/*eclipse {
 	project {
 		natures.add 'org.eclipse.jdt.groovy.core.groovyNature'
 		natures.add 'org.springsource.ide.eclipse.gradle.core.nature'
@@ -182,7 +181,5 @@ eclipse {
 				}
 			}
 		}
-		defaultOutputDir = file('src/main/webapp/WEB-INF/classes')
-		downloadSources = true
 	}
-}
+}*/

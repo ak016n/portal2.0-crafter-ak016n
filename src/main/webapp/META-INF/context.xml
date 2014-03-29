@@ -1,37 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Context>
-  <!-- <Resource name="jdbc/devcore"
-  	type="javax.sql.DataSource"
-  	defaultAutoCommit = "true"
-  	jdbcDriver = "com.mysql.jdbc.Driver"
-  	jdbcUrl = "jdbc:mysql://localhost:3306/dev_core"
-  	jtaManaged = "true"
-  	maxActive = "5"
-    maxIdle = "5"
-    username = "dev_core"
-    password = "dev_core"
-    />
+
+  <Listener className="com.atomikos.tomcat.AtomikosLifecycleListener" />
 	
-	<Transaction
-    factory="org.objectweb.jotm.UserTransactionFactory"
-    jotm.timeout="60"/>-->
-     <Resource name="jdbc/devcore"
-              auth="Container"
-              type="javax.sql.DataSource"
-              username="dev_core"
-              password="dev_core"
-              driverClassName="com.mysql.jdbc.Driver"
-              url="jdbc:mysql://localhost:3306/dev_core"
-              validationQuery="select 1"
-              maxActive="10"
-              maxIdle="4"/> 
-			  
-	<Transaction factory="org.objectweb.jotm.UserTransactionFactory" jotm.timeout="60"/>
+	<WatchedResource>WEB-INF/web.xml</WatchedResource>	
 	
-	<Resource
-    name="TransactionSynchronizationRegistry"
-    auth="Container"
-    type="javax.transaction.TransactionSynchronizationRegistry"
-    factory="org.objectweb.jotm.TransactionSynchronizationRegistryFactory"/>
+  <!-- Atomikos Support for the Tomcat server - register Atomikos as java:comp/UserTransaction -->
+  <Transaction factory="com.atomikos.icatch.jta.UserTransactionFactory" />
+  
+  <!-- Also register Atomikos TransactionManager as java:comp/env/TransactionManager -->
+  <Resource name="TransactionManager"
+            auth="Container"
+            type="com.atomikos.icatch.jta.UserTransactionManager"
+            factory="org.apache.naming.factory.BeanFactory" />        
+   
+   <Resource name="jdbc/devcore" auth="Container"
+		type="com.atomikos.jdbc.AtomikosDataSourceBean" factory="com.atomikos.tomcat.BeanFactory"
+		uniqueResourceName="jdbc/devcore" xaDataSourceClassName="com.mysql.jdbc.jdbc2.optional.MysqlXADataSource"
+		xaProperties.databaseName="dev_core" xaProperties.serverName="localhost"
+		xaProperties.port="3306" xaProperties.user="dev_core"
+		xaProperties.password="dev_core" xaProperties.url="jdbc:mysql://localhost:3306/dev_core" /> 
+
 </Context>
 

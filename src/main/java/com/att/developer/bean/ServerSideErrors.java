@@ -14,7 +14,7 @@ public class ServerSideErrors {
 	private HttpStatus httpStatus =  HttpStatus.BAD_REQUEST;
 
 	@JsonProperty("errors")
-	private List<ServerSideError> errorColl = new ArrayList<>();
+	private List<ServerSideError> errorColl = new ArrayList<ServerSideError>();
 
 	public List<ServerSideError> getErrorColl() {
 		return errorColl;

@@ -8,6 +8,7 @@ public class Greeter {
     public String getGreeting() throws Exception {
         LogManager.getRootLogger().info("generating greeting.");
         LogManager.getRootLogger().info("better");
+        LogManager.getRootLogger().info("crazy");
         LogManager.getRootLogger().info("even better");
         InputStream greetingStr = getClass().getResourceAsStream("/greeting.txt");
         try {
