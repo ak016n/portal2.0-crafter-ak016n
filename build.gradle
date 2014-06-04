@@ -47,8 +47,6 @@ dependencies {
 		   "com.atomikos:transactions-hibernate3:3.9.3"
 	
 	tomcat files("lib/atomikos/atomikos-integration-extension.jar", "lib/atomikos/transactions.properties")
-    //tomcat files("lib/atomikos/atomikos-integration-extension.jar", "lib/atomikos/atomikos-util-3.9.3.jar", "lib/atomikos/transactions-3.9.3.jar"
-	//	, "lib/atomikos/transactions-api-3.9.3.jar", "lib/atomikos/transactions-hibernate3-3.9.3.jar", "lib/atomikos/transactions-jdbc-3.9.3.jar", "lib/atomikos/transactions-jta-3.9.3.jar")
 				
 	tomcat("org.apache.tomcat.embed:tomcat-embed-jasper:${tomcatVersion}") {
 		exclude group: 'org.eclipse.jdt.core.compiler', module: 'ecj'
@@ -58,7 +56,6 @@ dependencies {
 	compile 'org.springframework:spring-context:4.0.2.RELEASE'
 	compile 'org.springframework:spring-orm:4.0.2.RELEASE'
 	compile 'org.springframework:spring-webmvc:4.0.2.RELEASE'
-	//compile 'org.springframework:spring-tx:4.0.2.RELEASE'
 
 	compile 'org.springframework.security:spring-security-config:3.2.1.RELEASE'
 	compile 'org.springframework.security:spring-security-web:3.2.1.RELEASE'
@@ -82,7 +79,7 @@ dependencies {
 	testCompile 'junit:junit:4.11'
 	testCompile 'org.mockito:mockito-all:1.9.5'
 	testCompile 'org.springframework:spring-test:4.0.2.RELEASE'
-	testCompile 'mysql:mysql-connector-java:5.1.21'
+	testCompile 'mysql:mysql-connector-java:5.1.29'
 	
 	integrationCompile sourceSets.main.output
 	integrationCompile configurations.testCompile
@@ -146,6 +143,8 @@ buildscript {
   }
 }
 
+[tomcatRun, tomcatRunWar, tomcatStop]*.stopKey = 'foo'
+
 tomcatRun {
 	httpPort = 9080
 	httpsPort = 9443
@@ -162,6 +161,7 @@ tomcatRunWar {
 	stopPort=9008
 	enableSSL = false
 }
+
 
 /*eclipse {
 	project {

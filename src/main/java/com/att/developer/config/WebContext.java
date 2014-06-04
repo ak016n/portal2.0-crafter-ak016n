@@ -16,6 +16,8 @@ import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
+import com.att.developer.service.impl.LocaleAwareResourceBundleMessageSource;
+
 @Configuration
 @EnableWebMvc
 @ComponentScan({ "com.att.developer" })
@@ -53,7 +55,7 @@ public class WebContext extends WebMvcConfigurerAdapter {
      
 	@Bean
 	public MessageSource messageSource() {
-		ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
+		ReloadableResourceBundleMessageSource messageSource = new LocaleAwareResourceBundleMessageSource();
 		messageSource.setBasename("/WEB-INF/i18n/messages");
 		return messageSource;
 	}

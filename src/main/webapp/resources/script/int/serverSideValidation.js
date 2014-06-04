@@ -64,6 +64,7 @@ function processServerErrorMessage() {
 
 function getJSONServerErrorMsg(element, i) {
 	debug_message($(element).html());
+
 	var processResponse = eval('(' + $(element).html() + ')');
 	var liElement = document.createElement('label');
 	var idValue;

@@ -4,13 +4,16 @@ import javax.inject.Inject;
 import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.att.developer.bean.AttProperties;
@@ -28,7 +31,7 @@ public class AdminController {
 	@Inject
 	private GlobalScopedParamService globalScopedParamService;
 	
-	public static final String ADMIN_URL = "/adminConsole/admin.jsp";
+	public static final String ADMIN_URL = "/adminConsole/admin.html";
     
 	@RequestMapping(method = RequestMethod.GET)
 	public String get(Model model) {
@@ -85,4 +88,9 @@ public class AdminController {
         return ADMIN_URL;
     }
 
+    @ResponseStatus(value=HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(ServerSideException.class)
+    public @ResponseBody ServerSideErrors handleServerSideError(ServerSideException e) {
+    	return e.getServerSideErrors();
+    }
 }

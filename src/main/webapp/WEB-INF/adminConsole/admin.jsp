@@ -1,8 +1,8 @@
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
 <link type="text/css" rel="stylesheet" href="/developer/resources/css/int/form.css?@@TIMESTAMP@@" />
-<script type="text/javascript" src="/developer/resources/script/ext/jquery-1.11.0.min.js?@@TIMESTAMP@@"></script>
-<script type="text/javascript" src="/developer/resources/script/ext/jquery.i18n.properties-min-1.0.9.js?@@TIMESTAMP@@"></script>
+<script type="text/javascript" src="/developer/resources/script/vendor/jquery-1.11.0.min.js?@@TIMESTAMP@@"></script>
+<script type="text/javascript" src="/developer/resources/script/vendor/jquery.i18n.properties-min-1.0.9.js?@@TIMESTAMP@@"></script>
 <script type="text/javascript" src="/developer/resources/script/int/admin.js?@@TIMESTAMP@@"></script>
 <script type="text/javascript" src="/developer/resources/script/int/serverSideValidation.js?@@TIMESTAMP@@"></script>
 <script type="text/javascript" src="/developer/resources/script/int/add.i18n.capability.js?@@TIMESTAMP@@"></script>
