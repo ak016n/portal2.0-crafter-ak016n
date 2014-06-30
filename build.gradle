@@ -139,30 +139,18 @@ flyway {
 /** Tomcat settings */
 
 buildscript {
-  repositories {
-    mavenCentral()
-  }
+    repositories {
+        jcenter()
+    }
 
-  dependencies {
-    classpath 'org.gradle.api.plugins:gradle-tomcat-plugin:0.9.8'
-  }
+    dependencies {
+        classpath 'org.gradle.api.plugins:gradle-tomcat-plugin:1.2.4'
+    }
 }
 
-[tomcatRun, tomcatRunWar, tomcatStop]*.stopKey = 'foo'
-
-tomcatRun {
+tomcat {
 	httpPort = 9080
 	httpsPort = 9443
-	//ajpPort=9001
-	stopPort=9008
-	enableSSL = false
-	reloadable=true
-}
-
-tomcatRunWar {
-	httpPort = 9080
-	httpsPort = 9443
-	//ajpPort=9001
 	stopPort=9008
 	enableSSL = false
 }
