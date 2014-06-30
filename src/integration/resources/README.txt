@@ -1,0 +1,1 @@
+Resources like configuration for integration tests go here.
