@@ -1,61 +1,76 @@
 <html>
 
 <head>
-<link type="text/css" rel="stylesheet" href="/developer/resources/css/int/form.css?@@TIMESTAMP@@"/>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link type="text/css" rel="stylesheet" href="/developer/resources/css/ext/bootstrap/bootstrap.min.css?@@TIMESTAMP@@"/>
+<link type="text/css" rel="stylesheet" href="/developer/resources/css/ext/bootstrap/bootstrap-theme.min.css?@@TIMESTAMP@@"/>
 <script type="text/javascript" src="/developer/resources/script/vendor/jquery-1.11.0.min.js?@@TIMESTAMP@@"></script>
 <script type="text/javascript" src="/developer/resources/script/vendor/jquery.i18n.properties-min-1.0.9.js?@@TIMESTAMP@@"></script>
-<script type="text/javascript" src="/developer/resources/script/int/serverSideValidationV2.js?@@TIMESTAMP@@"></script>
-<script type="text/javascript" src="/developer/resources/script/int/add.i18n.capability.js?@@TIMESTAMP@@"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0/angular.min.js" type="text/javascript"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0/angular-resource.js" type="text/javascript"></script>
+<script type="text/javascript" src="/developer/resources/script/vendor/angular.min.1.2.16.js"></script>
+<script type="text/javascript" src="/developer/resources/script/vendor/angular-resource.min.1.2.16.js"></script>
 <script type="text/javascript" src="/developer/resources/script/vendor/angular-translate.min.js?@@TIMESTAMP@@"></script>
 <script type="text/javascript" src="/developer/resources/script/vendor/angular-translate-loader-url.min.js?@@TIMESTAMP@@"></script>
-<script type="text/javascript" src="/developer/resources/script/controller/app.js"></script>
-<script type="text/javascript" src="/developer/resources/script/controller/adminController.js"></script>
-<script type="text/javascript" src="/developer/resources/script/services/adminService.js"></script>
+<script type="text/javascript" src="/developer/resources/script/vendor/ui-bootstrap-tpls-0.11.0.min.js?@@TIMESTAMP@@"></script>
+<script type="text/javascript" src="/developer/resources/script/app/app.js?@@TIMESTAMP@@"></script>
+<script type="text/javascript" src="/developer/resources/script/vendor/diff_match_patch.js?@@TIMESTAMP@@"></script>
+<script type="text/javascript" src="/developer/resources/script/services/diff_pretty_html.js?@@TIMESTAMP@@"></script>
+<script type="text/javascript" src="/developer/resources/script/controllers/adminController.js?@@TIMESTAMP@@"></script>
+<script type="text/javascript" src="/developer/resources/script/services/adminService.js?@@TIMESTAMP@@"></script>
+
 </head>
 
 <body ng-app="portalApp">
-<div class="contentPanel">
-    <div class="panelContent">
-       <h1>Global Properties</h1>
-    </div>
-    <div class="panelContentFull">
-        <div class="panelContent">
-				<form class="customForm" name="adminForm" ng-controller="GetAdminPropertyCtrl" novalidate att-form-errors>
-					<div class="grid oneColumn" style="padding: 0px;">
+<div class="container">
+       <h3>Global Properties</h3>
+				<form class="form-horizontal" role="form" name="adminForm" ng-controller="AdminCtrl" novalidate att-form-errors>
+					<div class="form-group" style="padding: 0px;">
 						<ul id="serverErrorMessage" style="display: none">
 							<li ng-repeat="errorMessage in errorMessages" repeat-complete="triggerErrHandling()">
 								{{errorMessage}}
 							</li>
 						</ul>
-					    <div class="formElementRow">
-				        	<label name="top_lvl_errors" att-field-errors></label>
+						<div ng-show="adminProp.successMessage != null && adminForm.$pristine">{{adminProp.successMessage}}</div>
+						    	<div class="col-sm-7 col-sm-offset-2 has-error">
+					        		<label name="top_lvl_errors" att-field-errors></label>
+					        	</div>
 				        </div>
 				        <!-- <legend translate>book.edit.current</legend> -->
-						<div class="formElementRow">
-							<label class="required" for="itemKey_label">Item Key</label>
-							<input name="itemKey" type="text" id="itemKey_input_id" ng-model="adminProp.itemKey" required att-field-errors tabindex="1"/>
-							<!-- {{adminProp.itemKey}} -->
-							<!-- <p ng-show="adminForm.itemKey.$invalid && !adminForm.itemKey.$pristine">Email is not valid</p> -->
+						<div class="form-group" ng-class="{'has-error' : validateOnSubmit && adminForm.itemKey.$invalid}">
+							<label class="required col-sm-2 control-label" for="itemKey_label">Item Key</label>
+							 <div class="col-sm-5">
+								<input name="itemKey" type="text" ng-model="adminProp.itemKey" required att-field-errors tabindex="1" typeahead="itemKey for itemKey in searchIK($viewValue)" typeahead-loading="loadingLocations"  class="form-control"/><i ng-show="loadingLocations" class="glyphicon glyphicon-refresh"></i>
+							 </div>
 						</div>
-						<div class="formElementRow">
-							<label class="required" for="field_key_label">Field Key</label>
-							<input name="fieldKey" type="text" id="fieldKey_input_id" ng-model="adminProp.fieldKey" required att-field-errors tabindex="2" />
-							<!-- {{adminProp.fieldKey}} -->
+						<div class="form-group" ng-class="{'has-error' : validateOnSubmit && adminForm.fieldKey.$invalid}">
+							<label class="required col-sm-2 control-label" for="fieldKey_label">Field Key</label>
+							<div class="col-sm-5">
+								<input name="fieldKey" type="text" id="fieldKey_input_id" ng-model="adminProp.fieldKey" required att-field-errors tabindex="2" typeahead="itemKey for itemKey in searchFK($viewValue)" typeahead-loading="loadingLocations"  class="form-control"/><i ng-show="loadingLocations" class="glyphicon glyphicon-refresh"></i>
+							</div>	
 						</div>
-						<div class="formElementRow">
-							<label class="required" for="description_label">Description</label>
-							<textarea name="description" id="description_textArea_id" ng-model="adminProp.description" tabindex="3" rows="18" cols="100" style="width: 780px;"></textarea>
+						<div class="form-group" ng-class="{'has-error' : validateOnSubmit && adminForm.description.$invalid}">
+							<label class="required col-sm-2 control-label" for="description_label">Description</label>
+							<div class="col-sm-7">
+								<textarea name="description" id="description_textArea_id" ng-model="adminProp.description" tabindex="3" rows="18" class="form-control"></textarea>
+							</div>
 						</div>
-						<div class="formElementRow">
-							<button data-ng-click="validateOnSubmit=true; refresh(adminForm)">Refresh</button>
-							<button data-ng-click="create()">Create</button>
+						<div class="form-group">
+							<div class="col-sm-offset-2 col-sm-10">
+								<button data-ng-click="validateOnSubmit=true; refresh(adminForm)" class="btn btn-primary">Refresh</button>
+								<button data-ng-click="validateOnSubmit=true; create(adminForm)" class="btn btn-primary">Create</button>
+								<button data-ng-click="validateOnSubmit=true; update(adminForm)" class="btn btn-primary">Update</button>
+								<button data-ng-click="validateOnSubmit=true; delete(adminForm)" class="btn btn-primary">Delete</button>
+							</div>
 						</div>
-					</div>
-				</form>
-			</div>	
-	</div>
+						<br>
+						
+						<div class="form-group">
+							<label class="col-sm-2 control-label">Diff version: </label>
+							<select class="col-sm-1" ng-model="fromVersion" ng-options="version as version for version in versions"></select><label class="col-sm-1 control-label">against:</label><select class="col-sm-1" ng-model="withVersion" ng-options="version as version for version in versions" ng-change="diff()"></select>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-2 control-label">Response:</label>
+							<pre class="col-sm-7"><div ng-bind-html="diff.results"></div></pre>
+						</form>
 </div>
 </body>
 

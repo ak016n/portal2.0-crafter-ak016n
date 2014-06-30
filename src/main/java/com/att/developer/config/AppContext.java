@@ -11,6 +11,7 @@ import javax.sql.DataSource;
 import org.apache.log4j.Logger;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -18,6 +19,9 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.jta.JtaTransactionManager;
+
+import com.atomikos.icatch.config.UserTransactionService;
+import com.atomikos.icatch.config.UserTransactionServiceImp;
 
 @Configuration
 @EnableTransactionManagement
@@ -40,16 +44,27 @@ public class AppContext {
 		return dataSource;
 	}
 	
-    @Bean(initMethod = "init", destroyMethod = "close")
+    @Bean
     public DataSource dataSource() {
         return getJNDIdataSource();
     }
 	
+    @Bean
+    public UserTransactionService userTransactionService() {
+    	UserTransactionServiceImp userTransactionServiceImp = new UserTransactionServiceImp();
+    	Properties properties = new Properties();
+    	properties.put("com.atomikos.icatch.serial_jta_transactions", "false");
+    	properties.put("com.atomikos.icatch.enable_logging", "false");
+    	userTransactionServiceImp.init(properties);
+    	return userTransactionServiceImp;
+    }
+    
 	@Bean
+	@DependsOn("userTransactionService")
 	public PlatformTransactionManager txManager() throws Throwable {
 		JtaTransactionManager transactionManager = new JtaTransactionManager();
-		transactionManager.setTransactionManager(jtaPlatform.getJNDITransactionManager());
-		transactionManager.setUserTransaction(jtaPlatform.getJNDIUserTx());
+		transactionManager.setTransactionManager(jtaPlatform.getAtomikosTransactionManager());
+		transactionManager.setUserTransaction(jtaPlatform.getAtomikosUserTransaction());
 		return transactionManager;
 	}
 	
@@ -67,6 +82,7 @@ public class AppContext {
 	}
 
 	@Bean
+	@DependsOn({"userTransactionService","txManager"})
 	public PersistenceExceptionTranslationPostProcessor exceptionTranslation() {
 		return new PersistenceExceptionTranslationPostProcessor();
 	}
@@ -83,44 +99,4 @@ public class AppContext {
 		};
 	}
 
-	/**
-	 * <bean id="setMyAtomikosSystemProps"  class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
-        <property name="targetObject">
-            <!-- System.getProperties() -->
-            <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
-                <property name="targetClass" value="java.lang.System" />
-                <property name="targetMethod" value="getProperties" />
-            </bean>
-        </property>
-        <property name="targetMethod" value="putAll" />
-        <property name="arguments">
-            <!-- The new Properties -->
-            <util:properties>
-                <prop key="com.atomikos.icatch.file">/etc/myapp/jta.properties</prop>
-                <prop key="com.atomikos.icatch.hide_init_file_path">true</prop>
-            </util:properties>
-        </property>
-    </bean>
-	 */
-/*	
-	@Bean
-	public MethodInvokingFactoryBean setAtomikosSystemProperties() {
-		
-		MethodInvokingFactoryBean factoryBean = new MethodInvokingFactoryBean();
-		
-		MethodInvokingFactoryBean innerBean = new MethodInvokingFactoryBean();
-		innerBean.setTargetClass(java.lang.System.class);
-		innerBean.setTargetMethod("getProperties");
-		
-		factoryBean.setTargetObject(innerBean);
-		factoryBean.setTargetMethod("putAll");
-		
-		Properties properties = new Properties();
-		properties.put("com.atomikos.icatch.file", "/jta.properties");
-		properties.put("com.atomikos.icatch.hide_init_file_path", "true");
-		
-		factoryBean.setArguments(new Object[]{properties});
-		
-		return factoryBean;
-	}*/
 }

@@ -1,57 +1,54 @@
 package com.att.developer.config;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
+import javax.transaction.SystemException;
 import javax.transaction.TransactionManager;
 import javax.transaction.UserTransaction;
 
-import org.apache.log4j.Logger;
 import org.hibernate.engine.transaction.jta.platform.internal.AbstractJtaPlatform;
 import org.springframework.stereotype.Component;
+
+import com.atomikos.icatch.jta.UserTransactionImp;
+import com.atomikos.icatch.jta.UserTransactionManager;
 
 @Component
 public class AtomikosJtaPlatform extends AbstractJtaPlatform {
 
-	private static Logger logger = Logger.getLogger(AtomikosJtaPlatform.class);
 	private static final long serialVersionUID = 1L;
-	
-	private UserTransaction userTransaction = null;
-	private TransactionManager txManager = null;
 
-	public UserTransaction getJNDIUserTx() {
-		if (userTransaction == null) {
-			try {
-				Context ctx = new InitialContext();
-				userTransaction = (UserTransaction) ctx.lookup("java:comp/UserTransaction");
-			} catch (NamingException e) {
-				logger.error(e);
-				new RuntimeException(e);
-			}
+	private UserTransactionManager userTransactionManager;
+	private UserTransactionImp userTransactionImp;
+
+	public UserTransactionManager getAtomikosTransactionManager() {
+		if (userTransactionManager == null) {
+			userTransactionManager = new UserTransactionManager();
+			userTransactionManager.setForceShutdown(false);
+			userTransactionManager.setStartupTransactionService(false);
 		}
-		return userTransaction;
+
+		return userTransactionManager;
 	}
 
-	public TransactionManager getJNDITransactionManager() {
-		if(txManager == null) {
+	public UserTransactionImp getAtomikosUserTransaction() {
+		if (userTransactionImp == null) {
+			userTransactionImp = new UserTransactionImp();
 			try {
-				Context ctx = new InitialContext();
-				txManager = (TransactionManager) ctx.lookup("java:comp/env/TransactionManager");
-			} catch (NamingException e) {
-				logger.error(e);
-				new RuntimeException(e);
+				userTransactionImp.setTransactionTimeout(300);
+			} catch (SystemException e) {
+				e.printStackTrace();
 			}
 		}
-		return txManager;
+		return userTransactionImp;
 	}
 
 	@Override
 	protected TransactionManager locateTransactionManager() {
-		return getJNDITransactionManager();
+		return getAtomikosTransactionManager();
 	}
 
 	@Override
 	protected UserTransaction locateUserTransaction() {
-		return getJNDIUserTx();
+		return getAtomikosUserTransaction();
 	}
+
+	/**/
 }

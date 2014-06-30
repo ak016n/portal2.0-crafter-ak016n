@@ -13,6 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
+import javax.persistence.PersistenceException;
 import javax.transaction.Transactional;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -22,6 +23,8 @@ import org.springframework.stereotype.Service;
 
 import com.att.developer.bean.AttProperties;
 import com.att.developer.dao.AttPropertiesDAO;
+import com.att.developer.exception.DAOException;
+import com.att.developer.exception.DuplicateDataException;
 import com.att.developer.service.GlobalScopedParamService;
 
 @Service
@@ -61,8 +64,8 @@ public class GlobalScopedParamServiceImpl implements GlobalScopedParamService {
 	@PostConstruct
 	protected void initialize() {
 		environment = (System.getProperty(ENV_SPECIFIC_IK) == null)? "DEV" : System.getProperty(ENV_SPECIFIC_IK);
-		initializeProperties(GLOBAL_IK, DEFAULT_FK);
-		initializeProperties(ENV_SPECIFIC_IK, environment);
+		//initializeProperties(GLOBAL_IK, DEFAULT_FK);
+		//initializeProperties(ENV_SPECIFIC_IK, environment);
 	}
 
 	private void initializeProperties(String itemKey, String fieldKey) {
@@ -216,19 +219,42 @@ public class GlobalScopedParamServiceImpl implements GlobalScopedParamService {
 		return propertiesMap.get(buildKeyFromIKFK(itemKey, fieldKey));
 	}
 
-	@Transactional
 	public AttProperties getProperties(String itemKey, String fieldKey) {
 		return attPropertiesDAO.findActiveProp(itemKey, fieldKey);
 	}
 	
+	public List<String> getVersions(String itemKey, String fieldKey) {
+		return attPropertiesDAO.getVersions(itemKey, fieldKey);
+	}
+	
 	@Transactional
 	public AttProperties createProperties(AttProperties attProperties) {
-		return attPropertiesDAO.create(attProperties);
+		AttProperties lclAttProperties = null;
+		try {
+			lclAttProperties = attPropertiesDAO.create(attProperties);
+		} catch (PersistenceException e) {
+			if(e.getCause() instanceof org.hibernate.exception.ConstraintViolationException) {
+				throw new DuplicateDataException("Unique constraint voilated");
+			} else {
+				throw new DAOException(e);
+			}
+		}
+		return lclAttProperties;
 	}
 	
 	@Transactional
 	public AttProperties updateProperties(AttProperties attProperties) {
-		return attPropertiesDAO.update(attProperties);
+		AttProperties lclAttProperties = attPropertiesDAO.findActiveProp(attProperties.getItemKey(), attProperties.getFieldKey());
+		
+		if(lclAttProperties == null) {
+			throw new DAOException("Unable to update at this time, please try again.");
+		}
+			
+		if(lclAttProperties.isDeleted()) {
+			throw new DAOException("Update not allowed on already deleted item.");
+		}
+		AttProperties createAttProp = new AttProperties(attProperties.getItemKey(), attProperties.getFieldKey(), attProperties.getDescription(), lclAttProperties.getVersion() + 1);
+		return attPropertiesDAO.create(createAttProp);
 	}
 	
 	@Override
@@ -240,5 +266,26 @@ public class GlobalScopedParamServiceImpl implements GlobalScopedParamService {
 			propertiesMap.put(buildKeyFromIKFK(itemKey, fieldKey), null);
 		}
 	}
+
+	@Transactional
+	public AttProperties deleteProperties(AttProperties attProperties) {
+		attProperties.setDeleted(true);
+		return attPropertiesDAO.update(attProperties);
+	}
+
+	@Override
+	public AttProperties getProperties(String itemKey, String fieldKey, String version) {
+		return attPropertiesDAO.findActivePropByVersion(itemKey, fieldKey, version);
+	}
+
+	@Override
+	public List<String> search(String itemKey) {
+		return attPropertiesDAO.search(itemKey);
+	}
 	
+	
+	@Override
+	public List<String> search(String itemKey,String fieldKey) {
+		return attPropertiesDAO.search(itemKey, fieldKey);
+	}
 }

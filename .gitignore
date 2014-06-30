@@ -4,3 +4,6 @@
 /.settings
 /bin
 /build
+/*.epoch
+/*.lck
+/tmlog*.log

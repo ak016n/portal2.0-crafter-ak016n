@@ -39,7 +39,17 @@ public interface GlobalScopedParamService {
 	
 	public abstract AttProperties getProperties(String itemKey, String fieldKey);
 	
+	public abstract AttProperties getProperties(String itemKey, String fieldKey, String version);
+	
 	public abstract AttProperties createProperties(AttProperties attProperties);
 	
 	public abstract AttProperties updateProperties(AttProperties attProperties);
+	
+	public abstract AttProperties deleteProperties(AttProperties attProperties);
+	
+	public abstract List<String> getVersions(String itemKey, String fieldKey);
+
+	public abstract List<String> search(String itemKey);
+
+	public abstract List<String> search(String itemKey, String fieldKey);
 }

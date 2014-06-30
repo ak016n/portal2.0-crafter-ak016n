@@ -1,5 +1,8 @@
 package com.att.developer.config;
 
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+
 import org.springframework.core.annotation.Order;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
@@ -8,7 +11,7 @@ public class WebInit extends AbstractAnnotationConfigDispatcherServletInitialize
 
 	@Override
 	protected Class<?>[] getRootConfigClasses() {
-		return null;
+		return new Class[] {SecurityContext.class};
 	}
 
 	@Override
@@ -21,4 +24,11 @@ public class WebInit extends AbstractAnnotationConfigDispatcherServletInitialize
 		return new String[] {"/"};
 	}
 
+	@Override
+	public void onStartup(ServletContext servletContext) throws ServletException {
+		super.onStartup(servletContext);
+		System.out.println("-------------------adding listener----------------------");
+		servletContext.addListener(DBConnectionCleaner.class);
+	}
+	
 }

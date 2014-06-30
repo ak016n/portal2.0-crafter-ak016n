@@ -1,3 +1,3 @@
-ALTER TABLE att_properties ADD is_deleted TINYINT AFTER version;
+ALTER TABLE dev_core.att_properties ADD is_deleted TINYINT AFTER version;
 
 COMMIT;

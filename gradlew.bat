@@ -10,8 +10,6 @@ if "%OS%"=="Windows_NT" setlocal
 
 @rem Add default JVM options here. You can also use JAVA_OPTS and GRADLE_OPTS to pass JVM options to this script.
 set DEFAULT_JVM_OPTS=
-set GRADLE_OPTS=-Xdebug -Xrunjdwp:transport=dt_socket,address=5005,server=y,suspend=n %GRADLE_OPTS%
-REM set CATALINA_OPTS=-Xdebug -Xrunjdwp:transport=dt_socket,address=8787,server=y,suspend=n
 
 set DIRNAME=%~dp0
 if "%DIRNAME%" == "" set DIRNAME=.

@@ -32,7 +32,9 @@ public class JpaDAO<T> implements GenericDAO<T> {
 	}
 
 	public T update(T entityBean) {
-		return entityManager.merge(entityBean);
+		entityManager.merge(entityBean);
+		entityManager.flush();
+		return entityBean;
 	}
 
 	public T load(T entityBean) {
