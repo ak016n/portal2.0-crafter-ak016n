@@ -64,8 +64,8 @@ public class GlobalScopedParamServiceImpl implements GlobalScopedParamService {
 	@PostConstruct
 	protected void initialize() {
 		environment = (System.getProperty(ENV_SPECIFIC_IK) == null)? "DEV" : System.getProperty(ENV_SPECIFIC_IK);
-		//initializeProperties(GLOBAL_IK, DEFAULT_FK);
-		//initializeProperties(ENV_SPECIFIC_IK, environment);
+		initializeProperties(GLOBAL_IK, DEFAULT_FK);
+		initializeProperties(ENV_SPECIFIC_IK, environment);
 	}
 
 	private void initializeProperties(String itemKey, String fieldKey) {

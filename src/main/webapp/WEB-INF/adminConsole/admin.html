@@ -23,17 +23,17 @@
 <div class="container">
        <h3>Global Properties</h3>
 				<form class="form-horizontal" role="form" name="adminForm" ng-controller="AdminCtrl" novalidate att-form-errors>
-					<div class="form-group" style="padding: 0px;">
-						<ul id="serverErrorMessage" style="display: none">
-							<li ng-repeat="errorMessage in errorMessages" repeat-complete="triggerErrHandling()">
-								{{errorMessage}}
-							</li>
-						</ul>
-						<div ng-show="adminProp.successMessage != null && adminForm.$pristine">{{adminProp.successMessage}}</div>
-						    	<div class="col-sm-7 col-sm-offset-2 has-error">
-					        		<label name="top_lvl_errors" att-field-errors></label>
+						<div class="form-group">
+						    	<div class="col-sm-7 col-sm-offset-2">
+						    		<div class="has-error help-block">
+					        			<label name="top_lvl_errors" att-field-errors></label>
+					        		</div>
+									<div class="has-success help-block" ng-show="adminProp.successMessage != null && adminForm.$pristine">
+										{{adminProp.successMessage}}
+									</div>
 					        	</div>
 				        </div>
+				
 				        <!-- <legend translate>book.edit.current</legend> -->
 						<div class="form-group" ng-class="{'has-error' : validateOnSubmit && adminForm.itemKey.$invalid}">
 							<label class="required col-sm-2 control-label" for="itemKey_label">Item Key</label>
