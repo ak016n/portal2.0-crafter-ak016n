@@ -1,10 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Context>
 	<Resource name="jdbc/devcore" auth="Container"
-		driverClassName="com.mysql.jdbc.Driver" password="dev_core"
-		type="com.mysql.jdbc.jdbc2.optional.MysqlXADataSource" factory="com.mysql.jdbc.jdbc2.optional.MysqlDataSourceFactory"
-		url="jdbc:mysql://localhost:3306/dev_core" explicitUrl="true"
-		pinGlobalTxToPhysicalConnection="true" user="dev_core">
+		driverClassName="com.mysql.jdbc.Driver" 
+		username="dev_core"
+		password="dev_core"
+		type="javax.sql.XADataSource" 
+		factory="org.apache.tomcat.jdbc.pool.DataSourceFactory"
+		url="jdbc:mysql://localhost:3306/dev_core" 
+		explicitUrl="true"
+		testWhileIdle="true"
+		testOnBorrow="true"
+		testOnReturn="false"
+		validationQuery="SELECT 1"
+        validationInterval="30000"
+        timeBetweenEvictionRunsMillis="30000"
+        maxActive="100"
+        minIdle="10"
+        maxWait="10000"
+        initialSize="10"
+        removeAbandonedTimeout="60"
+        removeAbandoned="true"
+		logAbandoned="true"
+    	minEvictableIdleTimeMillis="30000"
+        jmxEnabled="true"
+        jdbcInterceptors="org.apache.tomcat.jdbc.pool.interceptor.ConnectionState;
+            org.apache.tomcat.jdbc.pool.interceptor.StatementFinalizer"
+		pinGlobalTxToPhysicalConnection="true" >
 	</Resource>
 </Context>
 
