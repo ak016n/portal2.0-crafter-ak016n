@@ -1,29 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Context>
-
-	<!-- <Listener className="com.atomikos.tomcat.AtomikosLifecycleListener" 
-		/> <WatchedResource>WEB-INF/web.xml</WatchedResource> Atomikos Support for 
-		the Tomcat server - register Atomikos as java:comp/UserTransaction <Transaction 
-		factory="com.atomikos.icatch.jta.UserTransactionFactory" /> Also register 
-		Atomikos TransactionManager as java:comp/env/TransactionManager <Resource 
-		name="TransactionManager" auth="Container" type="com.atomikos.icatch.jta.UserTransactionManager" 
-		factory="org.apache.naming.factory.BeanFactory" /> -->
-
-	<!-- <Resource name="jdbc/devcore" auth="Container" type="com.atomikos.jdbc.AtomikosDataSourceBean" 
-		factory="com.atomikos.tomcat.BeanFactory" uniqueResourceName="jdbc/devcore" 
-		xaDataSourceClassName="com.mysql.jdbc.jdbc2.optional.MysqlXADataSource" xaProperties.databaseName="dev_core" 
-		xaProperties.serverName="localhost" xaProperties.port="3306" xaProperties.user="dev_core" 
-		xaProperties.password="dev_core" xaProperties.url="jdbc:mysql://localhost:3306/dev_core" 
-		pinGlobalTxToPhysicalConnection="true" /> -->
-
-	<!-- <Listener classesToInitialize="com.mysql.jdbc.NonRegisteringDriver" className="org.apache.catalina.core.JreMemoryLeakPreventionListener"/> -->
-
 	<Resource name="jdbc/devcore" auth="Container"
 		driverClassName="com.mysql.jdbc.Driver" password="dev_core"
 		type="com.mysql.jdbc.jdbc2.optional.MysqlXADataSource" factory="com.mysql.jdbc.jdbc2.optional.MysqlDataSourceFactory"
 		url="jdbc:mysql://localhost:3306/dev_core" explicitUrl="true"
 		pinGlobalTxToPhysicalConnection="true" user="dev_core">
 	</Resource>
-
 </Context>
 
