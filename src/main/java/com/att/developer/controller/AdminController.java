@@ -8,16 +8,13 @@ import javax.inject.Inject;
 import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.att.developer.bean.AttProperties;
 import com.att.developer.bean.ServerSideError;
@@ -28,25 +25,16 @@ import com.att.developer.exception.ServerSideException;
 import com.att.developer.service.GlobalScopedParamService;
 import com.att.developer.util.FaultUtils;
 
-@Controller
+@RestController
 @RequestMapping("/admin")
-@SessionAttributes({"attProperties"})
 public class AdminController {
 	
 	@Inject
 	private GlobalScopedParamService globalScopedParamService;
 	
-	public static final String ADMIN_URL = "/adminConsole/admin.html";
-    
-	@RequestMapping(method = RequestMethod.GET)
-	public String get(Model model) {
-		AttProperties attProperties = new AttProperties();
-		model.addAttribute("attProperties", attProperties);
-		return ADMIN_URL;
-	}
 	
 	@RequestMapping(value="/{itemKey}/{fieldKey}", method = RequestMethod.GET)
-	public @ResponseBody AttProperties getProperty(@PathVariable("itemKey") String itemKey, @PathVariable("fieldKey") String fieldKey, @RequestParam(value="version", required=false) String version) {
+	public AttProperties getProperty(@PathVariable("itemKey") String itemKey, @PathVariable("fieldKey") String fieldKey, @RequestParam(value="version", required=false) String version) {
 		
 		ServerSideErrors errorColl = new ServerSideErrors();
 		
@@ -71,7 +59,7 @@ public class AdminController {
 	}
 	
 	@RequestMapping(value="/search/{itemKey}", method = RequestMethod.GET)
-	public @ResponseBody List<String> getIK(@PathVariable("itemKey") String itemKey) {
+	public List<String> getIK(@PathVariable("itemKey") String itemKey) {
 		
 		ServerSideErrors errorColl = new ServerSideErrors();
 		
@@ -91,7 +79,7 @@ public class AdminController {
 	}
 	
 	@RequestMapping(value="/search/{itemKey}/{fieldKey}", method = RequestMethod.GET)
-	public @ResponseBody List<String> getFK(@PathVariable("itemKey") String itemKey, @PathVariable("fieldKey") String fieldKey) {
+	public List<String> getFK(@PathVariable("itemKey") String itemKey, @PathVariable("fieldKey") String fieldKey) {
 		
 		ServerSideErrors errorColl = new ServerSideErrors();
 		
@@ -111,7 +99,7 @@ public class AdminController {
 	}
 	
 	@RequestMapping(value="/{itemKey}/{fieldKey}/versions", method = RequestMethod.GET)
-	public @ResponseBody Map<String, List<String>> versionInformation(@PathVariable("itemKey") String itemKey, @PathVariable("fieldKey") String fieldKey) {
+	public Map<String, List<String>> versionInformation(@PathVariable("itemKey") String itemKey, @PathVariable("fieldKey") String fieldKey) {
 		
 		ServerSideErrors errorColl = new ServerSideErrors();
 		
@@ -133,7 +121,7 @@ public class AdminController {
 	}
 
     @RequestMapping(method = RequestMethod.POST)
-    public @ResponseBody AttProperties createProperty(@RequestBody @Valid AttProperties attProperties, BindingResult bindingResult) {
+    public AttProperties createProperty(@RequestBody @Valid AttProperties attProperties, BindingResult bindingResult) {
 		AttProperties lclAttProperties = null;
 		ServerSideErrors errorColl = new ServerSideErrors();
 		boolean violationsPresent = FaultUtils.checkForViolations(false, bindingResult, errorColl);
@@ -156,7 +144,7 @@ public class AdminController {
     }
 
     @RequestMapping(method = RequestMethod.PUT)
-    public @ResponseBody AttProperties updateProperty(@RequestBody @Valid AttProperties attProperties, BindingResult bindingResult) {
+    public AttProperties updateProperty(@RequestBody @Valid AttProperties attProperties, BindingResult bindingResult) {
     	AttProperties lclAttProperties = null;
 		ServerSideErrors errorColl = new ServerSideErrors();
 		boolean violationsPresent = FaultUtils.checkForViolations(false, bindingResult, errorColl);
@@ -177,7 +165,7 @@ public class AdminController {
 
     
     @RequestMapping(value="/{itemKey}/{fieldKey}", method = RequestMethod.DELETE)
-    public @ResponseBody AttProperties deleteProperty(@PathVariable("itemKey") String itemKey, @PathVariable("fieldKey") String fieldKey) {
+    public AttProperties deleteProperty(@PathVariable("itemKey") String itemKey, @PathVariable("fieldKey") String fieldKey) {
 		ServerSideErrors errorColl = new ServerSideErrors();
 		
 		AttProperties lclAttProperties = getProperty(itemKey, fieldKey, null);
