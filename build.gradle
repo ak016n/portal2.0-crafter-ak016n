@@ -42,6 +42,7 @@ dependencies {
 	def tomcatVersion = '7.0.42'
 	tomcat "org.apache.tomcat.embed:tomcat-embed-core:${tomcatVersion}",
 		   "org.apache.tomcat.embed:tomcat-embed-logging-juli:${tomcatVersion}",
+		   "org.apache.tomcat:tomcat-jdbc:${tomcatVersion}",
 		   "javax.transaction:javax.transaction-api:1.2",
 		   "com.atomikos:transactions:3.9.3",
 		   "com.atomikos:transactions-hibernate3:3.9.3"
@@ -57,7 +58,7 @@ dependencies {
 	compile 'org.springframework:spring-context:4.0.2.RELEASE'
 	compile 'org.springframework:spring-orm:4.0.2.RELEASE'
 	compile 'org.springframework:spring-webmvc:4.0.2.RELEASE'
-	compile 'org.apache.tomcat:tomcat-jdbc:7.0.42'
+	
 
 	compile 'org.springframework.security:spring-security-config:3.2.4.RELEASE'
 	compile 'org.springframework.security:spring-security-web:3.2.4.RELEASE'
