@@ -27,6 +27,7 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
 		http
 			.authorizeRequests()
 				.antMatchers("**")
+/*				.hasRole("USER").anyRequest().authenticated();*/
 				.permitAll()
 				.anyRequest().authenticated();
 /**				.and()

@@ -45,7 +45,8 @@ dependencies {
 		   "org.apache.tomcat:tomcat-jdbc:${tomcatVersion}",
 		   "javax.transaction:javax.transaction-api:1.2",
 		   "com.atomikos:transactions:3.9.3",
-		   "com.atomikos:transactions-hibernate3:3.9.3"
+		   "com.atomikos:transactions-hibernate3:3.9.3",
+		   "org.apache.activemq:activemq-all:5.10.0"
 		   
 	
 	//tomcat files("lib/atomikos/atomikos-integration-extension.jar", "lib/atomikos/jta.properties")

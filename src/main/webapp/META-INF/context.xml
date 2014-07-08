@@ -27,5 +27,10 @@
             org.apache.tomcat.jdbc.pool.interceptor.StatementFinalizer"
 		pinGlobalTxToPhysicalConnection="true" >
 	</Resource>
+	
+	<Resource name="jms/ConnectionFactory" auth="Container"
+		type="org.apache.activemq.ActiveMQConnectionFactory" description="JMS Connection Factory"
+		factory="org.apache.activemq.jndi.JNDIReferenceFactory" brokerURL="vm://localhost"
+		brokerName="LocalActiveMQBroker" useEmbeddedBroker="true" />
 </Context>
 
