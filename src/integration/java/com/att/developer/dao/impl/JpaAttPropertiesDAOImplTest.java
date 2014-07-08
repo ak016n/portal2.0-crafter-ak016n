@@ -17,11 +17,11 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 
 import com.att.developer.bean.AttProperties;
 import com.att.developer.bean.builder.AttPropertiesBuilder;
-import com.att.developer.config.IntegrationConfig;
+import com.att.developer.config.IntegrationContext;
 import com.att.developer.dao.AttPropertiesDAO;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes=IntegrationConfig.class, loader=AnnotationConfigContextLoader.class)
+@ContextConfiguration(classes=IntegrationContext.class, loader=AnnotationConfigContextLoader.class)
 @TransactionConfiguration(transactionManager="txManager", defaultRollback = true)
 @Transactional
 public class JpaAttPropertiesDAOImplTest {

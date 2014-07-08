@@ -23,6 +23,7 @@ import org.springframework.transaction.jta.JtaTransactionManager;
 import com.atomikos.icatch.config.UserTransactionService;
 import com.atomikos.icatch.config.UserTransactionServiceImp;
 
+
 @Configuration
 @EnableTransactionManagement
 public class AppContext {
@@ -43,6 +44,18 @@ public class AppContext {
 		}
 		return dataSource;
 	}
+	
+/*	private ConnectionFactory   getJMSBroker() {
+		ConnectionFactory dataSource = null;
+		try {
+			Context ctx = new InitialContext();
+			dataSource = (DataSource) ctx.lookup("java:comp/env/jms/ConnectionFactory");
+		} catch (NamingException e) {
+			logger.error(e);
+			new RuntimeException(e);
+		}
+		return dataSource;
+	}*/
 	
     @Bean
     public DataSource dataSource() {

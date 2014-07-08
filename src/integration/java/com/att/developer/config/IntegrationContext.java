@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @Configuration
 @EnableTransactionManagement
 @ComponentScan({"com.att.developer.dao"})
-public class IntegrationConfig {
+public class IntegrationContext {
 
 	@Bean
 	public DataSource dataSource() {
