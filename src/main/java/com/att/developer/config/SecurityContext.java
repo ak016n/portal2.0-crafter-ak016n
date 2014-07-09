@@ -18,7 +18,7 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
 			throws Exception {
 		auth
 			.inMemoryAuthentication()
-			.withUser("somas").password("passwordxyz").roles("ADMIN").and()
+			.withUser("somas").password("password123").roles("ADMIN").and()
 			.withUser("user2").password("password123").roles("USER");
 		
 	}
