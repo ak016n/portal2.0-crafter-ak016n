@@ -3,6 +3,7 @@ CREATE TABLE IF NOT EXISTS dev_core.organization (
 	name VARCHAR(254) NOT NULL UNIQUE,
 	description VARCHAR(4000),
 	parent_id VARCHAR(40),
+	relationship_type INT NOT NULL DEFAULT 3,
 	created_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
@@ -12,11 +13,19 @@ CREATE TABLE IF NOT EXISTS dev_core.user_org_membership(
 	org_id VARCHAR(40) NOT NULL,
 	user_id VARCHAR(40) NOT NULL,
 	sequence_number INT NOT NULL DEFAULT 0,
-	
 	PRIMARY KEY(org_id, user_id),
-	
 	FOREIGN KEY (org_id) REFERENCES organization(id),
 	FOREIGN KEY (user_id) REFERENCES user(id)
 );
 
-COMMIT;
+
+CREATE TABLE IF NOT EXISTS dev_core.state (
+    id VARCHAR(40) NOT NULL PRIMARY KEY,
+	user_id VARCHAR(40),
+	org_id VARCHAR(40),
+	state_id INT NOT NULL,
+	created_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	FOREIGN KEY (user_id) REFERENCES user(id),
+	FOREIGN KEY (org_id) REFERENCES organization(id)
+);

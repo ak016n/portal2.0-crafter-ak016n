@@ -8,5 +8,5 @@ CREATE TABLE IF NOT EXISTS dev_core.event_log (
 	info				VARCHAR(4000),
 	actor_type			INT NOT NULL,
 	transaction_id      VARCHAR(40),
-	created_on		 	TIMESTAMP NOT NULL
+	created_on TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
