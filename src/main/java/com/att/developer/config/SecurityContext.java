@@ -18,22 +18,21 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
 			throws Exception {
 		auth
 			.inMemoryAuthentication()
-			.withUser("somas").password("password123").roles("USER").and()
+			.withUser("somas").password("passwordxyz").roles("ADMIN").and()
 			.withUser("user2").password("password123").roles("USER");
 		
 	}
-
+	
 	protected void configure(HttpSecurity http) throws Exception {
 		http
 			.authorizeRequests()
-				.antMatchers("**")
-/*				.hasRole("USER").anyRequest().authenticated();*/
-				.permitAll()
-				.anyRequest().authenticated();
-/**				.and()
+				.antMatchers("/views/home.html").permitAll()
+				.antMatchers("/admin/**", "/views/adminConsole/**").hasRole("ADMIN")
+				.anyRequest().authenticated()
+				.and()
 			.formLogin()
 				.and()
-			.httpBasic(); */
+			.httpBasic(); 
 		
 		http.csrf().disable();
 	}
