@@ -3,6 +3,7 @@ package com.att.developer.config;
 import java.util.Properties;
 
 import javax.inject.Inject;
+import javax.jms.ConnectionFactory;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -22,7 +23,6 @@ import org.springframework.transaction.jta.JtaTransactionManager;
 
 import com.atomikos.icatch.config.UserTransactionService;
 import com.atomikos.icatch.config.UserTransactionServiceImp;
-
 
 @Configuration
 @EnableTransactionManagement
@@ -45,17 +45,17 @@ public class AppContext {
 		return dataSource;
 	}
 	
-/*	private ConnectionFactory   getJMSBroker() {
+	private ConnectionFactory getJMSBroker() {
 		ConnectionFactory dataSource = null;
 		try {
 			Context ctx = new InitialContext();
-			dataSource = (DataSource) ctx.lookup("java:comp/env/jms/ConnectionFactory");
+			dataSource = (ConnectionFactory) ctx.lookup("java:comp/env/jms/ConnectionFactory");
 		} catch (NamingException e) {
 			logger.error(e);
 			new RuntimeException(e);
 		}
 		return dataSource;
-	}*/
+	}
 	
     @Bean
     public DataSource dataSource() {

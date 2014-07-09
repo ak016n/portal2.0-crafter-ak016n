@@ -38,6 +38,11 @@ sourceSets {
 	}
 }
 
+configurations {
+	integrationCompile.extendsFrom testCompile
+	integrationRuntime.extendsFrom testRuntime
+}
+
 dependencies {
 	def tomcatVersion = '7.0.42'
 	tomcat "org.apache.tomcat.embed:tomcat-embed-core:${tomcatVersion}",
@@ -59,7 +64,6 @@ dependencies {
 	compile 'org.springframework:spring-context:4.0.2.RELEASE'
 	compile 'org.springframework:spring-orm:4.0.2.RELEASE'
 	compile 'org.springframework:spring-webmvc:4.0.2.RELEASE'
-	
 
 	compile 'org.springframework.security:spring-security-config:3.2.4.RELEASE'
 	compile 'org.springframework.security:spring-security-web:3.2.4.RELEASE'
@@ -72,7 +76,9 @@ dependencies {
 	providedCompile 'com.atomikos:transactions-hibernate3:3.9.3'
 	providedCompile 'org.slf4j:jcl-over-slf4j:1.7.6'
 	providedCompile 'mysql:mysql-connector-java:5.1.31'
+	providedCompile 'org.apache.activemq:activemq-all:5.10.0'
 	providedCompile 'javax.servlet:javax.servlet-api:3.1.0', 'javax.servlet:jsp-api:2.0'
+	
 	
 	compile 'org.apache.commons:commons-lang3:3.3'
 	compile 'org.slf4j:slf4j-api:1.7.6'
@@ -122,7 +128,8 @@ buildscript {
 		mavenCentral()
 	}
 	dependencies {
-		classpath "org.flywaydb:flyway-gradle-plugin:3.0"
+		//classpath "org.flywaydb:flyway-gradle-plugin:3.0"
+		classpath "com.googlecode.flyway:flyway-gradle-plugin:2.3"
 		classpath 'mysql:mysql-connector-java:5.1.31'
 	}
 }
