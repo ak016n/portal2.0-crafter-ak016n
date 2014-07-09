@@ -1,7 +1,7 @@
 var app = angular.module('portalApp', ['adminCtrl.adminService', 'pascalprecht.translate', 'ui.bootstrap']);
 
 app.config(function($translateProvider) {
-	$translateProvider.useUrlLoader('i18N');
+	$translateProvider.useUrlLoader('/developer/i18N');
 	$translateProvider.preferredLanguage('en');
 	$translateProvider.fallbackLanguage('en');
 });

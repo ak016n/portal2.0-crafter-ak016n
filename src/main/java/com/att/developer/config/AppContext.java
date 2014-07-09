@@ -46,20 +46,25 @@ public class AppContext {
 	}
 	
 	private ConnectionFactory getJMSBroker() {
-		ConnectionFactory dataSource = null;
+		ConnectionFactory connectionFactory = null;
 		try {
 			Context ctx = new InitialContext();
-			dataSource = (ConnectionFactory) ctx.lookup("java:comp/env/jms/ConnectionFactory");
+			connectionFactory = (ConnectionFactory) ctx.lookup("java:comp/env/jms/ConnectionFactory");
 		} catch (NamingException e) {
 			logger.error(e);
 			new RuntimeException(e);
 		}
-		return dataSource;
+		return connectionFactory;
 	}
 	
     @Bean
     public DataSource dataSource() {
         return getJNDIdataSource();
+    }
+    
+    @Bean
+    public ConnectionFactory connectionFactory() {
+    	return getJMSBroker();
     }
 	
     @Bean
@@ -111,5 +116,5 @@ public class AppContext {
 			}
 		};
 	}
-
+	
 }

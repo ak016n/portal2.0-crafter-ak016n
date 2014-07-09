@@ -53,9 +53,6 @@ dependencies {
 		   "com.atomikos:transactions-hibernate3:3.9.3",
 		   "org.apache.activemq:activemq-all:5.10.0"
 		   
-	
-	//tomcat files("lib/atomikos/atomikos-integration-extension.jar", "lib/atomikos/jta.properties")
-				
 	tomcat("org.apache.tomcat.embed:tomcat-embed-jasper:${tomcatVersion}") {
 		exclude group: 'org.eclipse.jdt.core.compiler', module: 'ecj'
 	}
@@ -89,7 +86,6 @@ dependencies {
 	compile 'org.openid4java:openid4java:0.9.8'
 	compile 'javax.ws.rs:jsr311-api:1.1.1'
 	compile 'jstl:jstl:1.2'
-	//compile 'javax.jms:jms:1.1'
 		
 	testCompile 'junit:junit:4.11'
 	testCompile 'org.mockito:mockito-all:1.9.5'
@@ -128,7 +124,8 @@ buildscript {
 		mavenCentral()
 	}
 	dependencies {
-		//classpath "org.flywaydb:flyway-gradle-plugin:3.0"
+		// TODO - fix it after groovy support for 1.8 is available
+		// classpath "org.flywaydb:flyway-gradle-plugin:3.0"
 		classpath "com.googlecode.flyway:flyway-gradle-plugin:2.3"
 		classpath 'mysql:mysql-connector-java:5.1.31'
 	}
