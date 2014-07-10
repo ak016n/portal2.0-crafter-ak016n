@@ -253,6 +253,11 @@ public class GlobalScopedParamServiceImpl implements GlobalScopedParamService {
 		if(lclAttProperties.isDeleted()) {
 			throw new DAOException("Update not allowed on already deleted item.");
 		}
+		
+		if(StringUtils.equals(lclAttProperties.getDescription(), attProperties.getDescription())) {
+			throw new DAOException("No change detected to be updated.");
+		}
+		
 		AttProperties createAttProp = new AttProperties(attProperties.getItemKey(), attProperties.getFieldKey(), attProperties.getDescription(), lclAttProperties.getVersion() + 1);
 		return attPropertiesDAO.create(createAttProp);
 	}

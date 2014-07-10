@@ -33,7 +33,7 @@ describe('AdminCtrl', function(){
     	});
     	
     	// This is for translate
-    	$httpBackend.when('GET', 'i18N?lang=en').respond({});
+    	$httpBackend.when('GET', '/developer/i18N?lang=en').respond({});
 
     	spyOn(mockAdminService, 'get').andCallThrough();
     	

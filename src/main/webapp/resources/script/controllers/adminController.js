@@ -10,6 +10,7 @@ adminCtrl.controller('AdminCtrl', ['$scope', 'adminService', 'adminVersionServic
 		  return;
 	  }
 	  
+	  sc.adminProp.description = '';
 	  reset();
 	  var action = 'Refresh';
 	  console.log('refresh');
@@ -113,7 +114,6 @@ adminCtrl.controller('AdminCtrl', ['$scope', 'adminService', 'adminVersionServic
   };
   
   var handleError = function(response) {
-	  sc.adminProp.description = '';
 	  console.log('error.data.errors: ' + response.error);
 	  globalHandleErrorService({
           formName: response.formName,

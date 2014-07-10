@@ -26,13 +26,7 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http
 			.authorizeRequests()
-				.antMatchers("/views/home.html").permitAll()
-				.antMatchers("/admin/**", "/views/adminConsole/**").hasRole("ADMIN")
-				.anyRequest().authenticated()
-				.and()
-			.formLogin()
-				.and()
-			.httpBasic(); 
+				.antMatchers("/**").permitAll();
 		
 		http.csrf().disable();
 	}

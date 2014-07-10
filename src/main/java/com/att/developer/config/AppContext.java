@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
+import org.springframework.jms.core.JmsTemplate;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
@@ -63,16 +64,12 @@ public class AppContext {
     }
     
     @Bean
-    public ConnectionFactory connectionFactory() {
-    	return getJMSBroker();
-    }
-	
-    @Bean
     public UserTransactionService userTransactionService() {
     	UserTransactionServiceImp userTransactionServiceImp = new UserTransactionServiceImp();
     	Properties properties = new Properties();
     	properties.put("com.atomikos.icatch.serial_jta_transactions", "false");
     	properties.put("com.atomikos.icatch.enable_logging", "false");
+    	properties.put("com.atomikos.icatch.log_base_dir", "/tx"); // default, need to be configurable to SAN in prod
     	userTransactionServiceImp.init(properties);
     	return userTransactionServiceImp;
     }
@@ -115,6 +112,19 @@ public class AppContext {
 				setProperty("hibernate.current_session_context_class", "jta");
 			}
 		};
+	}
+	
+    @Bean
+    public ConnectionFactory connectionFactory() {
+    	return getJMSBroker();
+    }
+	
+	@Bean
+	@DependsOn({"connectionFactory"})
+	public JmsTemplate jmsTemplate() {
+		JmsTemplate jmsTemplate = new JmsTemplate();
+		jmsTemplate.setConnectionFactory(connectionFactory());
+		return jmsTemplate;
 	}
 	
 }

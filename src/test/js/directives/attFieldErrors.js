@@ -8,7 +8,7 @@ describe('attFieldErrors', function() {
 	 beforeEach(angular.mock.inject(function($rootScope, $compile, _$httpBackend_) {
 	        scope = $rootScope.$new();
 	        $httpBackend = _$httpBackend_;
-	        $httpBackend.whenGET('i18N?lang=en').respond({});	        
+	        $httpBackend.whenGET('/developer/i18N?lang=en').respond({});	        
 	        
 	        html = '<form name="form" att-form-errors><div><label>Field Label</label><input type="text" name="fieldName" required ng-model="fieldName" att-field-errors/></div></form>';
 	        
