@@ -103,49 +103,4 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
 	}
 	
 	
-	/*
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	<bean id="aclCache" class="org.springframework.security.acls.domain.EhCacheBasedAclCache">
-	    <constructor-arg>
-	      <bean class="org.springframework.cache.ehcache.EhCacheFactoryBean">
-	        <property name="cacheManager">
-	          <bean class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean"/>
-	        </property>
-	        <property name="cacheName" value="aclCache"/>
-	      </bean>
-	    </constructor-arg>
-	</bean>
-
-	<bean id="lookupStrategy" class="org.springframework.security.acls.jdbc.BasicLookupStrategy">
-    <constructor-arg ref="dataSource"/>
-    <constructor-arg ref="aclCache"/>
-    <constructor-arg>
-        <bean class="org.springframework.security.acls.domain.AclAuthorizationStrategyImpl">
-            <constructor-arg>
-                <bean class="org.springframework.security.core.authority.SimpleGrantedAuthority">
-                    <constructor-arg value="ROLE_ADMINISTRATOR"/>
-                </bean>
-            </constructor-arg>
-        </bean>
-    </constructor-arg>
-    <constructor-arg>
-      <bean class="org.springframework.security.acls.domain.ConsoleAuditLogger"/>
-    </constructor-arg>
-  </bean>
-
-  <bean id="aclService" class="org.springframework.security.acls.jdbc.JdbcMutableAclService">
-    <constructor-arg ref="dataSource"/>
-    <constructor-arg ref="lookupStrategy"/>
-    <constructor-arg ref="aclCache"/>
-  </bean>
-	 * 
-	 * 
-	 * 
-	 * 
-	 */
-	
 }
