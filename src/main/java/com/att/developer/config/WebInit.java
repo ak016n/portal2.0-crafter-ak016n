@@ -11,12 +11,12 @@ public class WebInit extends AbstractAnnotationConfigDispatcherServletInitialize
 
 	@Override
 	protected Class<?>[] getRootConfigClasses() {
-		return new Class[] {SecurityContext.class};
+		return  new Class[] {SecurityContext.class, AppContext.class};
 	}
 
 	@Override
 	protected Class<?>[] getServletConfigClasses() {
-		return new Class[] {WebContext.class, AppContext.class};
+		return new Class[] {WebContext.class};
 	}
 
 	@Override
@@ -29,5 +29,6 @@ public class WebInit extends AbstractAnnotationConfigDispatcherServletInitialize
 		super.onStartup(servletContext);
 		servletContext.addListener(DBConnectionCleaner.class);
 	}
+	
 	
 }
