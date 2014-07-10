@@ -23,6 +23,7 @@ import com.att.developer.service.impl.LocaleAwareResourceBundleMessageSource;
 @ComponentScan({ "com.att.developer" })
 public class WebContext extends WebMvcConfigurerAdapter {
 
+	
 	@Bean
 	public InternalResourceViewResolver viewResolver() {
 		InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
