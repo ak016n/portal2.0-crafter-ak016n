@@ -5,12 +5,11 @@ import javax.transaction.TransactionManager;
 import javax.transaction.UserTransaction;
 
 import org.hibernate.engine.transaction.jta.platform.internal.AbstractJtaPlatform;
-import org.springframework.stereotype.Component;
 
 import com.atomikos.icatch.jta.UserTransactionImp;
 import com.atomikos.icatch.jta.UserTransactionManager;
 
-@Component
+
 public class AtomikosJtaPlatform extends AbstractJtaPlatform {
 
 	private static final long serialVersionUID = 1L;

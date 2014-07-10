@@ -2,7 +2,6 @@ package com.att.developer.config;
 
 import java.util.Properties;
 
-import javax.inject.Inject;
 import javax.jms.ConnectionFactory;
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -27,10 +26,9 @@ import com.atomikos.icatch.config.UserTransactionServiceImp;
 
 @Configuration
 @EnableTransactionManagement
+
 public class AppContext {
 
-	@Inject
-	private AtomikosJtaPlatform jtaPlatform;
 	
 	private static Logger logger = Logger.getLogger(AppContext.class);
 	
@@ -77,6 +75,7 @@ public class AppContext {
 	@Bean
 	@DependsOn("userTransactionService")
 	public PlatformTransactionManager txManager() throws Throwable {
+		AtomikosJtaPlatform jtaPlatform = this.atomikosJtaPlatform();
 		JtaTransactionManager transactionManager = new JtaTransactionManager();
 		transactionManager.setTransactionManager(jtaPlatform.getAtomikosTransactionManager());
 		transactionManager.setUserTransaction(jtaPlatform.getAtomikosUserTransaction());
@@ -113,7 +112,12 @@ public class AppContext {
 			}
 		};
 	}
-	
+
+	@Bean
+	public AtomikosJtaPlatform atomikosJtaPlatform(){
+		return new AtomikosJtaPlatform();
+	}
+
     @Bean
     public ConnectionFactory connectionFactory() {
     	return getJMSBroker();
