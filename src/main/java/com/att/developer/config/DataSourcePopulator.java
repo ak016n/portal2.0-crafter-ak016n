@@ -1,6 +1,7 @@
 package com.att.developer.config;
 
 
+import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
 
@@ -16,6 +17,9 @@ import org.springframework.security.acls.model.MutableAcl;
 import org.springframework.security.acls.model.MutableAclService;
 import org.springframework.security.acls.model.ObjectIdentity;
 import org.springframework.security.acls.model.Permission;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
@@ -56,10 +60,12 @@ public class DataSourcePopulator {
             "Findlay", "Robinson", "Giugni", "Lang", "Chi", "Carmichael"
         };
 
-    //~ Methods ========================================================================================================
+
 //    @PostConstruct
     @Transactional
     public void initialize() throws Exception {
+    	
+    	if(true) throw new Exception("don't initialize unintentionally!");
     	
     	this.template = new JdbcTemplate(dataSource);
     	this.transactionTemplate = new TransactionTemplate(txManager);
@@ -70,9 +76,8 @@ public class DataSourcePopulator {
         Assert.notNull(transactionTemplate, "platformTransactionManager required");
 
 //        // Set a user account that will initially own all the created data
-//        Authentication authRequest = new UsernamePasswordAuthenticationToken("rod", "koala",
-//                AuthorityUtils.createAuthorityList("ROLE_IGNORED"));
-//        SecurityContextHolder.getContext().setAuthentication(authRequest);
+        Authentication authRequest = new UsernamePasswordAuthenticationToken("rod", "koala", AuthorityUtils.createAuthorityList("ROLE_IGNORED"));
+        SecurityContextHolder.getContext().setAuthentication(authRequest);
 
 //        try {
 //            template.execute("DROP TABLE CONTACTS");
@@ -152,46 +157,66 @@ public class DataSourcePopulator {
 //        }
 
         // Create acl_object_identity rows (and also acl_class rows as needed
-            final ObjectIdentity objectIdentity = new ObjectIdentityImpl(ApiBundle.class, new Long(1));
-            transactionTemplate.execute(new TransactionCallback<Object>() {
-                    public Object doInTransaction(TransactionStatus arg0) {
-                        mutableAclService.createAcl(objectIdentity);
-
-                        return null;
-                    }
-                });
-
+        
+        for(int i=1; i<=3; i++){
+			final ObjectIdentity objectIdentity = new ObjectIdentityImpl(ApiBundle.class, new Long(i));
+			
+			transactionTemplate.execute(new TransactionCallback<Object>() {
+				public Object doInTransaction(TransactionStatus arg0) {
+					mutableAclService.createAcl(objectIdentity);
+	
+					return null;
+				}
+			});
+        }
 
         // Now grant some permissions
         grantPermissions(1, "somas", BasePermission.ADMINISTRATION);
         grantPermissions(1, "user2", BasePermission.READ);
         
+        grantPermissions(2, "somas", BasePermission.WRITE);
+        grantPermissions(2, "somas", BasePermission.READ);
+        
+        grantPermissions(3, "user2", BasePermission.WRITE);
+        
+        
+        
 
-
+		changeOwner(1, "somas");
+		changeOwner(2, "somas");
+		changeOwner(3, "somas");
+		
         SecurityContextHolder.clearContext();
     }
 
 
-
-    private void grantPermissions(int contactNumber, String recipientUsername, Permission permission) {
-        AclImpl acl = (AclImpl) mutableAclService.readAclById(new ObjectIdentityImpl(ApiBundle.class, new Long(contactNumber)));
+    private void grantPermissions(int bundleNumber, String recipientUsername, Permission permission) {
+        AclImpl acl = (AclImpl) mutableAclService.readAclById(new ObjectIdentityImpl(ApiBundle.class, new Long(bundleNumber)));
         acl.insertAce(acl.getEntries().size(), permission, new PrincipalSid(recipientUsername), true);
         updateAclInTransaction(acl);
     }
 
+	
+    private void changeOwner(int bundleNumber, String newOwnerUsername) {
+        AclImpl acl = (AclImpl) mutableAclService.readAclById(new ObjectIdentityImpl(ApiBundle.class,
+                    new Long(bundleNumber)));
+        acl.setOwner(new PrincipalSid(newOwnerUsername));
+        
+        updateAclInTransaction(acl);
+    }
+    
+	private void updateAclInTransaction(final MutableAcl acl) {
+		transactionTemplate.execute(new TransactionCallback<Object>() {
+			public Object doInTransaction(TransactionStatus arg0) {
+				mutableAclService.updateAcl(acl);
 
+				return null;
+			}
+		});
+	}
+	
+	
     public void setDataSource(DataSource dataSource) {
         this.template = new JdbcTemplate(dataSource);
-    }
-
-
-    private void updateAclInTransaction(final MutableAcl acl) {
-        transactionTemplate.execute(new TransactionCallback<Object>() {
-                public Object doInTransaction(TransactionStatus arg0) {
-                    mutableAclService.updateAcl(acl);
-
-                    return null;
-                }
-            });
     }
 }
