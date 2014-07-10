@@ -1,24 +1,45 @@
 package com.att.developer.config;
 
+import javax.inject.Inject;
+import javax.sql.DataSource;
+
+import net.sf.ehcache.CacheManager;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.ehcache.EhCacheFactoryBean;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.acls.domain.AclAuthorizationStrategy;
+import org.springframework.security.acls.domain.AclAuthorizationStrategyImpl;
+import org.springframework.security.acls.domain.ConsoleAuditLogger;
+import org.springframework.security.acls.domain.DefaultPermissionGrantingStrategy;
+import org.springframework.security.acls.domain.EhCacheBasedAclCache;
+import org.springframework.security.acls.jdbc.BasicLookupStrategy;
+import org.springframework.security.acls.jdbc.JdbcMutableAclService;
+import org.springframework.security.acls.model.PermissionGrantingStrategy;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.servlet.configuration.EnableWebMvcSecurity;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
 
 @Configuration
 @EnableWebMvcSecurity
 @EnableWebSecurity
 public class SecurityContext extends WebSecurityConfigurerAdapter {
 
+	@Inject
+	private DataSource dataSource;
+	
+	
 	@Autowired
 	public void configureGlobal(AuthenticationManagerBuilder auth)
 			throws Exception {
 		auth
 			.inMemoryAuthentication()
-			.withUser("somas").password("password123").roles("ADMIN").and()
+			.withUser("somas").password("password123").roles("ADMINISTRATOR").and()
 			.withUser("user2").password("password123").roles("USER");
 		
 	}
@@ -27,7 +48,7 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
 		http
 			.authorizeRequests()
 				.antMatchers("/views/home.html").permitAll()
-				.antMatchers("/admin/**", "/views/adminConsole/**").hasRole("ADMIN")
+				.antMatchers("/admin/**", "/views/adminConsole/**").hasRole("ADMINISTRATOR")
 				.anyRequest().authenticated()
 				.and()
 			.formLogin()
@@ -36,4 +57,95 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
 		
 		http.csrf().disable();
 	}
+	
+	
+	@Bean
+	public EhCacheBasedAclCache aclCache(){
+		EhCacheBasedAclCache aclCache = new EhCacheBasedAclCache(ehCacheFactoryBean().getObject(), permissionGrantingStrategy(), aclAuthorizationStrategy());
+		return aclCache;
+	}
+	
+	
+	@Bean
+	public BasicLookupStrategy basicLookupStrategy(){
+		return new BasicLookupStrategy(dataSource, aclCache(), aclAuthorizationStrategy(), permissionGrantingStrategy());
+	}
+	
+	
+	@Bean 
+	public JdbcMutableAclService aclService(){
+		return new JdbcMutableAclService(dataSource, basicLookupStrategy(), aclCache());
+	}
+	
+
+	
+	@Bean 
+	protected EhCacheFactoryBean ehCacheFactoryBean(){
+
+		EhCacheFactoryBean ehCacheFactoryBean = new EhCacheFactoryBean();
+		CacheManager cacheManager = CacheManager.create();
+		ehCacheFactoryBean.setCacheManager(cacheManager);
+		ehCacheFactoryBean.setCacheName("aclCache");
+		
+		return ehCacheFactoryBean;
+
+	}
+	
+	//Can't see reason to make this public Bean
+	private PermissionGrantingStrategy permissionGrantingStrategy(){
+		return new DefaultPermissionGrantingStrategy(new ConsoleAuditLogger());
+	}
+	
+	
+	//Can't see reason to make this public Bean	
+	private AclAuthorizationStrategy aclAuthorizationStrategy(){
+		return new AclAuthorizationStrategyImpl(new SimpleGrantedAuthority("ADMINISTRATOR"));
+	}
+	
+	
+	/*
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	<bean id="aclCache" class="org.springframework.security.acls.domain.EhCacheBasedAclCache">
+	    <constructor-arg>
+	      <bean class="org.springframework.cache.ehcache.EhCacheFactoryBean">
+	        <property name="cacheManager">
+	          <bean class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean"/>
+	        </property>
+	        <property name="cacheName" value="aclCache"/>
+	      </bean>
+	    </constructor-arg>
+	</bean>
+
+	<bean id="lookupStrategy" class="org.springframework.security.acls.jdbc.BasicLookupStrategy">
+    <constructor-arg ref="dataSource"/>
+    <constructor-arg ref="aclCache"/>
+    <constructor-arg>
+        <bean class="org.springframework.security.acls.domain.AclAuthorizationStrategyImpl">
+            <constructor-arg>
+                <bean class="org.springframework.security.core.authority.SimpleGrantedAuthority">
+                    <constructor-arg value="ROLE_ADMINISTRATOR"/>
+                </bean>
+            </constructor-arg>
+        </bean>
+    </constructor-arg>
+    <constructor-arg>
+      <bean class="org.springframework.security.acls.domain.ConsoleAuditLogger"/>
+    </constructor-arg>
+  </bean>
+
+  <bean id="aclService" class="org.springframework.security.acls.jdbc.JdbcMutableAclService">
+    <constructor-arg ref="dataSource"/>
+    <constructor-arg ref="lookupStrategy"/>
+    <constructor-arg ref="aclCache"/>
+  </bean>
+	 * 
+	 * 
+	 * 
+	 * 
+	 */
+	
 }
