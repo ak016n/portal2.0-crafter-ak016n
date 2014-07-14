@@ -74,7 +74,12 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
 	@Bean 
 	
 	public JdbcMutableAclService aclService(){
-		return new JdbcMutableAclService(dataSource, basicLookupStrategy(), aclCache());
+		JdbcMutableAclService aclService = new JdbcMutableAclService(dataSource, basicLookupStrategy(), aclCache());
+		
+		aclService.setClassIdentityQuery("SELECT LAST_INSERT_ID()");
+		aclService.setSidIdentityQuery("SELECT LAST_INSERT_ID()");
+		
+		return aclService;
 	}
 	
 
@@ -102,5 +107,63 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
 		return new AclAuthorizationStrategyImpl(new SimpleGrantedAuthority("ADMINISTRATOR"));
 	}
 	
+	
+	@Bean
+	public DataSourcePopulator dataSourcePopulator(){
+		return new DataSourcePopulator();
+	}
+	
+/**	
+    <bean id="dataSourcePopulator" class="sample.contact.DataSourcePopulator">
+    <property name="dataSource" ref="dataSource"/>
+    <property name="mutableAclService" ref="aclService"/>
+    <property name="platformTransactionManager" ref="transactionManager"/>
+</bean>
+	**/
+	
+	/*
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	<bean id="aclCache" class="org.springframework.security.acls.domain.EhCacheBasedAclCache">
+	    <constructor-arg>
+	      <bean class="org.springframework.cache.ehcache.EhCacheFactoryBean">
+	        <property name="cacheManager">
+	          <bean class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean"/>
+	        </property>
+	        <property name="cacheName" value="aclCache"/>
+	      </bean>
+	    </constructor-arg>
+	</bean>
+
+	<bean id="lookupStrategy" class="org.springframework.security.acls.jdbc.BasicLookupStrategy">
+    <constructor-arg ref="dataSource"/>
+    <constructor-arg ref="aclCache"/>
+    <constructor-arg>
+        <bean class="org.springframework.security.acls.domain.AclAuthorizationStrategyImpl">
+            <constructor-arg>
+                <bean class="org.springframework.security.core.authority.SimpleGrantedAuthority">
+                    <constructor-arg value="ROLE_ADMINISTRATOR"/>
+                </bean>
+            </constructor-arg>
+        </bean>
+    </constructor-arg>
+    <constructor-arg>
+      <bean class="org.springframework.security.acls.domain.ConsoleAuditLogger"/>
+    </constructor-arg>
+  </bean>
+
+  <bean id="aclService" class="org.springframework.security.acls.jdbc.JdbcMutableAclService">
+    <constructor-arg ref="dataSource"/>
+    <constructor-arg ref="lookupStrategy"/>
+    <constructor-arg ref="aclCache"/>
+  </bean>
+	 * 
+	 * 
+	 * 
+	 * 
+	 */
 	
 }
