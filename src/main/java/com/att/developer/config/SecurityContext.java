@@ -33,7 +33,6 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
 	@Inject
 	private DataSource dataSource;
 	
-	
 	@Autowired
 	public void configureGlobal(AuthenticationManagerBuilder auth)
 			throws Exception {
@@ -73,6 +72,7 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
 	
 	
 	@Bean 
+	
 	public JdbcMutableAclService aclService(){
 		return new JdbcMutableAclService(dataSource, basicLookupStrategy(), aclCache());
 	}

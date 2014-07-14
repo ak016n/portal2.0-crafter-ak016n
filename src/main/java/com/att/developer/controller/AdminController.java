@@ -1,5 +1,6 @@
 package com.att.developer.controller;
 
+import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -68,7 +69,7 @@ public class AdminController {
 			throw new ServerSideException(errorColl.add(error));
 		}
 		
-		List<String> searchResults = globalScopedParamService.search(itemKey);
+		List<String> searchResults = globalScopedParamService.search(StringUtils.upperCase(itemKey));
 		
 		if (searchResults == null) {
 			ServerSideError error = new ServerSideError.Builder().id("ssGeneralError").message("No data found for search term").build();
@@ -88,7 +89,7 @@ public class AdminController {
 			throw new ServerSideException(errorColl.add(error));
 		}
 		
-		List<String> searchResults = globalScopedParamService.search(itemKey, fieldKey);
+		List<String> searchResults = globalScopedParamService.search( StringUtils.upperCase(itemKey),  StringUtils.upperCase(fieldKey));
 		
 		if (searchResults == null) {
 			ServerSideError error = new ServerSideError.Builder().id("ssGeneralError").message("No data found for search term").build();
@@ -108,7 +109,7 @@ public class AdminController {
 			throw new ServerSideException(errorColl.add(error));
 		}
 		
-		List<String> versionColl = globalScopedParamService.getVersions(itemKey, fieldKey);
+		List<String> versionColl = globalScopedParamService.getVersions(StringUtils.upperCase(itemKey),  StringUtils.upperCase(fieldKey));
 
 		if (versionColl == null) {
 			ServerSideError error = new ServerSideError.Builder().id("ssGeneralError").message("No data found for item key/field key combination").build();
@@ -121,7 +122,7 @@ public class AdminController {
 	}
 
     @RequestMapping(method = RequestMethod.POST)
-    public AttProperties createProperty(@RequestBody @Valid AttProperties attProperties, BindingResult bindingResult) {
+    public AttProperties createProperty(@RequestBody @Valid AttProperties attProperties, BindingResult bindingResult, Principal principal) {
 		AttProperties lclAttProperties = null;
 		ServerSideErrors errorColl = new ServerSideErrors();
 		boolean violationsPresent = FaultUtils.checkForViolations(false, bindingResult, errorColl);
@@ -130,7 +131,7 @@ public class AdminController {
 			throw new ServerSideException(errorColl);
 		} else {
 			try {
-				lclAttProperties = globalScopedParamService.createProperties(attProperties);
+				lclAttProperties = globalScopedParamService.createProperties(attProperties, principal.getName());
 			} catch (DuplicateDataException e) {
 				ServerSideError error = new ServerSideError.Builder().id("ssGeneralError").message("Record already exist. Please use update").build();
 				throw new ServerSideException(errorColl.add(error));

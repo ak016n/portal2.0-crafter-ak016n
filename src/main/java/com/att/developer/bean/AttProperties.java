@@ -8,8 +8,10 @@ import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -18,7 +20,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 	@NamedQuery(name="AttProperties.getIKFKWildCard", query="select distinct a.fieldKey from AttProperties as a where a.itemKey = :itemKey and a.fieldKey LIKE :fieldKey ORDER BY a.fieldKey ASC")
 })
 @Entity
-@Table(name = "att_properties")
+@Table(name = "att_properties", uniqueConstraints= @UniqueConstraint(columnNames = {"item_key", "field_key", "version"}))
 public class AttProperties {
 
 	public AttProperties() {
@@ -29,8 +31,8 @@ public class AttProperties {
 	public AttProperties(String itemKey, String fieldKey,
 			String description, int version) {
 		this();
-		this.itemKey = itemKey;
-		this.fieldKey = fieldKey;
+		this.setItemKey(itemKey);
+		this.setFieldKey(fieldKey);
 		this.description = description;
 		this.version = version;
 	}
@@ -69,7 +71,7 @@ public class AttProperties {
 	}
 
 	public void setItemKey(String itemKey) {
-		this.itemKey = itemKey;
+		this.itemKey = StringUtils.upperCase(itemKey);
 	}
 
 	public String getFieldKey() {
@@ -77,7 +79,7 @@ public class AttProperties {
 	}
 
 	public void setFieldKey(String fieldKey) {
-		this.fieldKey = fieldKey;
+		this.fieldKey = StringUtils.upperCase(fieldKey);
 	}
 
 	public String getDescription() {

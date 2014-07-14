@@ -34,7 +34,7 @@ public class JpaUserDAOImplTest {
 		userDAO.create(user);
 		
 		// read
-		User afterCreateUser = new UserBuilder().withNonDefault().withId(user.getId()).build();
+		User afterCreateUser = new UserBuilder().withVanillaUser().withId(user.getId()).build();
 		afterCreateUser = userDAO.load(afterCreateUser);
 		assertThat(afterCreateUser.getLogin(), CoreMatchers.equalTo(user.getLogin()));
 		assertThat(afterCreateUser.getPassword(), CoreMatchers.equalTo(user.getPassword()));
