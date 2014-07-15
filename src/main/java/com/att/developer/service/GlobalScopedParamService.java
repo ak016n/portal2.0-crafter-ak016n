@@ -41,7 +41,7 @@ public interface GlobalScopedParamService {
 	
 	public abstract AttProperties getProperties(String itemKey, String fieldKey, String version);
 	
-	public abstract AttProperties createProperties(AttProperties attProperties);
+	public abstract AttProperties createProperties(AttProperties attProperties, String actor);
 	
 	public abstract AttProperties updateProperties(AttProperties attProperties);
 	

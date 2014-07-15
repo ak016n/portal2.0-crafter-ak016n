@@ -17,7 +17,7 @@ public class UserBuilder {
 		/**
 		 * For non-default builder
 		 */
-		public UserBuilder withNonDefault() {
+		public UserBuilder withVanillaUser() {
 			user = new User();
 			return this;
 		}

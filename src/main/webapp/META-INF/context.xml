@@ -29,8 +29,8 @@
 	</Resource>
 	
 	<Resource name="jms/ConnectionFactory" auth="Container"
-		type="org.apache.activemq.ActiveMQConnectionFactory" description="JMS Connection Factory"
+		type="org.apache.activemq.ActiveMQXAConnectionFactory" description="JMS Connection Factory"
 		factory="org.apache.activemq.jndi.JNDIReferenceFactory" brokerURL="vm://localhost"
-		brokerName="LocalActiveMQBroker" useEmbeddedBroker="true" />
+		brokerName="LocalActiveMQBroker" useEmbeddedBroker="true" maximumRedeliveries="5"/>
 </Context>
 

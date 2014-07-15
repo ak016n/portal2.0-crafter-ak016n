@@ -46,6 +46,12 @@ public class AttPropertiesBuilder {
 		return this;
 	}
 	
+	public AttPropertiesBuilder withDelete(boolean deleted) {
+		attProperties.setDeleted(deleted);
+		return this;
+	}
+	
+	
 	public AttProperties build() {
 		return attProperties;
 	}

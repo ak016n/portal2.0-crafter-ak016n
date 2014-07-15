@@ -68,7 +68,7 @@ public class JpaAttPropertiesDAOImplTest {
 	
 	@Test
 	public void testFindActiveByIKFK_nonExistent() {
-		AttProperties findProperties = attPropertiesDAO.findActiveProp("X", "Y");
+		AttProperties findProperties = attPropertiesDAO.findActiveProp("Non-Existent", "Should-never-be-there");
 		
 		assertThat(findProperties, is(nullValue()));
 	}

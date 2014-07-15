@@ -19,17 +19,26 @@ import javax.transaction.Transactional;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.att.developer.bean.AttProperties;
+import com.att.developer.bean.EventLog;
 import com.att.developer.dao.AttPropertiesDAO;
 import com.att.developer.exception.DAOException;
 import com.att.developer.exception.DuplicateDataException;
+import com.att.developer.service.EventTrackingService;
 import com.att.developer.service.GlobalScopedParamService;
+import com.att.developer.typelist.ActorType;
+import com.att.developer.typelist.EventType;
+import com.att.developer.exception.UnsupportedOperationException;
 
 @Service
 public class GlobalScopedParamServiceImpl implements GlobalScopedParamService {
 	
+	public static final String NO_CHANGE_MSG = "No change detected to be updated.";
+	public static final String ALREADY_DELETED_MSG = "Update not allowed on already deleted item.";
+	public static final String TRY_AGAIN_LATER_MSG = "Unable to update at this time, please try again.";
 	private static final String MAP_DSL = "MAP:";
 	private static final String LIST_DSL = "LIST:";
 	private static final String ARRAY_DSL = "ARRAY:";
@@ -50,12 +59,18 @@ public class GlobalScopedParamServiceImpl implements GlobalScopedParamService {
 	@Resource
 	private AttPropertiesDAO attPropertiesDAO;
 	
+	@Autowired
+	private EventTrackingService eventTrackingService;
+	
 	private ConcurrentHashMap<String, Map<String, Object>> propertiesMap = new ConcurrentHashMap<>(); 
 	
 	public void setAttPropertiesDAO(AttPropertiesDAO attPropertiesDAO) {
 		this.attPropertiesDAO = attPropertiesDAO;
 	}
 	
+	public void setEventTrackingService(EventTrackingService eventTrackingService) {
+		this.eventTrackingService = eventTrackingService;
+	}
 	/**
 	 * This is for base properties stored in
 	 * GLOBAL/DEFAULT, ENVIRONMENT/DEV, ../INT, ../QA, ../STAGE, ../PROD
@@ -228,12 +243,14 @@ public class GlobalScopedParamServiceImpl implements GlobalScopedParamService {
 	}
 	
 	@Transactional
-	public AttProperties createProperties(AttProperties attProperties) {
+	public AttProperties createProperties(AttProperties attProperties, String actor) {
 		AttProperties lclAttProperties = null;
 		try {
 			lclAttProperties = attPropertiesDAO.create(attProperties);
+			audit(attProperties, actor);
 		} catch (PersistenceException e) {
-			if(e.getCause() instanceof org.hibernate.exception.ConstraintViolationException) {
+			if(e.getCause() != null && e.getCause().getCause() != null 
+					&& e.getCause().getCause() instanceof com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException) {
 				throw new DuplicateDataException("Unique constraint voilated");
 			} else {
 				throw new DAOException(e);
@@ -241,25 +258,34 @@ public class GlobalScopedParamServiceImpl implements GlobalScopedParamService {
 		}
 		return lclAttProperties;
 	}
+
+	private void audit(AttProperties attProperties, String actor) {
+		EventLog eventLog = new EventLog(actor, null, null, EventType.GLOBAL_SCOPED_PARAM_CHANGE, attProperties.toString(), ActorType.DEV_PROGRAM_USER, null);
+		eventTrackingService.globalPropertiesChangeEvent(eventLog);
+	}
 	
 	@Transactional
 	public AttProperties updateProperties(AttProperties attProperties) {
 		AttProperties lclAttProperties = attPropertiesDAO.findActiveProp(attProperties.getItemKey(), attProperties.getFieldKey());
 		
-		if(lclAttProperties == null) {
-			throw new DAOException("Unable to update at this time, please try again.");
-		}
-			
-		if(lclAttProperties.isDeleted()) {
-			throw new DAOException("Update not allowed on already deleted item.");
-		}
-		
-		if(StringUtils.equals(lclAttProperties.getDescription(), attProperties.getDescription())) {
-			throw new DAOException("No change detected to be updated.");
-		}
+		validate(attProperties, lclAttProperties);
 		
 		AttProperties createAttProp = new AttProperties(attProperties.getItemKey(), attProperties.getFieldKey(), attProperties.getDescription(), lclAttProperties.getVersion() + 1);
 		return attPropertiesDAO.create(createAttProp);
+	}
+
+	private void validate(AttProperties attProperties, AttProperties lclAttProperties) {
+		if(lclAttProperties == null) {
+			throw new DAOException(TRY_AGAIN_LATER_MSG);
+		}
+			
+		if(lclAttProperties.isDeleted()) {
+			throw new UnsupportedOperationException(ALREADY_DELETED_MSG);
+		}
+		
+		if(StringUtils.equals(lclAttProperties.getDescription(), attProperties.getDescription())) {
+			throw new UnsupportedOperationException(NO_CHANGE_MSG);
+		}
 	}
 	
 	@Override
@@ -293,4 +319,5 @@ public class GlobalScopedParamServiceImpl implements GlobalScopedParamService {
 	public List<String> search(String itemKey,String fieldKey) {
 		return attPropertiesDAO.search(itemKey, fieldKey);
 	}
+
 }
