@@ -20,7 +20,7 @@ import com.att.developer.service.impl.LocaleAwareResourceBundleMessageSource;
 
 @Configuration
 @EnableWebMvc
-@ComponentScan({ "com.att.developer" })
+@ComponentScan({ "com.att.developer.controller" })
 public class WebContext extends WebMvcConfigurerAdapter {
 
 	@Bean
