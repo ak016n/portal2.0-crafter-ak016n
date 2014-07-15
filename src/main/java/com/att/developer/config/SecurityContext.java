@@ -9,23 +9,32 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.ehcache.EhCacheFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.PermissionCacheOptimizer;
+import org.springframework.security.access.PermissionEvaluator;
+import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
+import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
+import org.springframework.security.acls.AclPermissionCacheOptimizer;
+import org.springframework.security.acls.AclPermissionEvaluator;
 import org.springframework.security.acls.domain.AclAuthorizationStrategy;
 import org.springframework.security.acls.domain.AclAuthorizationStrategyImpl;
 import org.springframework.security.acls.domain.ConsoleAuditLogger;
-import org.springframework.security.acls.domain.DefaultPermissionGrantingStrategy;
 import org.springframework.security.acls.domain.EhCacheBasedAclCache;
-import org.springframework.security.acls.jdbc.BasicLookupStrategy;
 import org.springframework.security.acls.jdbc.JdbcMutableAclService;
 import org.springframework.security.acls.model.PermissionGrantingStrategy;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.servlet.configuration.EnableWebMvcSecurity;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+import com.att.developer.security.CustomAclLookupStrategy;
+import com.att.developer.security.CustomPermissionGrantingStrategy;
+
 
 @Configuration
+@EnableGlobalMethodSecurity(prePostEnabled=true)
 @EnableWebMvcSecurity
 @EnableWebSecurity
 public class SecurityContext extends WebSecurityConfigurerAdapter {
@@ -55,7 +64,10 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
 			.httpBasic(); 
 		
 		http.csrf().disable();
+		
 	}
+
+	
 	
 	
 	@Bean
@@ -66,8 +78,8 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
 	
 	
 	@Bean
-	public BasicLookupStrategy basicLookupStrategy(){
-		return new BasicLookupStrategy(dataSource, aclCache(), aclAuthorizationStrategy(), permissionGrantingStrategy());
+	public CustomAclLookupStrategy basicLookupStrategy(){
+		return new CustomAclLookupStrategy(dataSource, aclCache(), aclAuthorizationStrategy(), permissionGrantingStrategy());
 	}
 	
 	
@@ -79,9 +91,9 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
 		aclService.setClassIdentityQuery("SELECT LAST_INSERT_ID()");
 		aclService.setSidIdentityQuery("SELECT LAST_INSERT_ID()");
 		
+		
 		return aclService;
 	}
-	
 
 	
 	@Bean 
@@ -96,14 +108,15 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
 
 	}
 	
-	//Can't see reason to make this public Bean
-	private PermissionGrantingStrategy permissionGrantingStrategy(){
-		return new DefaultPermissionGrantingStrategy(new ConsoleAuditLogger());
+	
+	@Bean
+	protected PermissionGrantingStrategy permissionGrantingStrategy(){
+		return new CustomPermissionGrantingStrategy(new ConsoleAuditLogger());
 	}
 	
 	
-	//Can't see reason to make this public Bean	
-	private AclAuthorizationStrategy aclAuthorizationStrategy(){
+	@Bean
+	protected AclAuthorizationStrategy aclAuthorizationStrategy(){
 		return new AclAuthorizationStrategyImpl(new SimpleGrantedAuthority("ADMINISTRATOR"));
 	}
 	
@@ -113,57 +126,25 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
 		return new DataSourcePopulator();
 	}
 	
-/**	
-    <bean id="dataSourcePopulator" class="sample.contact.DataSourcePopulator">
-    <property name="dataSource" ref="dataSource"/>
-    <property name="mutableAclService" ref="aclService"/>
-    <property name="platformTransactionManager" ref="transactionManager"/>
-</bean>
-	**/
 	
-	/*
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	<bean id="aclCache" class="org.springframework.security.acls.domain.EhCacheBasedAclCache">
-	    <constructor-arg>
-	      <bean class="org.springframework.cache.ehcache.EhCacheFactoryBean">
-	        <property name="cacheManager">
-	          <bean class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean"/>
-	        </property>
-	        <property name="cacheName" value="aclCache"/>
-	      </bean>
-	    </constructor-arg>
-	</bean>
 
-	<bean id="lookupStrategy" class="org.springframework.security.acls.jdbc.BasicLookupStrategy">
-    <constructor-arg ref="dataSource"/>
-    <constructor-arg ref="aclCache"/>
-    <constructor-arg>
-        <bean class="org.springframework.security.acls.domain.AclAuthorizationStrategyImpl">
-            <constructor-arg>
-                <bean class="org.springframework.security.core.authority.SimpleGrantedAuthority">
-                    <constructor-arg value="ROLE_ADMINISTRATOR"/>
-                </bean>
-            </constructor-arg>
-        </bean>
-    </constructor-arg>
-    <constructor-arg>
-      <bean class="org.springframework.security.acls.domain.ConsoleAuditLogger"/>
-    </constructor-arg>
-  </bean>
+	@Bean
+	protected PermissionEvaluator permissionEvaluator() {
+		return new AclPermissionEvaluator(aclService());
+	}
 
-  <bean id="aclService" class="org.springframework.security.acls.jdbc.JdbcMutableAclService">
-    <constructor-arg ref="dataSource"/>
-    <constructor-arg ref="lookupStrategy"/>
-    <constructor-arg ref="aclCache"/>
-  </bean>
-	 * 
-	 * 
-	 * 
-	 * 
-	 */
+	@Bean
+	protected PermissionCacheOptimizer aclPermissionCacheOptimizer() {
+		return new AclPermissionCacheOptimizer(aclService());
+	}
 	
+	@Bean
+	public MethodSecurityExpressionHandler expressionHandler() {
+		
+		DefaultMethodSecurityExpressionHandler expressionHandler = new DefaultMethodSecurityExpressionHandler();
+		expressionHandler.setPermissionEvaluator(permissionEvaluator());
+		expressionHandler.setPermissionCacheOptimizer(aclPermissionCacheOptimizer());
+		return expressionHandler;
+	}
 }
+
