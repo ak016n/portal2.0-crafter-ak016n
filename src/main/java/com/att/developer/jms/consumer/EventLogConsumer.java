@@ -14,9 +14,7 @@ public class EventLogConsumer {
 	private EventLogService eventLogService;
 	
     public void handleMessage(EventLog eventLog) {
-    	System.out.println("----------ERROR-------------");
-    	throw new RuntimeException("Error");
-    	//eventLogService.createLog(eventLog);
+    	eventLogService.createLog(eventLog);
     }
 
 }
