@@ -1,6 +1,8 @@
 package com.att.developer.config;
 
 
+import java.util.UUID;
+
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
@@ -65,10 +67,11 @@ public class DataSourcePopulator {
     @Transactional
     public void initialize() throws Exception {
     	
-    	if(true) throw new Exception("don't initialize unintentionally!");
+    	if(true) throw new Exception("***************************** don't initialize unintentionally! **************************************");
     	
     	this.template = new JdbcTemplate(dataSource);
     	this.transactionTemplate = new TransactionTemplate(txManager);
+    	
     	
     	
         Assert.notNull(mutableAclService, "mutableAclService required");
@@ -158,8 +161,22 @@ public class DataSourcePopulator {
 
         // Create acl_object_identity rows (and also acl_class rows as needed
         
+        
+        
+		final ObjectIdentity objectIdentity6 = new ObjectIdentityImpl(ApiBundle.class, "6BundleStringIdentifier");
+		
+		transactionTemplate.execute(new TransactionCallback<Object>() {
+			public Object doInTransaction(TransactionStatus arg0) {
+				mutableAclService.createAcl(objectIdentity6);
+
+				return null;
+			}
+		});
+        
+        
         for(int i=1; i<=3; i++){
-			final ObjectIdentity objectIdentity = new ObjectIdentityImpl(ApiBundle.class, new Long(i));
+//			final ObjectIdentity objectIdentity = new ObjectIdentityImpl(ApiBundle.class, new Long(i));
+        	final ObjectIdentity objectIdentity = new ObjectIdentityImpl(ApiBundle.class, i+"");
 			
 			transactionTemplate.execute(new TransactionCallback<Object>() {
 				public Object doInTransaction(TransactionStatus arg0) {
@@ -171,20 +188,21 @@ public class DataSourcePopulator {
         }
 
         // Now grant some permissions
-        grantPermissions(1, "somas", BasePermission.ADMINISTRATION);
-        grantPermissions(1, "user2", BasePermission.READ);
+        grantPermissions(1+"", "somas", BasePermission.ADMINISTRATION);
+        grantPermissions(1+"", "user2", BasePermission.READ);
         
-        grantPermissions(2, "somas", BasePermission.WRITE);
-        grantPermissions(2, "somas", BasePermission.READ);
+        grantPermissions(2+"", "somas", BasePermission.WRITE);
+        grantPermissions(2+"", "somas", BasePermission.READ);
         
-        grantPermissions(3, "user2", BasePermission.WRITE);
+        grantPermissions(3+"", "user2", BasePermission.WRITE);
         
-        
-        
+        grantPermissions("6BundleStringIdentifier", "somas", BasePermission.WRITE);
 
-		changeOwner(1, "somas");
-		changeOwner(2, "somas");
-		changeOwner(3, "somas");
+        
+		changeOwner(1+"", "somas");
+		changeOwner(2+"", "somas");
+		changeOwner(3+"", "somas");
+		changeOwner("6BundleStringIdentifier", "somas");
 		
         SecurityContextHolder.clearContext();
     }
@@ -195,11 +213,24 @@ public class DataSourcePopulator {
         acl.insertAce(acl.getEntries().size(), permission, new PrincipalSid(recipientUsername), true);
         updateAclInTransaction(acl);
     }
+    
+    private void grantPermissions(String bundleNumber, String recipientUsername, Permission permission) {
+        AclImpl acl = (AclImpl) mutableAclService.readAclById(new ObjectIdentityImpl(ApiBundle.class, bundleNumber));
+        acl.insertAce(acl.getEntries().size(), permission, new PrincipalSid(recipientUsername), true);
+        updateAclInTransaction(acl);
+    }
 
 	
     private void changeOwner(int bundleNumber, String newOwnerUsername) {
-        AclImpl acl = (AclImpl) mutableAclService.readAclById(new ObjectIdentityImpl(ApiBundle.class,
-                    new Long(bundleNumber)));
+        AclImpl acl = (AclImpl) mutableAclService.readAclById(new ObjectIdentityImpl(ApiBundle.class, new Long(bundleNumber)));
+        acl.setOwner(new PrincipalSid(newOwnerUsername));
+        
+        updateAclInTransaction(acl);
+    }
+    
+    
+    private void changeOwner(String bundleNumber, String newOwnerUsername) {
+        AclImpl acl = (AclImpl) mutableAclService.readAclById(new ObjectIdentityImpl(ApiBundle.class, bundleNumber));
         acl.setOwner(new PrincipalSid(newOwnerUsername));
         
         updateAclInTransaction(acl);
