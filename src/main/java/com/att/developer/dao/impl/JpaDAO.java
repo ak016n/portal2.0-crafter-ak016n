@@ -57,7 +57,7 @@ public class JpaDAO<T> implements GenericDAO<T> {
 	}
 
 	public void delete(T entityBean) {
-		entityManager.remove(entityBean);
+		entityManager.remove(entityManager.merge(entityBean));
 	}
 
 	protected Object findIdValue(T entityBean) {
@@ -87,6 +87,7 @@ public class JpaDAO<T> implements GenericDAO<T> {
 				Object idValue = null;
 				try {
 					idValue = eachMethod.invoke(entityBean);
+					
 				} catch (Exception e) {
 					throwException(eachMethod, entityBean, e);
 				}
