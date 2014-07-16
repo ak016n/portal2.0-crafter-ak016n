@@ -1,12 +1,11 @@
 package com.att.developer.config;
 
 
-import java.util.UUID;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
-
-
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +29,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.util.Assert;
 
 import com.att.developer.bean.ApiBundle;
+import com.att.developer.security.CustomBasePermission;
 
 
 public class DataSourcePopulator {
@@ -159,25 +159,21 @@ public class DataSourcePopulator {
 //                + "@" + person[1].toLowerCase() + ".com');");
 //        }
 
+
         // Create acl_object_identity rows (and also acl_class rows as needed
         
-        
-        
-		final ObjectIdentity objectIdentity6 = new ObjectIdentityImpl(ApiBundle.class, "6BundleStringIdentifier");
-		
-		transactionTemplate.execute(new TransactionCallback<Object>() {
-			public Object doInTransaction(TransactionStatus arg0) {
-				mutableAclService.createAcl(objectIdentity6);
+        final ObjectIdentity objectIdentity1 = new ObjectIdentityImpl(ApiBundle.class, "1Bundle");
+        final ObjectIdentity objectIdentity2 = new ObjectIdentityImpl(ApiBundle.class, "2Bundle");
+        final ObjectIdentity objectIdentity3 = new ObjectIdentityImpl(ApiBundle.class, "3Bundle");
+        final ObjectIdentity objectIdentity6 = new ObjectIdentityImpl(ApiBundle.class, "6BundleStringIdentifier");
+		Set<ObjectIdentity> objIdentities = new HashSet<>();
+		objIdentities.add(objectIdentity1);
+		objIdentities.add(objectIdentity2);
+		objIdentities.add(objectIdentity3);
+		objIdentities.add(objectIdentity6);
 
-				return null;
-			}
-		});
-        
-        
-        for(int i=1; i<=3; i++){
-//			final ObjectIdentity objectIdentity = new ObjectIdentityImpl(ApiBundle.class, new Long(i));
-        	final ObjectIdentity objectIdentity = new ObjectIdentityImpl(ApiBundle.class, i+"");
-			
+		for(ObjectIdentity objectIdentity : objIdentities){
+
 			transactionTemplate.execute(new TransactionCallback<Object>() {
 				public Object doInTransaction(TransactionStatus arg0) {
 					mutableAclService.createAcl(objectIdentity);
@@ -185,23 +181,48 @@ public class DataSourcePopulator {
 					return null;
 				}
 			});
-        }
+
+		}
+        
+//		transactionTemplate.execute(new TransactionCallback<Object>() {
+//			public Object doInTransaction(TransactionStatus arg0) {
+//				mutableAclService.createAcl(objectIdentity6);
+//
+//				return null;
+//			}
+//		});
+        
+
+        
+        
+//        for(int i=1; i<=3; i++){
+//        	final ObjectIdentity objectIdentity = new ObjectIdentityImpl(ApiBundle.class, i+"");
+//			
+//			transactionTemplate.execute(new TransactionCallback<Object>() {
+//				public Object doInTransaction(TransactionStatus arg0) {
+//					mutableAclService.createAcl(objectIdentity);
+//	
+//					return null;
+//				}
+//			});
+//        }
 
         // Now grant some permissions
-        grantPermissions(1+"", "somas", BasePermission.ADMINISTRATION);
-        grantPermissions(1+"", "user2", BasePermission.READ);
+        grantPermissions("1Bundle", "somas", BasePermission.ADMINISTRATION);
+        grantPermissions("1Bundle", "user2", BasePermission.READ);
         
-        grantPermissions(2+"", "somas", BasePermission.WRITE);
-        grantPermissions(2+"", "somas", BasePermission.READ);
+//        grantPermissions(2+"", "somas", BasePermission.WRITE);
+//        grantPermissions(2+"", "somas", BasePermission.READ);
+        grantPermissions("2Bundle", "somas", CustomBasePermission.READ_WRITE);
         
-        grantPermissions(3+"", "user2", BasePermission.WRITE);
+        grantPermissions("3Bundle", "user2", BasePermission.WRITE);
         
         grantPermissions("6BundleStringIdentifier", "somas", BasePermission.WRITE);
 
         
-		changeOwner(1+"", "somas");
-		changeOwner(2+"", "somas");
-		changeOwner(3+"", "somas");
+		changeOwner("1Bundle", "somas");
+		changeOwner("2Bundle", "somas");
+		changeOwner("3Bundle", "somas");
 		changeOwner("6BundleStringIdentifier", "somas");
 		
         SecurityContextHolder.clearContext();
