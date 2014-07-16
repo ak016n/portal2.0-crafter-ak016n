@@ -1,7 +1,5 @@
 package com.att.developer.dao.impl;
 
-import org.hamcrest.MatcherAssert;
-
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -14,6 +12,7 @@ import javax.annotation.Resource;
 import javax.transaction.Transactional;
 
 import org.hamcrest.CoreMatchers;
+import org.hamcrest.MatcherAssert;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -70,5 +69,4 @@ public class JpaApiBundleDAOImplTest {
 		apiBundleDAO.delete(afterUpdate);
 		MatcherAssert.assertThat(apiBundleDAO.load(afterCreateApiBundle), CoreMatchers.nullValue());
 	}
-	
 }
