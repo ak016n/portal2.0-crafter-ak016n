@@ -58,6 +58,7 @@ public class JpaDAO<T> implements GenericDAO<T> {
 
 	public void delete(T entityBean) {
 		entityManager.remove(entityManager.merge(entityBean));
+		entityManager.flush();
 	}
 
 	protected Object findIdValue(T entityBean) {
