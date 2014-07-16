@@ -103,6 +103,7 @@ dependencies {
 	compile "org.openid4java:openid4java:0.9.8"
 	compile "javax.ws.rs:jsr311-api:1.1.1"
 	compile "jstl:jstl:1.2"
+	compile "org.apache.commons:commons-collections4:4.0"
 		
 	testCompile "junit:junit:4.11"
 	testCompile "org.mockito:mockito-all:1.9.5"

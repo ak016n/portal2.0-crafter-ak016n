@@ -14,7 +14,7 @@ public class EventLogBuilder {
 			eventLog.setActorId("Hofstadter");
 			eventLog.setActorType(ActorType.DEV_PROGRAM_USER);
 			eventLog.setImpactedUserId("kudrapali");
-			eventLog.setEventId(EventType.GLOBAL_SCOPED_PARAM_CHANGE);
+			eventLog.setEventType(EventType.GLOBAL_SCOPED_PARAM_CHANGE);
 			eventLog.setInfo("comment");
 			eventLog.setOrgId("big bang");
 			eventLog.setTransactionId("nimoy");
