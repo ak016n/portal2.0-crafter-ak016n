@@ -1,6 +1,6 @@
 package com.att.developer.controller;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.UUID;
 
 import javax.annotation.Resource;
@@ -53,7 +53,8 @@ public class ApiBundleController {
     	// Re-assign id
     	bundle.setId(id);
     	// Assign new date
-    	bundle.setStartDate(new Date());
+    	
+    	bundle.setStartDate(Instant.now());
     	if(comment != null){
     		bundle.setComments(comment);
     	}
@@ -116,8 +117,8 @@ public class ApiBundleController {
     	bundle.setId(bundleId);
     	bundle.setName("b " + bundleId);
     	bundle.setComments("some comment");
-    	bundle.setStartDate(new Date());
-    	bundle.setEndDate(new Date());
+    	bundle.setStartDate(Instant.now());
+    	bundle.setEndDate(Instant.now());
     	
     	
     	// Delegate to service

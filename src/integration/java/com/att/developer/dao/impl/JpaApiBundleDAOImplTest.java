@@ -42,7 +42,8 @@ public class JpaApiBundleDAOImplTest {
 		ApiBundle apiBundle = new ApiBundle(userId);
 		apiBundle.setName("b " + userId);
 		apiBundle.setComments("something nice");
-		apiBundle.setStartDate(Instant.now());
+		Instant nowStartDateCreate = Instant.now();
+		apiBundle.setStartDate(nowStartDateCreate);
 		apiBundleDAO.create(apiBundle);
 		
 		// read
@@ -54,16 +55,16 @@ public class JpaApiBundleDAOImplTest {
 		
 		// update
 		afterCreateApiBundle.setName("xb " + userId);
-		LocalDateTime nowLocal = LocalDateTime.now().plus(1, ChronoUnit.YEARS);
-//		afterCreateApiBundle.setStartDate(Instant.now().plus(365*24*60*60*10000, ChronoUnit.MILLIS));
-		afterCreateApiBundle.setStartDate(nowLocal.toInstant(ZoneOffset.ofHours(-8)));
+		
+		LocalDateTime nowLocalAdjusted = LocalDateTime.ofInstant(nowStartDateCreate, ZoneId.of("America/Los_Angeles")).plus(1, ChronoUnit.YEARS);
+		afterCreateApiBundle.setStartDate(nowLocalAdjusted.toInstant(ZoneOffset.ofHours(-8)));
 		ApiBundle afterUpdate = apiBundleDAO.update(afterCreateApiBundle);
 		MatcherAssert.assertThat(afterUpdate.getName(), CoreMatchers.equalTo(afterCreateApiBundle.getName()));
 		MatcherAssert.assertThat(afterUpdate.getStartDate(), CoreMatchers.equalTo(afterCreateApiBundle.getStartDate()));
 		
 		LocalDateTime localTimeAfterUpdate = LocalDateTime.ofInstant(afterUpdate.getStartDate(), ZoneId.of("America/Los_Angeles"));
 		
-		Assert.assertEquals(2015, localTimeAfterUpdate.get(ChronoField.YEAR));
+		Assert.assertTrue(LocalDateTime.ofInstant(nowStartDateCreate, ZoneId.of("America/Los_Angeles")).get(ChronoField.YEAR) < localTimeAfterUpdate.get(ChronoField.YEAR));
 		
 		// delete
 		apiBundleDAO.delete(afterUpdate);
