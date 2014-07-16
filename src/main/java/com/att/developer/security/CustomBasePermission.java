@@ -8,6 +8,7 @@ import org.springframework.security.acls.model.Permission;
  * Extension of the BasePermission class to allow for combination of permissions. 
  * 
  * You can either use the READ_WRITE combo or pass in a list of Permission objects to the instanceOf 
+ * which will instantiate a Permission object
  * 
  * @author so1234
  *
