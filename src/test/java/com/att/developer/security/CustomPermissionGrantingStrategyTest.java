@@ -103,6 +103,33 @@ public class CustomPermissionGrantingStrategyTest {
 	
 	
 	@Test
+	public void testIsGranted_readPermissionRequired_customBasePermission() throws Exception{
+		
+		AclImpl acl = Mockito.mock(AclImpl.class);
+		
+		AccessControlEntryImpl acesSomasAdmin = new AccessControlEntryImpl(9, acl, new PrincipalSid("somas"), CustomBasePermission.READ_WRITE, true, false, false);
+		List<AccessControlEntry> aces = new ArrayList<>();
+		aces.add(acesSomasAdmin);
+
+		Mockito.when(acl.getEntries()).thenReturn(aces);
+		
+		
+		List<Permission> requiredPermissions = new ArrayList<>(); 
+		requiredPermissions.add(BasePermission.READ);
+		List<Sid> sids = new ArrayList<>(2);
+		sids.add(new PrincipalSid("somas"));
+		sids.add(new GrantedAuthoritySid("ROLE_ADMINISTRATOR"));
+		
+			
+		boolean administrativeMode = false;
+		
+		boolean isGrantedActual = customPermissionGrantingStrategy.isGranted(acl, requiredPermissions, sids, administrativeMode);
+		
+		Assert.assertTrue("somas with READ_WRITE privileges should be granted access", isGrantedActual);
+	}
+	
+	
+	@Test
 	public void testIsGranted_writePermissionRequired() throws Exception{
 		
 		AclImpl acl = Mockito.mock(AclImpl.class);
@@ -140,7 +167,6 @@ public class CustomPermissionGrantingStrategyTest {
 		}
 		
 	}
-	
 	
 	@Test
 	public void testIsGranted_writePermissionRequired_userWithAdministrationPermission() throws Exception{

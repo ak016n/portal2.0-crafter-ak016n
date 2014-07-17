@@ -16,8 +16,10 @@
 <form:form modelAttribute="postAttribute" method="POST" action="${saveUrl}">
 	<table>
 		<tr>
-			<td><form:label path="message">Message:</form:label></td>
-			<td><form:input path="message"/></td>
+		 
+			<td><form:label path="comments">Comments:</form:label></td>
+			<td><form:input path="comments"/></td>
+					
 		</tr>
 	</table>
 	

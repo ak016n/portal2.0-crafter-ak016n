@@ -1,11 +1,12 @@
 package com.att.developer.controller;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.UUID;
 
 import javax.annotation.Resource;
 
 import org.apache.log4j.Logger;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -53,7 +54,8 @@ public class ApiBundleController {
     	// Re-assign id
     	bundle.setId(id);
     	// Assign new date
-    	bundle.setStartDate(new Date());
+    	
+    	bundle.setStartDate(Instant.now());
     	if(comment != null){
     		bundle.setComments(comment);
     	}
@@ -86,7 +88,8 @@ public class ApiBundleController {
      * to show this page if the client is unauthorized and because the new 
      * object doesn't have an id. The hasPermission requires an existing id!
      */
-	@PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    //TODO: Not working, is the Proxy running? Security context correct?
+	@PreAuthorize("hasAuthority('ROLE_ADMINISTRAXXXX')")
     @RequestMapping(value = "/add", method = RequestMethod.GET)
     public String getAdd(Model model) {
     	logger.debug("Received request to show add page");
@@ -98,10 +101,11 @@ public class ApiBundleController {
     	// Add source to model to help us determine the source of the JSP page
     	model.addAttribute("source", "Personal");
     	
-    	// This will resolve to /WEB-INF/jsp/crud-personal/addpage.jsp
-    	return "crud-personal/addpage";
+
+    	return "jsp/apiBundle/addpage.jsp";
 	}
     
+	
     /**
      * Saves a new post from the Add page and returns a result page.
      */
@@ -116,8 +120,8 @@ public class ApiBundleController {
     	bundle.setId(bundleId);
     	bundle.setName("b " + bundleId);
     	bundle.setComments("some comment");
-    	bundle.setStartDate(new Date());
-    	bundle.setEndDate(new Date());
+    	bundle.setStartDate(Instant.now());
+    	bundle.setEndDate(Instant.now());
     	
     	
     	// Delegate to service
@@ -137,8 +141,9 @@ public class ApiBundleController {
     	model.addAttribute("username", SecurityContextHolder.getContext().getAuthentication().getName());
     	
     	// This will resolve to /WEB-INF/jsp/crud-personal/resultpage.jsp
-    	return "crud-personal/resultpage";
+    	return "jsp/apiBundle/resultpage.jsp";
 	}
+    
     
     /**
      * Deletes an existing post and returns a result page.
@@ -170,7 +175,7 @@ public class ApiBundleController {
     	model.addAttribute("username", SecurityContextHolder.getContext().getAuthentication().getName());
     	
     	// This will resolve to /WEB-INF/jsp/crud-personal/resultpage.jsp
-    	return "crud-personal/resultpage";
+    	return "jsp/apiBundle/resultpage.jsp";
 	}
 	
 }
