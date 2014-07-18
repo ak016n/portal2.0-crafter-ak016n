@@ -4,8 +4,6 @@ package com.att.developer.config;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import javax.sql.DataSource;
 import javax.transaction.Transactional;
 
@@ -32,7 +30,6 @@ import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.util.Assert;
 
 import com.att.developer.bean.ApiBundle;
-import com.att.developer.dao.impl.JpaDAO;
 
 
 
