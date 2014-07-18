@@ -1,5 +1,6 @@
 package com.att.developer.bean;
 
+import java.time.Instant;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -41,12 +42,17 @@ public class User {
 		this.password = password;
 	}
 
-	public Date getLastUpdated() {
-		return lastUpdated;
+	public Instant getLastUpdated() {
+		return lastUpdated != null ? lastUpdated.toInstant() : null;
 	}
 
-	public void setLastUpdated(Date lastUpdated) {
-		this.lastUpdated = lastUpdated;
+	public void setLastUpdated(Instant lastUpdated) {
+		if(lastUpdated != null){
+			this.lastUpdated = Date.from(lastUpdated);
+		}
+		else{
+			this.lastUpdated = null;
+		}
 	}
 
 }

@@ -1,6 +1,6 @@
 package com.att.developer.bean.builder;
 
-import java.util.Date;
+import java.time.Instant;
 
 import com.att.developer.bean.User;
 
@@ -11,7 +11,7 @@ public class UserBuilder {
 			user.setId(java.util.UUID.randomUUID().toString());
 			user.setLogin("sheldon");
 			user.setPassword("bazzinga");
-			user.setLastUpdated(new Date());
+			user.setLastUpdated(Instant.now());
 		}
 		
 		/**
@@ -37,7 +37,7 @@ public class UserBuilder {
 			return this;
 		}
 
-		public UserBuilder withLastUpdated(Date lastUpdated) {
+		public UserBuilder withLastUpdated(Instant lastUpdated) {
 			user.setLastUpdated(lastUpdated);
 			return this;
 		}
