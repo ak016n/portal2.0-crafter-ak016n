@@ -103,8 +103,13 @@ public class User implements Serializable {
 		return lastUpdated;
 	}
 
-	public void setLastUpdated(Date lastUpdated) {
-		this.lastUpdated = lastUpdated;
+	public void setLastUpdated(Instant lastUpdated) {
+		if(lastUpdated != null){
+			this.lastUpdated = Date.from(lastUpdated);
+		}
+		else{
+			this.lastUpdated = null;
+		}
 	}
 
 	public List<Organization> getOrganizations() {

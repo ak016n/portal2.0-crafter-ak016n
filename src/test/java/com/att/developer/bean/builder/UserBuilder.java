@@ -1,6 +1,6 @@
 package com.att.developer.bean.builder;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -45,7 +45,7 @@ public class UserBuilder {
 			return this;
 		}
 
-		public UserBuilder withLastUpdated(Date lastUpdated) {
+		public UserBuilder withLastUpdated(Instant lastUpdated) {
 			user.setLastUpdated(lastUpdated);
 			return this;
 		}
