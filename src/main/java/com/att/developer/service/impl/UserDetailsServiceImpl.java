@@ -3,6 +3,7 @@ package com.att.developer.service.impl;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.GrantedAuthority;
@@ -10,15 +11,21 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Component;
 
 import com.att.developer.bean.LoginSecurityDetails;
+import com.att.developer.bean.Role;
+import com.att.developer.bean.SessionUser;
 import com.att.developer.bean.User;
 import com.att.developer.bean.UserState;
 import com.att.developer.typelist.UserStateType;
 
+@Component("attUserDetailsService")
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     private static final String USER_NOT_FOUND_MESSAGE = "User not found.";
+    
+    @Autowired
     private LoginSecurityService loginSecurityService;
 
     public void setLoginSecurityService(LoginSecurityService loginSecurityService) {
@@ -69,9 +76,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             authorities.add(new SimpleGrantedAuthority(userState.getState().name()));
         }
         
+        for(Role role : portalUser.getRoles()) {
+        	authorities.add(new SimpleGrantedAuthority(role.getName()));
+        }
+        
         //TODO hierarchical organization state
-        org.springframework.security.core.userdetails.User user = new org.springframework.security.core.userdetails.User(
-                username, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);
+        SessionUser user = new SessionUser(username, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities, portalUser);
         return user;
     }
 

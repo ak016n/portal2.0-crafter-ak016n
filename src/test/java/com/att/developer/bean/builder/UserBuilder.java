@@ -16,6 +16,7 @@ public class UserBuilder {
 			user.setId(java.util.UUID.randomUUID().toString());
 			user.setLogin("sheldon");
 			user.setPassword("bazzinga");
+			user.setEmail("sheldon@att.com");
 			userStates.add(new UserStateBuilder().withState(UserStateType.BASIC).build());
 			user.setUserStates(userStates);
 			user.setLastUpdated(new Date());

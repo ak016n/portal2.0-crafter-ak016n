@@ -1,5 +1,6 @@
 package com.att.developer.config;
 
+import javax.annotation.Resource;
 import javax.inject.Inject;
 import javax.sql.DataSource;
 
@@ -28,7 +29,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.servlet.configuration.EnableWebMvcSecurity;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
+import com.att.developer.security.AttPasswordEncoder;
 import com.att.developer.security.CustomAclLookupStrategy;
 import com.att.developer.security.CustomPermissionGrantingStrategy;
 
@@ -42,13 +45,15 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
 	@Inject
 	private DataSource dataSource;
 	
+	@Resource(name="attUserDetailsService")
+	private UserDetailsService userDetailsService;
+	
 	@Autowired
 	public void configureGlobal(AuthenticationManagerBuilder auth)
 			throws Exception {
 		auth
-			.inMemoryAuthentication()
-			.withUser("somas").password("password123").roles("ADMINISTRATOR").and()
-			.withUser("user2").password("password123").roles("USER");
+			.userDetailsService(userDetailsService)
+			.passwordEncoder(new AttPasswordEncoder());
 		
 	}
 	
@@ -56,12 +61,14 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
 		http
 			.authorizeRequests()
 				.antMatchers("/views/home.html").permitAll()
-				.antMatchers("/admin/**", "/views/adminConsole/**").hasRole("ADMINISTRATOR")
+				.antMatchers("/resources/**").permitAll()
+				.antMatchers("/admin/**", "/views/adminConsole/**").hasRole("SYS_ADMIN")
 				.anyRequest().authenticated()
 				.and()
 			.formLogin()
-				.and()
-			.httpBasic(); 
+				.loginPage("/auth/login")
+				.defaultSuccessUrl("/auth/loginsuccess")
+				.permitAll();
 		
 		http.csrf().disable();
 		

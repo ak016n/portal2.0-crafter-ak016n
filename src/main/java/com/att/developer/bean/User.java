@@ -1,5 +1,6 @@
 package com.att.developer.bean;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -8,8 +9,10 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
@@ -22,7 +25,9 @@ import com.att.developer.typelist.UserStateType;
 
 @Entity
 @Table(name = "user")
-public class User {
+public class User implements Serializable {
+	private static final long serialVersionUID = -4130170797253136478L;
+	
 	@Id
 	private String id;
 	private String login;
@@ -42,11 +47,15 @@ public class User {
     @ManyToMany(cascade=CascadeType.MERGE, mappedBy="users")
 	private List<Organization> organizations;
     
-	@OneToMany(cascade=CascadeType.ALL)
+	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
     @JoinColumn(name = "user_id")
 	private Set<UserState> userStates;
 	
-    public User() {
+	@OneToMany(cascade={CascadeType.PERSIST, CascadeType.MERGE}, fetch=FetchType.EAGER)
+	@JoinTable(name = "user_role_relationship", joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")}, inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")})
+	private Set<Role> roles;
+	
+	public User() {
 		this.setId(java.util.UUID.randomUUID().toString());
     }
     
@@ -136,6 +145,14 @@ public class User {
 			}
 		}
 		return status;
+	}
+	
+    public Set<Role> getRoles() {
+		return roles;
+	}
+
+	public void setRoles(Set<Role> roles) {
+		this.roles = roles;
 	}
 	
 	public String toString() {

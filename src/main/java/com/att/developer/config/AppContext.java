@@ -158,14 +158,15 @@ public class AppContext {
 	}
 	
 	@Bean
+	@DependsOn({"txManager", "pooledConnectionFactory"})
 	public DefaultMessageListenerContainer eventLogMessageListenerContainer() throws Throwable {
 		DefaultMessageListenerContainer messageListenerContainer = new DefaultMessageListenerContainer();
-		messageListenerContainer.setConnectionFactory(connectionFactory());
+		messageListenerContainer.setConnectionFactory(pooledConnectionFactory());
 		messageListenerContainer.setDestinationName(EVENT_QUEUE_DESTINATION);
 		MessageListenerAdapter messageListenerAdapter = new MessageListenerAdapter(eventLogConsumer);
 		messageListenerContainer.setMessageListener(messageListenerAdapter);
 		messageListenerContainer.setSessionTransacted(true);
-		//messageListenerContainer.setTransactionManager(txManager());
+		messageListenerContainer.setTransactionManager(txManager());
 		return messageListenerContainer;
 	}
 	
