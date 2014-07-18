@@ -1,17 +1,17 @@
-CREATE TABLE acl_sid (
+CREATE TABLE IF NOT EXISTS dev_core.acl_sid (
     id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     principal BOOLEAN NOT NULL,
     sid VARCHAR(100) NOT NULL,
     UNIQUE KEY unique_acl_sid (sid, principal)
 );
 
-CREATE TABLE acl_class (
+CREATE TABLE IF NOT EXISTS dev_core.acl_class (
     id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     class VARCHAR(100) NOT NULL,
     UNIQUE KEY uk_acl_class (class)
 );
 
-CREATE TABLE acl_object_identity (
+CREATE TABLE IF NOT EXISTS dev_core.acl_object_identity (
     id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     object_id_class BIGINT UNSIGNED NOT NULL,
     object_id_identity VARCHAR(80) NOT NULL,
@@ -24,7 +24,7 @@ CREATE TABLE acl_object_identity (
     CONSTRAINT fk_acl_object_identity_owner FOREIGN KEY (owner_sid) REFERENCES acl_sid (id)
 );
 
-CREATE TABLE acl_entry (
+CREATE TABLE IF NOT EXISTS dev_core.acl_entry (
     id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     acl_object_identity BIGINT UNSIGNED NOT NULL,
     ace_order INTEGER NOT NULL,
