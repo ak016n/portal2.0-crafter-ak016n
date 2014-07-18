@@ -1,6 +1,5 @@
 package com.att.developer.bean.builder;
 
-import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -19,7 +18,6 @@ public class UserBuilder {
 			user.setEmail("sheldon@att.com");
 			userStates.add(new UserStateBuilder().withState(UserStateType.BASIC).build());
 			user.setUserStates(userStates);
-			user.setLastUpdated(new Date());
 		}
 		
 		/**
@@ -42,11 +40,6 @@ public class UserBuilder {
 
 		public UserBuilder withPassword(String password) {
 			user.setPassword(password);
-			return this;
-		}
-
-		public UserBuilder withLastUpdated(Instant lastUpdated) {
-			user.setLastUpdated(lastUpdated);
 			return this;
 		}
 

@@ -1,6 +1,7 @@
 package com.att.developer.bean;
 
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -104,10 +105,9 @@ public class User implements Serializable {
 	}
 
 	public void setLastUpdated(Instant lastUpdated) {
-		if(lastUpdated != null){
+		if (lastUpdated != null) {
 			this.lastUpdated = Date.from(lastUpdated);
-		}
-		else{
+		} else {
 			this.lastUpdated = null;
 		}
 	}
