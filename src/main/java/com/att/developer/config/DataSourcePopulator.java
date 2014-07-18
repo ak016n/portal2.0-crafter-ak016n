@@ -5,13 +5,16 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.sql.DataSource;
 import javax.transaction.Transactional;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.acls.domain.AclImpl;
 import org.springframework.security.acls.domain.BasePermission;
+import org.springframework.security.acls.domain.CumulativePermission;
 import org.springframework.security.acls.domain.ObjectIdentityImpl;
 import org.springframework.security.acls.domain.PrincipalSid;
 import org.springframework.security.acls.model.MutableAcl;
@@ -29,12 +32,15 @@ import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.util.Assert;
 
 import com.att.developer.bean.ApiBundle;
-import com.att.developer.security.CustomBasePermission;
+import com.att.developer.dao.impl.JpaDAO;
+
 
 
 public class DataSourcePopulator {
     //~ Instance fields ================================================================================================
 
+	private static final Logger logger = Logger.getLogger(DataSourcePopulator.class);
+	
 	@Autowired
 	private DataSource dataSource;
 	
@@ -213,7 +219,10 @@ public class DataSourcePopulator {
         
 //        grantPermissions(2+"", "somas", BasePermission.WRITE);
 //        grantPermissions(2+"", "somas", BasePermission.READ);
-        grantPermissions("2Bundle", "somas", CustomBasePermission.READ_WRITE);
+//        grantPermissions("2Bundle", "somas", CustomBasePermission.READ_WRITE);
+        CumulativePermission cumulativePermission = new CumulativePermission();
+        cumulativePermission.set(BasePermission.WRITE).set(BasePermission.READ);
+        grantPermissions("2Bundle", "somas", cumulativePermission);
         
         grantPermissions("3Bundle", "user2", BasePermission.WRITE);
         
@@ -261,12 +270,22 @@ public class DataSourcePopulator {
 		transactionTemplate.execute(new TransactionCallback<Object>() {
 			public Object doInTransaction(TransactionStatus arg0) {
 				mutableAclService.updateAcl(acl);
-
 				return null;
+				
 			}
 		});
 	}
 	
+	
+//	@PreDestroy
+//	public void destroy(){
+//		this.deletePermissions("6BundleStringIdentifier");
+//	}
+
+	private void deletePermissions(String bundleNumber){
+		logger.warn("deleting this bundleNumber ********************* " + bundleNumber);
+		mutableAclService.deleteAcl(new ObjectIdentityImpl(ApiBundle.class, bundleNumber), false);
+	}
 	
     public void setDataSource(DataSource dataSource) {
         this.template = new JdbcTemplate(dataSource);

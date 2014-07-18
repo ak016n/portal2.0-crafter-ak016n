@@ -13,6 +13,7 @@ import org.springframework.security.acls.domain.AccessControlEntryImpl;
 import org.springframework.security.acls.domain.AclImpl;
 import org.springframework.security.acls.domain.AuditLogger;
 import org.springframework.security.acls.domain.BasePermission;
+import org.springframework.security.acls.domain.CumulativePermission;
 import org.springframework.security.acls.domain.GrantedAuthoritySid;
 import org.springframework.security.acls.domain.PrincipalSid;
 import org.springframework.security.acls.model.AccessControlEntry;
@@ -106,8 +107,8 @@ public class CustomPermissionGrantingStrategyTest {
 	public void testIsGranted_readPermissionRequired_customBasePermission() throws Exception{
 		
 		AclImpl acl = Mockito.mock(AclImpl.class);
-		
-		AccessControlEntryImpl acesSomasAdmin = new AccessControlEntryImpl(9, acl, new PrincipalSid("somas"), CustomBasePermission.READ_WRITE, true, false, false);
+		CumulativePermission cumulativePermission = new CumulativePermission().set(BasePermission.READ).set(BasePermission.WRITE);
+		AccessControlEntryImpl acesSomasAdmin = new AccessControlEntryImpl(9, acl, new PrincipalSid("somas"), cumulativePermission, true, false, false);
 		List<AccessControlEntry> aces = new ArrayList<>();
 		aces.add(acesSomasAdmin);
 
@@ -207,5 +208,6 @@ public class CustomPermissionGrantingStrategyTest {
 		
 		Assert.assertTrue("somas with Administration privileges should be granted access", isGrantedActual);
 	}
+
 
 }
