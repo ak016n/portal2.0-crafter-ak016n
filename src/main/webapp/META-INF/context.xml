@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Context>
+<Context sessionCookieName="DEV_PORTAL_SESSION_SID">
 	<Resource name="jdbc/devcore" auth="Container"
 		driverClassName="com.mysql.jdbc.Driver" 
 		username="dev_core"
@@ -29,7 +29,7 @@
 	</Resource>
 	
 	<Resource name="jms/ConnectionFactory" auth="Container"
-		type="org.apache.activemq.ActiveMQXAConnectionFactory" description="JMS Connection Factory"
+		type="org.apache.activemq.ActiveMQConnectionFactory" description="JMS Connection Factory"
 		factory="org.apache.activemq.jndi.JNDIReferenceFactory" brokerURL="vm://localhost"
 		brokerName="LocalActiveMQBroker" useEmbeddedBroker="true" maximumRedeliveries="5"/>
 </Context>

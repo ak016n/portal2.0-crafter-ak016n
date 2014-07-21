@@ -9,6 +9,9 @@ import javax.inject.Inject;
 import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,9 +23,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.att.developer.bean.AttProperties;
 import com.att.developer.bean.ServerSideError;
 import com.att.developer.bean.ServerSideErrors;
+import com.att.developer.bean.SessionUser;
+import com.att.developer.bean.User;
 import com.att.developer.exception.DAOException;
 import com.att.developer.exception.DuplicateDataException;
 import com.att.developer.exception.ServerSideException;
+import com.att.developer.exception.UnsupportedOperationException;
 import com.att.developer.service.GlobalScopedParamService;
 import com.att.developer.util.FaultUtils;
 
@@ -131,7 +137,8 @@ public class AdminController {
 			throw new ServerSideException(errorColl);
 		} else {
 			try {
-				lclAttProperties = globalScopedParamService.createProperties(attProperties, principal.getName());
+				User user = getUserFromSecurityContext();
+				lclAttProperties = globalScopedParamService.createProperties(attProperties, (user != null) ? user.getId() : principal.getName());
 			} catch (DuplicateDataException e) {
 				ServerSideError error = new ServerSideError.Builder().id("ssGeneralError").message("Record already exist. Please use update").build();
 				throw new ServerSideException(errorColl.add(error));
@@ -155,7 +162,7 @@ public class AdminController {
 		} else {
 			try {
 				lclAttProperties = globalScopedParamService.updateProperties(attProperties);
-			} catch (DAOException e) {
+			} catch (DAOException | UnsupportedOperationException e) {
 				ServerSideError error = new ServerSideError.Builder().id("ssGeneralError").message("Error updating record. Reason: " + e.getMessage()).build();
 				throw new ServerSideException(errorColl.add(error));
 			}
@@ -181,5 +188,15 @@ public class AdminController {
 		}
 		
 		return lclAttProperties;
+    }
+    
+    private User getUserFromSecurityContext() {
+    	User user = null;
+    	Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    	if(!(auth instanceof AnonymousAuthenticationToken)) {
+    		SessionUser userDetails = (SessionUser) auth.getPrincipal();
+    		user = userDetails.getUser();
+    	}
+    	return user;
     }
 }

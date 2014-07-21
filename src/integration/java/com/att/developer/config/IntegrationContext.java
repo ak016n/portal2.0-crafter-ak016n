@@ -60,6 +60,7 @@ public class IntegrationContext {
 			private static final long serialVersionUID = 4240657154170582110L;
 			{ // Hibernate Specific:
 				setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL5Dialect");
+				setProperty("hibernate.show_sql", "true");
 			}
 		};
 	}

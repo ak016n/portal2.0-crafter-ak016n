@@ -1,17 +1,23 @@
 package com.att.developer.bean.builder;
 
-import java.time.Instant;
+import java.util.HashSet;
+import java.util.Set;
 
 import com.att.developer.bean.User;
+import com.att.developer.bean.UserState;
+import com.att.developer.typelist.UserStateType;
 
 public class UserBuilder {
 		private User user = new User();
+		private Set<UserState> userStates = new HashSet<>();
 
 		public UserBuilder() {
 			user.setId(java.util.UUID.randomUUID().toString());
 			user.setLogin("sheldon");
 			user.setPassword("bazzinga");
-			user.setLastUpdated(Instant.now());
+			user.setEmail("sheldon@att.com");
+			userStates.add(new UserStateBuilder().withState(UserStateType.BASIC).build());
+			user.setUserStates(userStates);
 		}
 		
 		/**
@@ -37,11 +43,13 @@ public class UserBuilder {
 			return this;
 		}
 
-		public UserBuilder withLastUpdated(Instant lastUpdated) {
-			user.setLastUpdated(lastUpdated);
+		public UserBuilder withState(UserStateType userStateType) {
+			UserState tempUserState = new UserState();
+			tempUserState.setState(userStateType);
+			userStates.add(tempUserState);
 			return this;
 		}
-
+		
 		public User build() {
 			return user;
 		}

@@ -31,8 +31,8 @@ public class EventLog implements Serializable {
 	@Column(name = "org_id")
 	private String orgId;
 
-	@Column(name = "event_id")
-	private Integer eventId;
+	@Column(name = "event_type")
+	private Integer eventType;
 
 	private String info;
 
@@ -56,7 +56,7 @@ public class EventLog implements Serializable {
 		this.actorId = actorId;
 		this.impactedUserId = impactedUserId;
 		this.orgId = orgId;
-		if(eventType != null) this.eventId =  eventType.getId();
+		if(eventType != null) this.eventType =  eventType.getId();
 		this.info = info;
 		if(actorType != null) this.actorType = actorType.getId();
 		this.transactionId = transactionId;
@@ -94,12 +94,12 @@ public class EventLog implements Serializable {
 		this.orgId = orgId;
 	}
 
-	public Integer getEventId() {
-		return eventId;
+	public EventType getEventType() {
+		return EventType.getEnumValue(eventType);
 	}
 
-	public void setEventId(EventType eventType) {
-		if(eventType != null) this.eventId =  eventType.getId();
+	public void setEventType(EventType eventType) {
+		if(eventType != null) this.eventType =  eventType.getId();
 	}
 
 	public String getInfo() {
@@ -139,7 +139,7 @@ public class EventLog implements Serializable {
 				.append("impactedUserId", this.impactedUserId)
 				.append("actorId", this.actorId)
 				.append("actorType", this.actorType)
-				.append("eventId", this.eventId).append("info", this.info)
+				.append("eventId", this.eventType).append("info", this.info)
 				.append("transactionId", this.transactionId)
 				.append("createdOn", this.createdOn).append("id", this.id)
 				.toString();

@@ -247,7 +247,7 @@ public class GlobalScopedParamServiceImpl implements GlobalScopedParamService {
 		AttProperties lclAttProperties = null;
 		try {
 			lclAttProperties = attPropertiesDAO.create(attProperties);
-			audit(attProperties, actor);
+			createEvent(attProperties, actor);
 		} catch (PersistenceException e) {
 			if(e.getCause() != null && e.getCause().getCause() != null 
 					&& e.getCause().getCause() instanceof com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException) {
@@ -259,7 +259,7 @@ public class GlobalScopedParamServiceImpl implements GlobalScopedParamService {
 		return lclAttProperties;
 	}
 
-	private void audit(AttProperties attProperties, String actor) {
+	private void createEvent(AttProperties attProperties, String actor) {
 		EventLog eventLog = new EventLog(actor, null, null, EventType.GLOBAL_SCOPED_PARAM_CHANGE, attProperties.toString(), ActorType.DEV_PROGRAM_USER, null);
 		eventTrackingService.globalPropertiesChangeEvent(eventLog);
 	}

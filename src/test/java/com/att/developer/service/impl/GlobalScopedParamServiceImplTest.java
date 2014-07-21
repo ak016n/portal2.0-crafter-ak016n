@@ -258,5 +258,4 @@ public class GlobalScopedParamServiceImplTest {
 		attProperties.setDeleted(true);
 		Mockito.verify(mockAttPropertiesDAO, Mockito.atMost(1)).update(attProperties);
 	}
-
 }

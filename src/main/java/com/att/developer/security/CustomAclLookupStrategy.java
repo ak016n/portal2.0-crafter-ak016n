@@ -586,7 +586,8 @@ public final class CustomAclLookupStrategy implements LookupStrategy {
     }
 
     private class StubAclParent implements Acl {
-        private final Long id;
+		private static final long serialVersionUID = -6645010224481593809L;
+		private final Long id;
 
         public StubAclParent(Long id) {
             this.id = id;

@@ -1,0 +1,3 @@
+ALTER TABLE dev_core.user ADD email VARCHAR(100) NOT NULL;
+
+COMMIT;
