@@ -27,6 +27,7 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.jta.JtaTransactionManager;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import com.atomikos.icatch.config.UserTransactionService;
 import com.atomikos.icatch.config.UserTransactionServiceImp;
@@ -158,15 +159,21 @@ public class AppContext {
 	}
 	
 	@Bean
+	@DependsOn({"txManager", "pooledConnectionFactory"})
 	public DefaultMessageListenerContainer eventLogMessageListenerContainer() throws Throwable {
 		DefaultMessageListenerContainer messageListenerContainer = new DefaultMessageListenerContainer();
-		messageListenerContainer.setConnectionFactory(connectionFactory());
+		messageListenerContainer.setConnectionFactory(pooledConnectionFactory());
 		messageListenerContainer.setDestinationName(EVENT_QUEUE_DESTINATION);
 		MessageListenerAdapter messageListenerAdapter = new MessageListenerAdapter(eventLogConsumer);
 		messageListenerContainer.setMessageListener(messageListenerAdapter);
 		messageListenerContainer.setSessionTransacted(true);
-		//messageListenerContainer.setTransactionManager(txManager());
+		messageListenerContainer.setTransactionManager(txManager());
 		return messageListenerContainer;
 	}
 	
+	
+	@Bean 
+	public TransactionTemplate transactionTemplate() throws Throwable{
+		return new TransactionTemplate(this.txManager());
+	}
 }

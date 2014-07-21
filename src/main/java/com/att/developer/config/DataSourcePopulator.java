@@ -73,7 +73,7 @@ public class DataSourcePopulator {
     @Transactional
     public void initialize() throws Exception {
     	
-    	if(true) throw new Exception("***************************** don't initialize unintentionally! **************************************");
+//    	if(true) throw new Exception("***************************** don't initialize unintentionally! **************************************");
     	
     	this.template = new JdbcTemplate(dataSource);
     	this.transactionTemplate = new TransactionTemplate(txManager);

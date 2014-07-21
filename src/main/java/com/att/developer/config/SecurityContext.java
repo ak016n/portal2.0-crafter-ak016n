@@ -1,5 +1,6 @@
 package com.att.developer.config;
 
+import javax.annotation.Resource;
 import javax.inject.Inject;
 import javax.sql.DataSource;
 
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.ehcache.EhCacheFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.access.PermissionCacheOptimizer;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
@@ -28,9 +30,12 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.servlet.configuration.EnableWebMvcSecurity;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
+import com.att.developer.security.AttPasswordEncoder;
 import com.att.developer.security.CustomAclLookupStrategy;
 import com.att.developer.security.CustomPermissionGrantingStrategy;
+import com.att.developer.security.PermissionManagerImpl;
 
 
 @Configuration
@@ -42,13 +47,15 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
 	@Inject
 	private DataSource dataSource;
 	
+	@Resource(name="attUserDetailsService")
+	private UserDetailsService userDetailsService;
+	
 	@Autowired
 	public void configureGlobal(AuthenticationManagerBuilder auth)
 			throws Exception {
 		auth
-			.inMemoryAuthentication()
-			.withUser("somas").password("password123").roles("ADMINISTRATOR").and()
-			.withUser("user2").password("password123").roles("USER");
+			.userDetailsService(userDetailsService)
+			.passwordEncoder(new AttPasswordEncoder());
 		
 	}
 	
@@ -56,12 +63,14 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
 		http
 			.authorizeRequests()
 				.antMatchers("/views/home.html").permitAll()
-				.antMatchers("/admin/**", "/views/adminConsole/**").hasRole("ADMINISTRATOR")
+				.antMatchers("/resources/**").permitAll()
+				.antMatchers("/admin/**", "/views/adminConsole/**").hasRole("SYS_ADMIN")
 				.anyRequest().authenticated()
 				.and()
 			.formLogin()
-				.and()
-			.httpBasic(); 
+				.loginPage("/auth/login")
+				.defaultSuccessUrl("/auth/loginsuccess")
+				.permitAll();
 		
 		http.csrf().disable();
 		
@@ -84,7 +93,6 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
 	
 	
 	@Bean 
-	
 	public JdbcMutableAclService aclService(){
 		JdbcMutableAclService aclService = new JdbcMutableAclService(dataSource, basicLookupStrategy(), aclCache());
 		
@@ -120,14 +128,14 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
 		return new AclAuthorizationStrategyImpl(new SimpleGrantedAuthority("ADMINISTRATOR"));
 	}
 	
+
 	
 	@Bean
-	public DataSourcePopulator dataSourcePopulator(){
-		return new DataSourcePopulator();
+	public JdbcTemplate jdbcTemplate(){
+		return new JdbcTemplate(this.dataSource);
 	}
-	
-	
 
+	
 	@Bean
 	protected PermissionEvaluator permissionEvaluator() {
 		return new AclPermissionEvaluator(aclService());
