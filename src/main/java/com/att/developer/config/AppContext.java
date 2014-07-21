@@ -27,6 +27,7 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.jta.JtaTransactionManager;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import com.atomikos.icatch.config.UserTransactionService;
 import com.atomikos.icatch.config.UserTransactionServiceImp;
@@ -170,4 +171,9 @@ public class AppContext {
 		return messageListenerContainer;
 	}
 	
+	
+	@Bean 
+	public TransactionTemplate transactionTemplate() throws Throwable{
+		return new TransactionTemplate(this.txManager());
+	}
 }

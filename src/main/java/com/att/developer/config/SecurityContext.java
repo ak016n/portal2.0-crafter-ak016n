@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.ehcache.EhCacheFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.access.PermissionCacheOptimizer;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
@@ -34,6 +35,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import com.att.developer.security.AttPasswordEncoder;
 import com.att.developer.security.CustomAclLookupStrategy;
 import com.att.developer.security.CustomPermissionGrantingStrategy;
+import com.att.developer.security.PermissionManagerImpl;
 
 
 @Configuration
@@ -91,7 +93,6 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
 	
 	
 	@Bean 
-	
 	public JdbcMutableAclService aclService(){
 		JdbcMutableAclService aclService = new JdbcMutableAclService(dataSource, basicLookupStrategy(), aclCache());
 		
@@ -127,14 +128,14 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
 		return new AclAuthorizationStrategyImpl(new SimpleGrantedAuthority("ADMINISTRATOR"));
 	}
 	
+
 	
 	@Bean
-	public DataSourcePopulator dataSourcePopulator(){
-		return new DataSourcePopulator();
+	public JdbcTemplate jdbcTemplate(){
+		return new JdbcTemplate(this.dataSource);
 	}
-	
-	
 
+	
 	@Bean
 	protected PermissionEvaluator permissionEvaluator() {
 		return new AclPermissionEvaluator(aclService());

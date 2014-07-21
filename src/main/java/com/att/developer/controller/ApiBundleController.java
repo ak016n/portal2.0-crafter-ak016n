@@ -1,12 +1,16 @@
 package com.att.developer.controller;
 
 import java.time.Instant;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.annotation.Resource;
 
 import org.apache.log4j.Logger;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.acls.domain.BasePermission;
+import org.springframework.security.acls.domain.CumulativePermission;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.att.developer.bean.ApiBundle;
+import com.att.developer.bean.User;
+import com.att.developer.security.PermissionManager;
 import com.att.developer.service.ApiBundleService;
 import com.att.developer.service.impl.GlobalScopedParamServiceImpl;
 
@@ -27,6 +33,9 @@ public class ApiBundleController {
 	
 	@Resource
 	private ApiBundleService apiBundleService;
+	
+	@Resource
+	private PermissionManager permissionManager;
     
 	@RequestMapping(value = "/edit", method = RequestMethod.GET)
     public String getEdit(@RequestParam(value="id", required=true) String id, Model model) {
@@ -122,9 +131,12 @@ public class ApiBundleController {
     	bundle.setStartDate(Instant.now());
     	bundle.setEndDate(Instant.now());
     	
+    	User user = new User();
+    	user.setLogin(SecurityContextHolder.getContext().getAuthentication().getName());
+    	user.setId(SecurityContextHolder.getContext().getAuthentication().getName());
     	
     	// Delegate to service
-    	if (apiBundleService.add(bundle) != null) {
+    	if (apiBundleService.create(bundle, user) != null) {
         	// Success. Add result to model
         	model.addAttribute("result", "Entry has been added successfully!");
     	} else {
@@ -176,5 +188,46 @@ public class ApiBundleController {
     	// This will resolve to /WEB-INF/jsp/crud-personal/resultpage.jsp
     	return "jsp/apiBundle/resultpage.jsp";
 	}
+    
+    
+    @RequestMapping(value="/initialize", method=RequestMethod.GET)
+    public String initialize(Model model){
+    	
+    	model.addAttribute("source", "Initialize");
+    	model.addAttribute("role", SecurityContextHolder.getContext().getAuthentication().getAuthorities());
+    	model.addAttribute("username", SecurityContextHolder.getContext().getAuthentication().getName());
+
+        // Create acl_object_identity rows (and also acl_class rows as needed)
+		Set<String> objIdentitifiers = new HashSet<>();
+		objIdentitifiers.add("1Bundle");
+		objIdentitifiers.add("2Bundle");
+		objIdentitifiers.add("3Bundle");
+		objIdentitifiers.add("6BundleStringIdentifier");
+
+		for(String identifier : objIdentitifiers){
+			this.permissionManager.createAcl(ApiBundle.class, identifier);
+		}
+        
+        // Now grant some permissions
+		permissionManager.grantPermissions(ApiBundle.class, "6BundleStringIdentifier",  "somas", BasePermission.WRITE);
+		
+		permissionManager.grantPermissions(ApiBundle.class, "1Bundle", "somas", BasePermission.ADMINISTRATION);
+		permissionManager.grantPermissions(ApiBundle.class, "1Bundle", "user2", BasePermission.READ);
+        
+
+        permissionManager.grantPermissions(ApiBundle.class, "2Bundle", "somas", new CumulativePermission().set(BasePermission.WRITE).set(BasePermission.READ));
+        permissionManager.grantPermissions(ApiBundle.class, "3Bundle", "user2", BasePermission.WRITE);
+        
+        
+        //owner block
+        permissionManager.changeOwner(ApiBundle.class, "1Bundle", "somas");
+        permissionManager.changeOwner(ApiBundle.class, "2Bundle", "somas");
+        permissionManager.changeOwner(ApiBundle.class, "3Bundle", "somas");
+        permissionManager.changeOwner(ApiBundle.class, "6BundleStringIdentifier", "somas");
+    	
+    	return "jsp/apiBundle/resultpage.jsp"; 
+    }
 	
+
 }
+

@@ -7,6 +7,7 @@ import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import com.att.developer.bean.ApiBundle;
+import com.att.developer.bean.User;
 
 public interface ApiBundleService {
 	
@@ -32,7 +33,6 @@ public interface ApiBundleService {
 	 public List<ApiBundle> getAll();
 	 
 	 /**
-	  * Adds a new post.
 	  * <p>
 	  * We don't provide any access control here because  
 	  * the new object doesn't have an id yet. 
@@ -47,7 +47,7 @@ public interface ApiBundleService {
 	  * <p>
 	  * 
 	  */
-	 public ApiBundle add(ApiBundle apiBundle);
+	 public ApiBundle create(ApiBundle apiBundle, User user);
 	 
 	 /**
 	  * Edits a Bundle.
