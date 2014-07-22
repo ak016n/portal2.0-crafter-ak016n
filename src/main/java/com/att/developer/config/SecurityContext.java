@@ -35,7 +35,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import com.att.developer.security.AttPasswordEncoder;
 import com.att.developer.security.CustomAclLookupStrategy;
 import com.att.developer.security.CustomPermissionGrantingStrategy;
-import com.att.developer.security.PermissionManagerImpl;
 
 
 @Configuration
