@@ -91,6 +91,7 @@ public class PermissionManagerImpl implements PermissionManager {
 		this.changeOwner(type, identifier, ownerId);
 	}
 	
+	
 	private void updateAclInTransaction(final MutableAcl acl) {
 		transactionTemplate.execute(new TransactionCallback<Object>() {
 			public Object doInTransaction(TransactionStatus arg0) {
@@ -100,6 +101,5 @@ public class PermissionManagerImpl implements PermissionManager {
 			}
 		});
 	}
-	
 
 }
