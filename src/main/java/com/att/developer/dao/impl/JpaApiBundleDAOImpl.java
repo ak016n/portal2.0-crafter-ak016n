@@ -9,18 +9,17 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import com.att.developer.bean.ApiBundle;
-import com.att.developer.bean.User;
 import com.att.developer.dao.ApiBundleDAO;
 
 @Component
-public class ApiBundleJpaDAOImpl extends JpaDAO<ApiBundle> implements ApiBundleDAO {
+public class JpaApiBundleDAOImpl extends JpaDAO<ApiBundle> implements ApiBundleDAO {
 
 	private static final String QUERY_ALL_BUNDLES = "from ApiBundle as a";
 	
 	
-	private final Logger logger = Logger.getLogger(ApiBundleJpaDAOImpl.class);
+	private final Logger logger = Logger.getLogger(JpaApiBundleDAOImpl.class);
 	 
-	public ApiBundleJpaDAOImpl() {
+	public JpaApiBundleDAOImpl() {
 		super(ApiBundle.class);
 	}
 
