@@ -2,6 +2,7 @@ package com.att.developer.controller;
 
 import java.time.Instant;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.att.developer.bean.ApiBundle;
+import com.att.developer.bean.SessionUser;
 import com.att.developer.bean.User;
 import com.att.developer.security.PermissionManager;
 import com.att.developer.service.ApiBundleService;
@@ -40,7 +42,11 @@ public class ApiBundleController {
 	@RequestMapping(value = "/edit", method = RequestMethod.GET)
     public String getEdit(@RequestParam(value="id", required=true) String id, Model model) {
     	logger.debug("Received request to show edit page");
-    
+    	SessionUser sessionUser = (SessionUser)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    	User user = sessionUser.getUser();
+    	sessionUser.getAuthorities();
+    	
+    	
     	// Retrieve existing post and add to model
     	// This is the formBackingOBject
     	model.addAttribute("postAttribute", apiBundleService.getSingle(id));
@@ -72,7 +78,7 @@ public class ApiBundleController {
     	// Delegate to service
     	if (apiBundleService.edit(bundle) != null) {
         	// Add result to model
-        	model.addAttribute("result", "Entry has been edited successfully!");
+        	model.addAttribute("result", "Entry has been edited successfully! " + bundle);
     	} else {
         	// Add result to model
         	model.addAttribute("result", "You're not allowed to perform that action! or sql failed");
@@ -120,25 +126,24 @@ public class ApiBundleController {
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public String getAddPage(@ModelAttribute("postAttribute") ApiBundle bundle, Model model) {
     	logger.debug("Received request to view add page");
-    
-    	// Add date today
-    	
+
+    	SessionUser sessionUser = (SessionUser)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    	User user = sessionUser.getUser();
+    	sessionUser.getAuthorities();
+
     	String bundleId = UUID.randomUUID().toString();   
-    			
     	bundle.setId(bundleId);
     	bundle.setName("b " + bundleId);
-    	bundle.setComments("some comment");
+    	bundle.setComments(bundle.getComments() + " created by " + user.getLogin());
     	bundle.setStartDate(Instant.now());
     	bundle.setEndDate(Instant.now());
     	
-    	User user = new User();
-    	user.setLogin(SecurityContextHolder.getContext().getAuthentication().getName());
-    	user.setId(SecurityContextHolder.getContext().getAuthentication().getName());
+    	
     	
     	// Delegate to service
     	if (apiBundleService.create(bundle, user) != null) {
         	// Success. Add result to model
-        	model.addAttribute("result", "Entry has been added successfully!");
+        	model.addAttribute("result", "Entry has been added successfully! " + bundle);
     	} else {
         	// Failure. Add result to model
         	model.addAttribute("result", "You're not allowed to perform that action (maybe) something failed ");
@@ -190,6 +195,25 @@ public class ApiBundleController {
 	}
     
     
+    /**
+     * 
+     * @param model
+     * @return
+     */
+    @RequestMapping(value="/list", method=RequestMethod.GET)
+    public String list(Model model){
+    	model.addAttribute("role", SecurityContextHolder.getContext().getAuthentication().getAuthorities());
+    	model.addAttribute("username", SecurityContextHolder.getContext().getAuthentication().getName());
+    	
+    	List<ApiBundle> allApiBundles = apiBundleService.getAll();
+    	
+    	model.addAttribute("allBundles", allApiBundles);
+    	
+    	
+    	return "jsp/apiBundle/allbundlespage.jsp";
+    }
+    
+    
     @RequestMapping(value="/initialize", method=RequestMethod.GET)
     public String initialize(Model model){
     	
@@ -209,21 +233,21 @@ public class ApiBundleController {
 		}
         
         // Now grant some permissions
-		permissionManager.grantPermissions(ApiBundle.class, "6BundleStringIdentifier",  "somas", BasePermission.WRITE);
+		permissionManager.grantPermissions(ApiBundle.class, "6BundleStringIdentifier",  "3_penny", BasePermission.WRITE);
 		
-		permissionManager.grantPermissions(ApiBundle.class, "1Bundle", "somas", BasePermission.ADMINISTRATION);
-		permissionManager.grantPermissions(ApiBundle.class, "1Bundle", "user2", BasePermission.READ);
+		permissionManager.grantPermissions(ApiBundle.class, "1Bundle", "3_penny", BasePermission.ADMINISTRATION);
+		permissionManager.grantPermissions(ApiBundle.class, "1Bundle", "2_leonard", BasePermission.READ);
         
 
-        permissionManager.grantPermissions(ApiBundle.class, "2Bundle", "somas", new CumulativePermission().set(BasePermission.WRITE).set(BasePermission.READ));
-        permissionManager.grantPermissions(ApiBundle.class, "3Bundle", "user2", BasePermission.WRITE);
+        permissionManager.grantPermissions(ApiBundle.class, "2Bundle", "3_penny", new CumulativePermission().set(BasePermission.WRITE).set(BasePermission.READ));
+        permissionManager.grantPermissions(ApiBundle.class, "3Bundle", "2_leonard", BasePermission.WRITE);
         
         
         //owner block
-        permissionManager.changeOwner(ApiBundle.class, "1Bundle", "somas");
-        permissionManager.changeOwner(ApiBundle.class, "2Bundle", "somas");
-        permissionManager.changeOwner(ApiBundle.class, "3Bundle", "somas");
-        permissionManager.changeOwner(ApiBundle.class, "6BundleStringIdentifier", "somas");
+        permissionManager.changeOwner(ApiBundle.class, "1Bundle", "3_penny");
+        permissionManager.changeOwner(ApiBundle.class, "2Bundle", "3_penny");
+        permissionManager.changeOwner(ApiBundle.class, "3Bundle", "3_penny");
+        permissionManager.changeOwner(ApiBundle.class, "6BundleStringIdentifier", "3_penny");
     	
     	return "jsp/apiBundle/resultpage.jsp"; 
     }
