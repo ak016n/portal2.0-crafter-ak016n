@@ -63,7 +63,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
      * Build Java user principal
      */
     private org.springframework.security.core.userdetails.User buildUserFromUserEntity(User portalUser) {
-        String username = portalUser.getLogin();
+        String userId = portalUser.getId();
         String password = portalUser.getEncryptedPassword();
         // There to see if we have to use any information from actual user object to determine the state of others
         boolean enabled = true;
@@ -80,8 +80,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         	authorities.add(new SimpleGrantedAuthority(role.getName()));
         }
         
+        //Note:  We are using userId which is a generated UUID for the 'username' that Spring requires.
         //TODO hierarchical organization state
-        SessionUser user = new SessionUser(username, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities, portalUser);
+        SessionUser user = new SessionUser(userId, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities, portalUser);
         return user;
     }
 
