@@ -5,7 +5,8 @@ import java.util.List;
 import javax.annotation.Resource;
 import javax.transaction.Transactional;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.security.acls.domain.CumulativePermission;
 import org.springframework.stereotype.Service;
@@ -22,7 +23,7 @@ import com.att.developer.service.ApiBundleService;
 @Transactional
 public class ApiBundleServiceImpl implements ApiBundleService {
 	
-	private static final Logger logger = Logger.getLogger(ApiBundleServiceImpl.class);
+	private final Logger logger = LogManager.getLogger();
 	
 	@Resource
 	private ApiBundleDAO apiBundleDAO;
@@ -36,6 +37,7 @@ public class ApiBundleServiceImpl implements ApiBundleService {
 
 	@Override
 	public ApiBundle getSingle(String id) {
+		logger.debug("getting for id {} ", id);
 		return apiBundleDAO.load(new ApiBundle(id));
 	}
 
