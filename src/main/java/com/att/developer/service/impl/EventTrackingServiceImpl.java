@@ -18,4 +18,8 @@ public class EventTrackingServiceImpl implements EventTrackingService {
 		eventLogProducer.convertAndSendMessage(eventLog);
 	}
 
+	@Override
+	public void writeEvent(EventLog eventLog){
+		eventLogProducer.convertAndSendMessage(eventLog);
+	}
 }
