@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="INFO">
+	<Appenders>
+		<Console name="CONSOLE" target="SYSTEM_OUT">
+			<PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
+		</Console>
+		<RollingFile name="LOG_FILE" 
+					 fileName="logs/developer.log"
+					 filePattern="logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
+      		<PatternLayout pattern="%d %-5p [%t] %C{2} (%F:%L) - %m%n"/>
+			<Policies>
+        		<TimeBasedTriggeringPolicy />
+      		</Policies>
+      		<DefaultRolloverStrategy max="100"/>
+		</RollingFile>
+	    <Async name="ASYNC">
+	      <AppenderRef ref="LOG_FILE"/>
+	      <AppenderRef ref="CONSOLE"/>
+	    </Async>
+	</Appenders>
+	<Loggers>
+		<Root level="debug">
+      		<AppenderRef ref="ASYNC"/>
+    	</Root>
+		<logger name="org.hibernate" level="ERROR" />
+		<logger name="com.att.developer" level="DEBUG"/>
+		<logger name="atomikos" level="INFO"/>
+	</Loggers>
+</Configuration>
