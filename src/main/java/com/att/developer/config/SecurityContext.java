@@ -63,7 +63,7 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
 			.authorizeRequests()
 				.antMatchers("/views/home.html").permitAll()
 				.antMatchers("/resources/**").permitAll()
-				.antMatchers("/admin/**", "/views/adminConsole/**").hasRole("SYS_ADMIN")
+				.antMatchers("/admin/**", "/views/adminConsole/**", "/apiBundle/add/**").hasRole("SYS_ADMIN")
 				.anyRequest().authenticated()
 				.and()
 			.formLogin()
@@ -72,6 +72,7 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
 				.permitAll();
 		
 		http.csrf().disable();
+		
 		
 	}
 
