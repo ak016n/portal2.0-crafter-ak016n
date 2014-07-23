@@ -5,6 +5,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -44,8 +45,9 @@ public class User implements Serializable {
 	@Column(name = "last_updated")
 	private Date lastUpdated;
 
+	//TODO: temporarily fetch eagerly.  What do we want to do here? 
     @OrderColumn(name = "sequence_number")
-    @ManyToMany(cascade=CascadeType.MERGE, mappedBy="users")
+    @ManyToMany(cascade=CascadeType.MERGE, mappedBy="users", fetch=FetchType.EAGER)
 	private List<Organization> organizations;
     
 	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
@@ -133,6 +135,22 @@ public class User implements Serializable {
 		organizations.add(organization);
 	}
 
+	
+	/**
+	 * Simple logic to encapsulate rules around what the 'default' organization is.
+	 * 
+	 * @return organization in the zeroth position
+	 */
+	public Organization getDefaultOrganization(){
+		if(organizations != null && organizations.size() > 0){ 
+			return organizations.get(0);
+		}
+		else{
+			return null;
+		}
+	}
+	
+	
 	public Set<UserState> getUserStates() {
 		return userStates;
 	}
@@ -160,12 +178,35 @@ public class User implements Serializable {
 		this.roles = roles;
 	}
 	
+	@Override
 	public String toString() {
 		return new ToStringBuilder(this)
 			.append("organizations", this.organizations)
 			.append("login", this.login).append("encryptedPassword", this.encryptedPassword)
 			.append("lastUpdated", this.lastUpdated).append("id", this.id).append("password", this.password)
 			.toString();
+	}
+	
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
+	}
+
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj){
+			return true;
+		}
+		if (obj == null){
+			return false;
+		}
+		if (getClass() != obj.getClass()){
+			return false;
+		}
+			
+		User other = (User) obj;
+		return Objects.equals(this.getId(), other.getId());
 	}
 
 }

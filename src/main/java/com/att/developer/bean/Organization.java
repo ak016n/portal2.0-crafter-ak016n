@@ -1,7 +1,9 @@
 package com.att.developer.bean;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -17,12 +19,16 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import com.att.developer.typelist.OrgRelationshipType;
 
 @Entity
 @Table(uniqueConstraints= @UniqueConstraint(columnNames = {"name"}))
-public class Organization {
+public class Organization implements Serializable {
+	
+	private static final long serialVersionUID = 2117541682366680664L;
+	
 	
 	@Id
     private String id;
@@ -151,5 +157,45 @@ public class Organization {
 	public void setOrganizationStates(Set<OrganizationState> organizationStates) {
 		this.organizationStates = organizationStates;
 	}
+
+	@Override
+	public String toString() {
+		return new ToStringBuilder(this)
+		.append("id", this.id)
+		.append("name", this.name)
+		.append("parentId", this.parentId)
+		.append("description", this.description)
+		.append("relationshipType", this.getRelationshipType())
+		.append("organizationStates", this.getOrganizationStates())
+		//skip users
+		.append("createdOn", this.createdOn)
+		.append("lastUpdated", this.lastUpdated)
+		.toString();
+	}
+
+	
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
+	}
+
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj){
+			return true;
+		}
+		if (obj == null){
+			return false;
+		}
+		if (getClass() != obj.getClass()){
+			return false;
+		}
+			
+		Organization other = (Organization) obj;
+		return Objects.equals(this.getId(), other.getId());
+	}
+
+	
 	
 }
