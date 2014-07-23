@@ -9,17 +9,22 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.acls.domain.AclImpl;
+import org.springframework.security.acls.domain.GrantedAuthoritySid;
 import org.springframework.security.acls.domain.ObjectIdentityImpl;
 import org.springframework.security.acls.domain.PrincipalSid;
 import org.springframework.security.acls.model.MutableAcl;
 import org.springframework.security.acls.model.MutableAclService;
 import org.springframework.security.acls.model.ObjectIdentity;
 import org.springframework.security.acls.model.Permission;
+import org.springframework.security.acls.model.Sid;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
+
+import com.att.developer.bean.Organization;
+import com.att.developer.bean.User;
 
 
 @Service
@@ -60,22 +65,42 @@ public class PermissionManagerImpl implements PermissionManager {
     
     
     @Override
-	public void grantPermissions(Class<?> type, String identifier,  String recipientUsername, Permission permission) {
+	public void grantPermissions(Class<?> type, String identifier,  User user, Permission permission) {
+        this.grantPermissions(type, identifier, new PrincipalSid(user.getId()), permission);
+    }
+    
+    @Override
+	public void grantPermissions(Class<?> type, String identifier, Organization org, Permission permission) {
+    	this.grantPermissions(type, identifier, new GrantedAuthoritySid(org.getId()), permission);
+    }
+    
+    
+    private void grantPermissions(Class<?> type, String identifier, Sid sid, Permission permission) {
         AclImpl acl = (AclImpl) mutableAclService.readAclById(new ObjectIdentityImpl(type, identifier));
-        acl.insertAce(acl.getEntries().size(), permission, new PrincipalSid(recipientUsername), true);
+        acl.insertAce(acl.getEntries().size(), permission, sid, true);
         updateAclInTransaction(acl);
     }
     
     
 
     @Override
-	public void changeOwner(Class<?> type, String identifier, String newOwnerUsername) {
-    	AclImpl acl = (AclImpl) mutableAclService.readAclById(new ObjectIdentityImpl(type, identifier));
-        acl.setOwner(new PrincipalSid(newOwnerUsername));
-        updateAclInTransaction(acl);
+	public void changeOwner(Class<?> type, String identifier, User newOwnerUser) {
+    	this.changeOwner(type, identifier, new PrincipalSid(newOwnerUser.getId()));
     }
     
 
+    @Override
+	public void changeOwner(Class<?> type, String identifier, Organization newOwningOrg) {
+    	this.changeOwner(type, identifier, new GrantedAuthoritySid(newOwningOrg.getId()));
+    }
+
+    
+    private void changeOwner(Class<?> type, String identifier, Sid newOwner) {
+    	AclImpl acl = (AclImpl) mutableAclService.readAclById(new ObjectIdentityImpl(type, identifier));
+        acl.setOwner(newOwner);
+        updateAclInTransaction(acl);
+    }
+    
     
 	@Override
 	public void deletePermissionsForObject(Class<?> type, String identifier){
@@ -85,10 +110,22 @@ public class PermissionManagerImpl implements PermissionManager {
 	
 
 	@Override
-	public void createAclWithPermissionsAndOwner(Class<?> type, String identifier, String ownerId, Permission permission, String permissionRecipient){
+	public void createAclWithPermissionsAndOwner(Class<?> type, String identifier, User ownerAndPermissionHolder, Permission permission){
+		PrincipalSid sid = new PrincipalSid(ownerAndPermissionHolder.getId());
+		this.createAclWithPermissionsAndOwner(type, identifier, sid, permission, sid);
+	}
+	
+	@Override
+	public void createAclWithPermissionsAndOwner(Class<?> type, String identifier, Organization ownerAndPermissionHolder, Permission permission){
+		PrincipalSid sid = new PrincipalSid(ownerAndPermissionHolder.getId());
+		this.createAclWithPermissionsAndOwner(type, identifier, sid, permission, sid);
+	}
+	
+	
+	private void createAclWithPermissionsAndOwner(Class<?> type, String identifier, Sid owner, Permission permission, Sid permissionRecipient){
 		this.createAcl(type, identifier);
 		this.grantPermissions(type, identifier, permissionRecipient, permission);
-		this.changeOwner(type, identifier, ownerId);
+		this.changeOwner(type, identifier, owner);
 	}
 	
 	
