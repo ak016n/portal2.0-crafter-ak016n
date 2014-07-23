@@ -7,7 +7,8 @@ import java.util.Set;
 import javax.sql.DataSource;
 import javax.transaction.Transactional;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.acls.domain.AclImpl;
@@ -34,9 +35,8 @@ import com.att.developer.bean.ApiBundle;
 
 
 public class DataSourcePopulator {
-    //~ Instance fields ================================================================================================
-
-	private static final Logger logger = Logger.getLogger(DataSourcePopulator.class);
+    
+	private final Logger logger = LogManager.getLogger();
 	
 	@Autowired
 	private DataSource dataSource;

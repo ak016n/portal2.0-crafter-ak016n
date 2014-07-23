@@ -2,7 +2,8 @@ package com.att.developer.service.impl;
 
 import javax.annotation.Resource;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -14,7 +15,8 @@ import com.att.developer.service.UserService;
 @Component
 public class LoginSecurityServiceImpl implements LoginSecurityService {
 
-	private static Logger logger = Logger.getLogger(LoginSecurityServiceImpl.class);
+	private final Logger logger = LogManager.getLogger();
+	
 	
     private static final int LOGIN_DELAY_RANGE_START = 500;
     private static final int LOGIN_DELAY_RANGE_END = 1000;

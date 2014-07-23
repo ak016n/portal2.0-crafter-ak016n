@@ -12,7 +12,8 @@ import javax.sql.DataSource;
 
 import org.apache.activemq.command.ActiveMQQueue;
 import org.apache.activemq.pool.PooledConnectionFactory;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -39,7 +40,7 @@ import com.att.developer.jms.consumer.EventLogConsumer;
 public class AppContext {
 
 	private static final String EVENT_QUEUE_DESTINATION = "event.queue";
-	private static Logger logger = Logger.getLogger(AppContext.class);
+	private final Logger logger = LogManager.getLogger();
 	
 	@Inject
 	private EventLogConsumer eventLogConsumer;

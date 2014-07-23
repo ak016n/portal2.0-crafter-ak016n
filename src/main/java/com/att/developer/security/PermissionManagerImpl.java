@@ -5,7 +5,8 @@ import java.io.Serializable;
 import javax.sql.DataSource;
 import javax.transaction.Transactional;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.acls.domain.AclImpl;
@@ -31,7 +32,8 @@ import com.att.developer.bean.User;
 @Transactional
 public class PermissionManagerImpl implements PermissionManager {
 
-	private static final Logger logger = Logger.getLogger(PermissionManagerImpl.class);
+	
+	private final Logger logger = LogManager.getLogger();
 	
 	
 	@Autowired

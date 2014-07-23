@@ -5,7 +5,8 @@ import java.util.List;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import com.att.developer.bean.ApiBundle;
@@ -16,8 +17,8 @@ public class JpaApiBundleDAOImpl extends JpaDAO<ApiBundle> implements ApiBundleD
 
 	private static final String QUERY_ALL_BUNDLES = "from ApiBundle as a";
 	
+	private final Logger logger = LogManager.getLogger();
 	
-	private final Logger logger = Logger.getLogger(JpaApiBundleDAOImpl.class);
 	 
 	public JpaApiBundleDAOImpl() {
 		super(ApiBundle.class);

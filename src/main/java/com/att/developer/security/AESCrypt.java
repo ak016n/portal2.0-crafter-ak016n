@@ -4,11 +4,15 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 public class AESCrypt {
 	
-	private static Logger logger = Logger.getLogger(AESCrypt.class);
+	
+	private static final Logger logger = LogManager.getLogger();
+	
 	private static byte[] key = { 0x54, 0x68, 0x65, 0x47, 0x6F, 0x6F, 0x64, 0x2C, 0x54, 0x68, 0x65, 0x42, 0x61, 0x64, 0x41, 0x6E, 0x64, 0x54, 0x68, 0x65, 0x55, 0x67, 0x6C, 0x79 };
 	
 	public static String encrypt(String strToEncrypt) {

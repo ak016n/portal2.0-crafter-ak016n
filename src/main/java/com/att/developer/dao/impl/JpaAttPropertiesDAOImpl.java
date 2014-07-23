@@ -5,7 +5,8 @@ import java.util.List;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import com.att.developer.bean.AttProperties;
@@ -14,8 +15,8 @@ import com.att.developer.exception.DAOException;
 
 @Component
 public class JpaAttPropertiesDAOImpl extends JpaDAO<AttProperties> implements AttPropertiesDAO {
-
-	private static Logger logger = Logger.getLogger(JpaAttPropertiesDAOImpl.class);
+	
+	private final Logger logger = LogManager.getLogger();
 	public static final String QUERY_ACTIVE_PROP_BY_IK_FK = "from AttProperties as a where a.itemKey  = :itemKey and a.fieldKey = :fieldKey order by a.version desc";
 	public static final String QUERY_VERSIONS_FOR_IK_FK = "select version from AttProperties as a where a.itemKey  = :itemKey and a.fieldKey = :fieldKey order by a.version desc";
 	public static final String QUERY_ACTIVE_PROP_BY_IK_FK_AND_VERSION = "from AttProperties as a where a.itemKey  = :itemKey and a.fieldKey = :fieldKey and a.version = :version";

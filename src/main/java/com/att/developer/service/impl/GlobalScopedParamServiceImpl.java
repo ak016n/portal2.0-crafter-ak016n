@@ -18,7 +18,8 @@ import javax.transaction.Transactional;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -53,7 +54,9 @@ public class GlobalScopedParamServiceImpl implements GlobalScopedParamService {
 	private static final String ENV_SPECIFIC_IK = "ENV";
 	private static final String DEFAULT_FK = "DEFAULT";
 	private static final String GLOBAL_IK = "GLOBAL";
-	private static Logger logger = Logger.getLogger(GlobalScopedParamServiceImpl.class);
+	
+	private final Logger logger = LogManager.getLogger();
+	
 	private String environment = (System.getProperty(ENV_SPECIFIC_IK) == null)? "DEV" : System.getProperty(ENV_SPECIFIC_IK);
 	
 	@Resource

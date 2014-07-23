@@ -4,7 +4,8 @@ import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import com.att.developer.bean.User;
@@ -18,7 +19,7 @@ public class JpaUserDAOImpl extends JpaDAO<User> implements UserDAO {
     public static final String QUERY_USER_BY_EMAIL = "from User as a where a.email  = :email";
     public static final String QUERY_USER_BY_LOGIN = "from User as a where a.login  = :login";
 	
-    private static Logger logger = Logger.getLogger(JpaUserDAOImpl.class);
+    private final Logger logger = LogManager.getLogger();
     
 	public JpaUserDAOImpl() {
 		super(User.class);

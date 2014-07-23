@@ -7,7 +7,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.att.developer.dao.GenericDAO;
 import com.att.developer.exception.DAOException;
@@ -22,7 +23,7 @@ public class JpaDAO<T> implements GenericDAO<T> {
 
 	Class<T> beanClass;
 
-	private static Logger logger = Logger.getLogger(JpaDAO.class);
+	private final Logger logger = LogManager.getLogger();
 	
 	@PersistenceContext
 	protected EntityManager entityManager;
