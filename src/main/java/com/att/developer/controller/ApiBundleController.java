@@ -43,7 +43,7 @@ public class ApiBundleController {
     public String getEdit(@RequestParam(value="id", required=true) String id, Model model) {
     	logger.debug("Received request to show edit page");
     	SessionUser sessionUser = (SessionUser)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    	User user = sessionUser.getUser();
+    	
     	sessionUser.getAuthorities();
     	
     	
@@ -103,7 +103,7 @@ public class ApiBundleController {
      * object doesn't have an id. The hasPermission requires an existing id!
      */
     //TODO: Not working, is the Proxy running? Security context correct?
-	@PreAuthorize("hasAuthority('ROLE_ADMINISTRAXXXX')")
+	@PreAuthorize("hasRole('ROLE_ADMINISTRAXXXX')")
     @RequestMapping(value = "/add", method = RequestMethod.GET)
     public String getAdd(Model model) {
     	logger.debug("Received request to show add page");
@@ -139,11 +139,14 @@ public class ApiBundleController {
     	bundle.setEndDate(Instant.now());
     	
     	
-    	
+    	ApiBundle createdBundle = apiBundleService.create(bundle, user);
     	// Delegate to service
-    	if (apiBundleService.create(bundle, user) != null) {
+    	if (createdBundle != null) {
         	// Success. Add result to model
         	model.addAttribute("result", "Entry has been added successfully! " + bundle);
+        	
+        	//now grant permission to whole organization
+        	apiBundleService.grantPermission(createdBundle, user.getDefaultOrganization());
     	} else {
         	// Failure. Add result to model
         	model.addAttribute("result", "You're not allowed to perform that action (maybe) something failed ");
@@ -233,25 +236,31 @@ public class ApiBundleController {
 		}
         
         // Now grant some permissions
-		permissionManager.grantPermissions(ApiBundle.class, "6BundleStringIdentifier",  "3_penny", BasePermission.WRITE);
+		User penny = new User();
+		penny.setId("3_penny");
 		
-		permissionManager.grantPermissions(ApiBundle.class, "1Bundle", "3_penny", BasePermission.ADMINISTRATION);
-		permissionManager.grantPermissions(ApiBundle.class, "1Bundle", "2_leonard", BasePermission.READ);
+		User leonard = new User();
+		leonard.setId("2_leonard");
+		
+		permissionManager.grantPermissions(ApiBundle.class, "6BundleStringIdentifier",  penny, BasePermission.WRITE);
+		
+		permissionManager.grantPermissions(ApiBundle.class, "1Bundle", penny, BasePermission.ADMINISTRATION);
+		permissionManager.grantPermissions(ApiBundle.class, "1Bundle", leonard, BasePermission.READ);
         
 
-        permissionManager.grantPermissions(ApiBundle.class, "2Bundle", "3_penny", new CumulativePermission().set(BasePermission.WRITE).set(BasePermission.READ));
-        permissionManager.grantPermissions(ApiBundle.class, "3Bundle", "2_leonard", BasePermission.WRITE);
+        permissionManager.grantPermissions(ApiBundle.class, "2Bundle", penny, new CumulativePermission().set(BasePermission.WRITE).set(BasePermission.READ));
+        permissionManager.grantPermissions(ApiBundle.class, "3Bundle", leonard, BasePermission.WRITE);
         
         
         //owner block
-        permissionManager.changeOwner(ApiBundle.class, "1Bundle", "3_penny");
-        permissionManager.changeOwner(ApiBundle.class, "2Bundle", "3_penny");
-        permissionManager.changeOwner(ApiBundle.class, "3Bundle", "3_penny");
-        permissionManager.changeOwner(ApiBundle.class, "6BundleStringIdentifier", "3_penny");
+        permissionManager.changeOwner(ApiBundle.class, "1Bundle", penny);
+        permissionManager.changeOwner(ApiBundle.class, "2Bundle", penny);
+        permissionManager.changeOwner(ApiBundle.class, "3Bundle", penny);
+        permissionManager.changeOwner(ApiBundle.class, "6BundleStringIdentifier", penny);
     	
     	return "jsp/apiBundle/resultpage.jsp"; 
     }
 	
-
+    
 }
 
