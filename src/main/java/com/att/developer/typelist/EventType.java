@@ -14,8 +14,9 @@ public enum EventType {
 		 * 
 		 * Critical means it needs to be updated within the same transaction
 		 */
-		GLOBAL_SCOPED_PARAM_CHANGE(1, false);
+		GLOBAL_SCOPED_PARAM_CHANGE(1, false),
 		
+		API_BUNDLE_PERMISSION_UPDATED(269, false);
 		
 	    private int id;
 	    private boolean critical;
