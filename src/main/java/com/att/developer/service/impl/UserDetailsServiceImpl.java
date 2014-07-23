@@ -2,6 +2,7 @@ package com.att.developer.service.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -14,6 +15,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
 import com.att.developer.bean.LoginSecurityDetails;
+import com.att.developer.bean.Organization;
 import com.att.developer.bean.Role;
 import com.att.developer.bean.SessionUser;
 import com.att.developer.bean.User;
@@ -80,6 +82,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         	authorities.add(new SimpleGrantedAuthority(role.getName()));
         }
         
+        List<Organization> orgs = portalUser.getOrganizations();
+        
+        for(Organization org : orgs){
+        	authorities.add(new SimpleGrantedAuthority(org.getId()));
+        }
         //Note:  We are using userId which is a generated UUID for the 'username' that Spring requires.
         //TODO hierarchical organization state
         SessionUser user = new SessionUser(userId, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities, portalUser);
