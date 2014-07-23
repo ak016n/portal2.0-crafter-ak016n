@@ -7,9 +7,12 @@ import javax.transaction.Transactional;
 
 import org.apache.log4j.Logger;
 import org.springframework.security.acls.domain.BasePermission;
+import org.springframework.security.acls.domain.CumulativePermission;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import com.att.developer.bean.ApiBundle;
+import com.att.developer.bean.Organization;
 import com.att.developer.bean.User;
 import com.att.developer.dao.ApiBundleDAO;
 import com.att.developer.security.PermissionManager;
@@ -45,7 +48,9 @@ public class ApiBundleServiceImpl implements ApiBundleService {
 	public ApiBundle create(ApiBundle bean, User user) {
 		logger.debug("trying to create the bundle " + bean);
 		
-		permissionManager.createAclWithPermissionsAndOwner(bean.getClass(), bean.getId(), user.getId(), BasePermission.ADMINISTRATION, user.getId());
+		Assert.notNull(user, "User cannot be null when creating bundle");
+		Assert.notNull(user.getDefaultOrganization(), "User must be part of an organization to create a bundle");
+		permissionManager.createAclWithPermissionsAndOwner(bean.getClass(), bean.getId(), user, BasePermission.ADMINISTRATION);
 		return apiBundleDAO.create(bean);
 	}
 
@@ -61,4 +66,11 @@ public class ApiBundleServiceImpl implements ApiBundleService {
 	}
 	
 
+	/**
+	 * Grants default permissions (READ and WRITE) to an Organization for the ApiBundle.
+	 */
+	@Override
+	public void grantPermission(ApiBundle apiBundle, Organization org) {
+		permissionManager.grantPermissions(ApiBundle.class, apiBundle.getId(), org, new CumulativePermission().set(BasePermission.WRITE).set(BasePermission.READ));
+	}
 }

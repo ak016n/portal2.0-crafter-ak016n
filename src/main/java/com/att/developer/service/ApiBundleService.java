@@ -7,6 +7,7 @@ import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import com.att.developer.bean.ApiBundle;
+import com.att.developer.bean.Organization;
 import com.att.developer.bean.User;
 
 public interface ApiBundleService {
@@ -47,6 +48,7 @@ public interface ApiBundleService {
 	  * <p>
 	  * 
 	  */
+	 @PreAuthorize("hasRole('ROLE_SYS_ADMIN')")
 	 public ApiBundle create(ApiBundle apiBundle, User user);
 	 
 	 /**
@@ -68,4 +70,6 @@ public interface ApiBundleService {
 	 public void delete(ApiBundle apiBundle);
 	 
 
+	 @PreAuthorize("hasRole('ROLE_SYS_ADMIN')")
+	 public void grantPermission(ApiBundle apiBundle, Organization org);
 }
