@@ -3,6 +3,7 @@ package com.att.developer.bean.builder;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.att.developer.bean.Role;
 import com.att.developer.bean.User;
 import com.att.developer.bean.UserState;
 import com.att.developer.typelist.UserStateType;
@@ -47,6 +48,11 @@ public class UserBuilder {
 			UserState tempUserState = new UserState();
 			tempUserState.setState(userStateType);
 			userStates.add(tempUserState);
+			return this;
+		}
+		
+		public UserBuilder withRole(Role role){
+			user.addRole(role);
 			return this;
 		}
 		
