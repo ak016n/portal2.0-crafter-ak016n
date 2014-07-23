@@ -8,7 +8,8 @@ import java.util.UUID;
 
 import javax.annotation.Resource;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.security.acls.domain.CumulativePermission;
@@ -25,13 +26,12 @@ import com.att.developer.bean.SessionUser;
 import com.att.developer.bean.User;
 import com.att.developer.security.PermissionManager;
 import com.att.developer.service.ApiBundleService;
-import com.att.developer.service.impl.GlobalScopedParamServiceImpl;
 
 @Controller
 @RequestMapping("/apiBundle")
 public class ApiBundleController {
 
-	private static final Logger logger = Logger.getLogger(GlobalScopedParamServiceImpl.class);
+	private final Logger logger = LogManager.getLogger();
 	
 	@Resource
 	private ApiBundleService apiBundleService;
