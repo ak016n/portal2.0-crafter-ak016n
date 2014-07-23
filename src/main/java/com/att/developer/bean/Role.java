@@ -14,6 +14,10 @@ public class Role {
 	private String name;
 	private String description;
 
+	
+    // user level key roles
+    public static final String ROLE_ID_ORG_ADMIN = "OrganizationAdminAccess";
+	
 	public Role() {
 		this.setId(java.util.UUID.randomUUID().toString());
 	}
