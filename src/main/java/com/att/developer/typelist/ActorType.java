@@ -9,9 +9,14 @@ import java.util.Map;
  */
 
 public enum ActorType {
+    
     DEV_PROGRAM_USER(1),
-    WEB_SERVICE(2),
-    SUPPORT(3);
+    CSR(2), 
+    EDO(3),
+    DCM(4),
+    SCHEDULED_PROCESS(5),
+    WEB_SERVICE(6),
+    SUPPORT(7);
     
     private int id;
     
