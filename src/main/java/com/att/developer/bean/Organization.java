@@ -16,6 +16,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -157,6 +158,21 @@ public class Organization implements Serializable {
 	public void setOrganizationStates(Set<OrganizationState> organizationStates) {
 		this.organizationStates = organizationStates;
 	}
+
+	
+    @Transient
+    public User getOrganizationAdmin() {
+        if (users != null) {
+            for (User user : users) {
+                for (Role role : user.getRoles()) {
+                    if (Role.ROLE_ID_ORG_ADMIN.equals(role.getId())) {
+                        return user;
+                    }
+                }
+            }
+        }
+        return null;
+    }
 
 	@Override
 	public String toString() {
