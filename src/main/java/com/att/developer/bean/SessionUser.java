@@ -1,6 +1,7 @@
 package com.att.developer.bean;
 
 import java.util.Collection;
+import java.util.Collections;
 
 import org.springframework.security.core.GrantedAuthority;
 
@@ -25,6 +26,29 @@ public class SessionUser extends org.springframework.security.core.userdetails.U
 		super(username, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);
 		this.user = user;
 	}
+	
+	
+	public SessionUser(String username, String password, Collection<? extends GrantedAuthority> authorities, User user) {
+		this(username, password, true, true, true, true, authorities, user);
+		
+	}
+ 
+	/**
+	 * builds a User using default rules
+	 * <ul>
+	 * <li>all booleans set to true in full constructor</li>
+	 * <li>username set to user.getId</li>
+	 * <li>password set to user.getEncryptedPassword</li>
+	 * <li>empty set of Authorities</li>
+	 * 
+	 * </ul>
+	 * 
+	 * @param user
+	 */
+	public SessionUser(User user) {
+		this(user.getId(), user.getEncryptedPassword(), Collections.<GrantedAuthority>emptySet(), user);
+	}
+	
 
 	public User getUser() {
 		return user;
