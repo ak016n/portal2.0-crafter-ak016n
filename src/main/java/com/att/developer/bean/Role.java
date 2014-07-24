@@ -1,5 +1,7 @@
 package com.att.developer.bean;
 
+import java.util.Objects;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -51,6 +53,30 @@ public class Role {
 			.append("description", this.description).append("name", this.name)
 			.append("id", this.id).toString();
 	}
+
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
+	}
+	
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj){
+			return true;
+		}
+		if (obj == null){
+			return false;
+		}
+		if (getClass() != obj.getClass()){
+			return false;
+		}
+		Role other = (Role) obj;
+		return Objects.equals(this.id, other.id);
+	}
+	
+	
 }
 
 

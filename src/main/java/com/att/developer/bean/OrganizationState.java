@@ -1,5 +1,7 @@
 package com.att.developer.bean;
 
+import java.util.Objects;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -49,9 +51,33 @@ public class OrganizationState {
 		this.orgId = orgId;
 	}
 
+	@Override
 	public String toString() {
 		return new ToStringBuilder(this).append("orgId", this.orgId)
 			.append("state", this.state).append("id", this.id).toString();
+	}
+	
+	
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
+	}
+
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj){
+			return true;
+		}
+		if (obj == null){
+			return false;
+		}
+		if (getClass() != obj.getClass()){
+			return false;
+		}
+			
+		OrganizationState other = (OrganizationState) obj;
+		return Objects.equals(this.getId(), other.getId());
 	}
 }
 

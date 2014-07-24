@@ -157,7 +157,7 @@ public class EventLog implements Serializable {
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(this.id);
+		return Objects.hash(this.id);
 	}
 
 	@Override
