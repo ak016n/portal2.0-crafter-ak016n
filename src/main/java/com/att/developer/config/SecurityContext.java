@@ -19,7 +19,7 @@ import org.springframework.security.acls.AclPermissionCacheOptimizer;
 import org.springframework.security.acls.AclPermissionEvaluator;
 import org.springframework.security.acls.domain.AclAuthorizationStrategy;
 import org.springframework.security.acls.domain.AclAuthorizationStrategyImpl;
-import org.springframework.security.acls.domain.ConsoleAuditLogger;
+import org.springframework.security.acls.domain.AuditLogger;
 import org.springframework.security.acls.domain.EhCacheBasedAclCache;
 import org.springframework.security.acls.jdbc.JdbcMutableAclService;
 import org.springframework.security.acls.model.PermissionGrantingStrategy;
@@ -35,6 +35,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import com.att.developer.security.AttPasswordEncoder;
 import com.att.developer.security.CustomAclLookupStrategy;
 import com.att.developer.security.CustomPermissionGrantingStrategy;
+import com.att.developer.security.EventLogAuditLogger;
 
 
 @Configuration
@@ -119,9 +120,15 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
 	
 	@Bean
 	protected PermissionGrantingStrategy permissionGrantingStrategy(){
-		return new CustomPermissionGrantingStrategy(new ConsoleAuditLogger());
+//		return new CustomPermissionGrantingStrategy(new ConsoleAuditLogger());
+		return new CustomPermissionGrantingStrategy(auditLogger());
 	}
 	
+	
+	@Bean
+	protected AuditLogger auditLogger(){
+		return new EventLogAuditLogger();
+	}
 	
 	@Bean
 	protected AclAuthorizationStrategy aclAuthorizationStrategy(){
