@@ -11,7 +11,6 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.security.acls.domain.AccessControlEntryImpl;
 import org.springframework.security.acls.domain.AclImpl;
-import org.springframework.security.acls.domain.AuditLogger;
 import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.security.acls.domain.CumulativePermission;
 import org.springframework.security.acls.domain.GrantedAuthoritySid;
@@ -38,7 +37,7 @@ public class CustomPermissionGrantingStrategyTest {
         Authentication authRequest = new UsernamePasswordAuthenticationToken("rod", "koala", AuthorityUtils.createAuthorityList("ROLE_IGNORED"));
         SecurityContextHolder.getContext().setAuthentication(authRequest);
 
-		AuditLogger auditLogger = Mockito.mock(AuditLogger.class);
+		EventLogAuditLogger auditLogger = Mockito.mock(EventLogAuditLogger.class);
 		customPermissionGrantingStrategy = new CustomPermissionGrantingStrategy(auditLogger);
 
 	}
