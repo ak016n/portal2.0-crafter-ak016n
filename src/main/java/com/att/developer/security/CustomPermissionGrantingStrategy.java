@@ -2,7 +2,6 @@ package com.att.developer.security;
 
 import java.util.List;
 
-import org.springframework.security.acls.domain.AuditLogger;
 import org.springframework.security.acls.model.AccessControlEntry;
 import org.springframework.security.acls.model.Acl;
 import org.springframework.security.acls.model.NotFoundException;
@@ -16,12 +15,12 @@ import org.springframework.util.Assert;
 public class CustomPermissionGrantingStrategy implements PermissionGrantingStrategy {
 
 
-    private final transient AuditLogger auditLogger;
+    private EventLogAuditLogger auditLogger;
 
     /**
      * Creates an instance with the logger which will be used to record granting and denial of requested permissions.
      */
-    public CustomPermissionGrantingStrategy(AuditLogger auditLogger) {
+    public CustomPermissionGrantingStrategy(EventLogAuditLogger auditLogger) {
         Assert.notNull(auditLogger, "auditLogger cannot be null");
         this.auditLogger = auditLogger;
     }
@@ -58,10 +57,10 @@ public class CustomPermissionGrantingStrategy implements PermissionGrantingStrat
     public boolean isGranted(Acl acl, List<Permission> permissions, List<Sid> sids, boolean administrativeMode)
             throws NotFoundException {
 
-        final List<AccessControlEntry> aces = acl.getEntries();
+        List<AccessControlEntry> aces = acl.getEntries();
 
         AccessControlEntry firstRejection = null;
-
+        
         for (Permission permissionRequired : permissions) {
             for (Sid sid: sids) {
                 // Attempt to find exact match for this permission mask and SID
@@ -116,6 +115,7 @@ public class CustomPermissionGrantingStrategy implements PermissionGrantingStrat
             return acl.getParentAcl().isGranted(permissions, sids, false);
         } else {
             // We either have no parent, or we're the uppermost parent
+        	auditLogger.logIfNeededAllDenied(aces, sids);
             throw new NotFoundException("Unable to locate a matching ACE for passed permissions and SIDs");
         }
     }
