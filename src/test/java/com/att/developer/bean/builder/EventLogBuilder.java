@@ -1,7 +1,6 @@
 package com.att.developer.bean.builder;
 
 import java.time.Instant;
-import java.util.Date;
 
 import com.att.developer.bean.EventLog;
 import com.att.developer.typelist.ActorType;
