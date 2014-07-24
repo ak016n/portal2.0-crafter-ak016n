@@ -25,6 +25,7 @@ public class JpaApiBundleDAOImpl extends JpaDAO<ApiBundle> implements ApiBundleD
 	}
 
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<ApiBundle> getAll() {
 		Query query = entityManager.createQuery(QUERY_ALL_BUNDLES);
