@@ -49,10 +49,10 @@ public class EventLogAuditLogger implements AuditLogger {
 		EventType eventType = EventType.ACL_ACCESS_DENIED;
 		if(granted){
 			eventType = EventType.ACL_ACCESS_ALLOWED;
-			aclMessage.append("***GRANTED due to ACE: " + ace + " for ACL " + ace.getAcl());
+			aclMessage.append("***GRANTED access to " + ace.getAcl().getObjectIdentity() + " due to ACE: \n" + ace);
 		}
 		else{
-			aclMessage.append("***DENIED due to ACE: " + ace + " for ACL " + ace.getAcl());
+			aclMessage.append("***DENIED access to " +  ace.getAcl().getObjectIdentity() +  "due to ACE: \n" + ace);
 		}
 		
 		logger.debug(aclMessage.toString());
@@ -68,7 +68,7 @@ public class EventLogAuditLogger implements AuditLogger {
 		StringBuilder aclMessage = new StringBuilder();
 		
 		
-		aclMessage.append("***DENIED access to:  ");
+		aclMessage.append("***DENIED access to object:  ");
 		boolean foundMatch = false;
 		int i = 0;
 		for(AccessControlEntry ace : aces){
@@ -80,9 +80,8 @@ public class EventLogAuditLogger implements AuditLogger {
 			for(Sid sid : sids){
 				if(ace.getSid().equals(sid)){
 					foundMatch=true;
-					aclMessage.append("due to ACE: ");
-					aclMessage.append(ace + " for ACL " + ace.getAcl());
-					aclMessage.append("\n");
+					aclMessage.append(" for sid " + sid);
+					aclMessage.append("\ndue to ACE: \n" + ace);
 				}
 			}
 		}
