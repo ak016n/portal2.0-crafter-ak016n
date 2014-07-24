@@ -1,14 +1,11 @@
 package com.att.developer.security;
 
 
-import java.util.List;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.acls.domain.AuditLogger;
 import org.springframework.security.acls.model.AccessControlEntry;
-import org.springframework.security.acls.model.Sid;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.Assert;
 
@@ -42,68 +39,29 @@ public class EventLogAuditLogger implements AuditLogger {
 	
 	public void logIfNeeded(boolean granted, AccessControlEntry ace) {
 		Assert.notNull(ace, "AccessControlEntry required");
-		User actor = getActor();
-
-		StringBuilder aclMessage = new StringBuilder();
+		SessionUser sessionUser = (SessionUser)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		User actor = sessionUser.getUser();
 		
+		if (granted) {
+			logger.debug("***GRANTED due to ACE: {} for ACL {} ", ace, ace.getAcl());
+		} else if (!granted) {
+			logger.debug("***DENIED due to ACE: {} for ACL {} ", ace, ace.getAcl());
+		}
+		
+		this.writeEvent(actor, ace, granted);
+	}
+
+	private void writeEvent(User actor, AccessControlEntry ace, boolean granted){
 		EventType eventType = EventType.ACL_ACCESS_DENIED;
 		if(granted){
 			eventType = EventType.ACL_ACCESS_ALLOWED;
-			aclMessage.append("***GRANTED due to ACE: " + ace + " for ACL " + ace.getAcl());
-		}
-		else{
-			aclMessage.append("***DENIED due to ACE: " + ace + " for ACL " + ace.getAcl());
 		}
 		
-		logger.debug(aclMessage.toString());
+		String aclInfo = "ace is " + ace + " for acl " + ace.getAcl();
+		EventLog eventLog = new EventLog(actor.getId(), actor.getId(), null, eventType, aclInfo, ActorType.DEV_PROGRAM_USER, null);
 		
-		
-		eventTrackingService.writeEvent(new EventLog(actor.getId(), actor.getId(), null, eventType, aclMessage.toString(), ActorType.DEV_PROGRAM_USER, null));
+		eventTrackingService.writeEvent(eventLog);
 	}
-
-	
-	public void logIfNeededAllDenied(List<AccessControlEntry> aces, List<Sid> sids){
-		Assert.notNull(aces, "AccessControlEntry List required");
-		User actor = getActor();
-		StringBuilder aclMessage = new StringBuilder();
-		
-		
-		aclMessage.append("***DENIED access to:  ");
-		boolean foundMatch = false;
-		int i = 0;
-		for(AccessControlEntry ace : aces){
-			if(i == 0){
-				aclMessage.append("\n\n");
-				aclMessage.append(ace.getAcl().getObjectIdentity());
-				aclMessage.append("\n\n");
-			}
-			for(Sid sid : sids){
-				if(ace.getSid().equals(sid)){
-					foundMatch=true;
-					aclMessage.append("due to ACE: ");
-					aclMessage.append(ace + " for ACL " + ace.getAcl());
-					aclMessage.append("\n");
-				}
-			}
-		}
-		
-		if(!foundMatch){
-			aclMessage.append("due to NO matching Sids " + sids);
-		}
-		
-		logger.debug(aclMessage);
-
-		eventTrackingService.writeEvent(new EventLog(actor.getId(), actor.getId(), null, EventType.ACL_ACCESS_DENIED, aclMessage.toString(), ActorType.DEV_PROGRAM_USER, null));
-
-	}
-
-	
-	private User getActor(){
-		SessionUser sessionUser = (SessionUser)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		User actor = sessionUser.getUser();
-		return actor;
-	}
-	
 	
 	public void setEventTrackingService(EventTrackingService service){
 		this.eventTrackingService = service;
