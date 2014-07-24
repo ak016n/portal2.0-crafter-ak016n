@@ -16,7 +16,10 @@ public enum EventType {
 		 */
 		GLOBAL_SCOPED_PARAM_CHANGE(1, false),
 		
-		API_BUNDLE_PERMISSION_UPDATED(269, false);
+		API_BUNDLE_PERMISSION_UPDATED(269, false),
+		
+		ACL_ACCESS_ALLOWED(500, false),
+		ACL_ACCESS_DENIED(501, false);
 		
 	    private int id;
 	    private boolean critical;
