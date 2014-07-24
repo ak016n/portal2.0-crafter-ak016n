@@ -25,7 +25,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import com.att.developer.typelist.OrgRelationshipType;
 
 @Entity
-@Table(uniqueConstraints= @UniqueConstraint(columnNames = {"name"}))
+@Table(name="organization", uniqueConstraints= @UniqueConstraint(columnNames = {"name"}))
 public class Organization implements Serializable {
 	
 	private static final long serialVersionUID = 2117541682366680664L;
