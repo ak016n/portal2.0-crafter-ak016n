@@ -227,10 +227,10 @@ public class ApiBundleController {
         // Create acl_object_identity rows (and also acl_class rows as needed)
 		Set<String> objIdentitifiers = new HashSet<>();
 		objIdentitifiers.add("1Bundle");
-		objIdentitifiers.add("2Bundle");
-		objIdentitifiers.add("3Bundle");
-		objIdentitifiers.add("6BundleStringIdentifier");
-
+//		objIdentitifiers.add("2Bundle");
+//		objIdentitifiers.add("3Bundle");
+//		objIdentitifiers.add("6BundleStringIdentifier");
+//
 		for(String identifier : objIdentitifiers){
 			this.permissionManager.createAcl(ApiBundle.class, identifier);
 		}
@@ -242,21 +242,21 @@ public class ApiBundleController {
 		User leonard = new User();
 		leonard.setId("2_leonard");
 		
-		permissionManager.grantPermissions(ApiBundle.class, "6BundleStringIdentifier",  penny, BasePermission.WRITE);
+//		permissionManager.grantPermissions(ApiBundle.class, "6BundleStringIdentifier",  penny, BasePermission.WRITE);
 		
-		permissionManager.grantPermissions(ApiBundle.class, "1Bundle", penny, BasePermission.ADMINISTRATION);
+//		permissionManager.grantPermissions(ApiBundle.class, "1Bundle", penny, BasePermission.ADMINISTRATION);
 		permissionManager.grantPermissions(ApiBundle.class, "1Bundle", leonard, BasePermission.READ);
         
 
-        permissionManager.grantPermissions(ApiBundle.class, "2Bundle", penny, new CumulativePermission().set(BasePermission.WRITE).set(BasePermission.READ));
-        permissionManager.grantPermissions(ApiBundle.class, "3Bundle", leonard, BasePermission.WRITE);
-        
-        
-        //owner block
-        permissionManager.changeOwner(ApiBundle.class, "1Bundle", penny);
-        permissionManager.changeOwner(ApiBundle.class, "2Bundle", penny);
-        permissionManager.changeOwner(ApiBundle.class, "3Bundle", penny);
-        permissionManager.changeOwner(ApiBundle.class, "6BundleStringIdentifier", penny);
+//        permissionManager.grantPermissions(ApiBundle.class, "2Bundle", penny, new CumulativePermission().set(BasePermission.WRITE).set(BasePermission.READ));
+//        permissionManager.grantPermissions(ApiBundle.class, "3Bundle", leonard, BasePermission.WRITE);
+//        
+//        
+//        //owner block
+//        permissionManager.changeOwner(ApiBundle.class, "1Bundle", penny);
+//        permissionManager.changeOwner(ApiBundle.class, "2Bundle", penny);
+//        permissionManager.changeOwner(ApiBundle.class, "3Bundle", penny);
+//        permissionManager.changeOwner(ApiBundle.class, "6BundleStringIdentifier", penny);
     	
     	return "jsp/apiBundle/resultpage.jsp"; 
     }
