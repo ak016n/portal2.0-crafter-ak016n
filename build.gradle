@@ -133,7 +133,7 @@ check.dependsOn integrationTest
 def loadEnvSpecificConfig() {
 	def environment = project.hasProperty("env") ? project.env : "local"
 	println "Environment is set to $environment"
-	def envSpecFile = file("/config/env.json")
+	def envSpecFile = file("config/env.json")
 	def slurper = new groovy.json.JsonSlurper();
 	def config = slurper.parseText(envSpecFile.text)
 	def prop = config[environment]
