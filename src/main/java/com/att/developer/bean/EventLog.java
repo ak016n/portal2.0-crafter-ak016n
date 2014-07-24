@@ -1,7 +1,9 @@
 package com.att.developer.bean;
 
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.Date;
+import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -126,13 +128,21 @@ public class EventLog implements Serializable {
 		this.transactionId = transactionId;
 	}
 
-	public Date getCreatedOn() {
-		return createdOn;
-	}
+	
+    public Instant getCreatedOn() {
+        return createdOn != null ? createdOn.toInstant() : null;
+    }
 
-	public void setCreatedOn(Date createdOn) {
-		this.createdOn = createdOn;
-	}
+    
+    public void setCreatedOn(Instant created) {
+        if(createdOn != null){
+            this.createdOn = Date.from(created);
+        }
+        else{
+            this.createdOn = null;
+        }
+    }
+
 
 	public String toString() {
 		return new ToStringBuilder(this).append("orgId", this.orgId)
@@ -145,4 +155,24 @@ public class EventLog implements Serializable {
 				.toString();
 	}
 
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(this.id);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj){
+			return true;
+		}
+		if (obj == null){
+			return false;
+		}
+		if (getClass() != obj.getClass()){
+			return false;
+		}
+		EventLog other = (EventLog) obj;
+		return Objects.equals(id, other.id);
+	}
+	
 }
