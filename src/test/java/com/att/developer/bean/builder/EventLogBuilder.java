@@ -1,5 +1,6 @@
 package com.att.developer.bean.builder;
 
+import java.time.Instant;
 import java.util.Date;
 
 import com.att.developer.bean.EventLog;
@@ -18,7 +19,7 @@ public class EventLogBuilder {
 			eventLog.setInfo("comment");
 			eventLog.setOrgId("big bang");
 			eventLog.setTransactionId("nimoy");
-			eventLog.setCreatedOn(new Date());
+			eventLog.setCreatedOn(Instant.now());
 		}
 		
 		public EventLogBuilder withVanillaEventLog() {
