@@ -166,7 +166,7 @@ public class Organization implements Serializable {
             for (User user : users) {
             	if(user.getRoles() != null){
 	                for (Role role : user.getRoles()) {
-	                    if (Role.ROLE_ID_ORG_ADMIN.equals(role.getId())) {
+	                    if (Role.ROLE_NAME_ORG_ADMIN.equals(role.getName())) {
 	                        return user;
 	                    }
 	                }

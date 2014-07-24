@@ -21,6 +21,11 @@ public class RoleBuilder {
 		return this;
 	}
 	
+	public RoleBuilder withName(String n){
+		role.setName(n);
+		return this;
+	}
+	
 	public Role build() {
 		return role;
 	}
