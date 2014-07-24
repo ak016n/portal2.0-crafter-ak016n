@@ -6,7 +6,6 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.acls.domain.AuditLogger;
 import org.springframework.security.acls.model.AccessControlEntry;
-import org.springframework.security.acls.model.Acl;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.Assert;
 

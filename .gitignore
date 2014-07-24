@@ -9,3 +9,4 @@
 /tmlog*.log
 /.metadata
 /activemq-data
+/logs
