@@ -14,6 +14,8 @@ ext {
  	hibernateVersion = "4.3.4.Final"
  	atomikosVersion = "3.9.3"
  	activeMqVersion = "5.10.0"
+ 	slf4jVersion="1.7.7"
+ 	log4jVersion="2.0"
  	mysqlVersion = mysqlVersion_ext // refer below buildScript block, to modify shared variable
 }
 
@@ -88,15 +90,19 @@ dependencies {
 	
 	providedCompile "javax.transaction:javax.transaction-api:1.2"
 	providedCompile "com.atomikos:transactions-hibernate3:3.9.3"
-	providedCompile "org.slf4j:jcl-over-slf4j:1.7.6"
+	providedCompile "org.slf4j:jcl-over-slf4j:${slf4jVersion}"
 	providedCompile "mysql:mysql-connector-java:${mysqlVersion}"
 	providedCompile "org.apache.activemq:activemq-all:${activeMqVersion}"
 	providedCompile "javax.servlet:javax.servlet-api:3.1.0", "javax.servlet:jsp-api:2.0"
 	providedCompile "commons-pool:commons-pool:1.6"
 	
+	
 	compile "org.apache.commons:commons-lang3:3.3"
-	compile "org.slf4j:slf4j-api:1.7.6"
-	compile "org.slf4j:slf4j-log4j12:1.7.6"
+	compile "org.slf4j:slf4j-api:${slf4jVersion}"
+	compile "org.slf4j:slf4j-log4j12:${slf4jVersion}"
+	compile "org.apache.logging.log4j:log4j-1.2-api:${log4jVersion}"
+	compile "org.apache.logging.log4j:log4j-slf4j-impl:${log4jVersion}"
+	
 	compile "org.hibernate:hibernate-validator:5.1.0.Final"
 	compile "javax.inject:javax.inject:1"
 	compile "com.fasterxml.jackson.core:jackson-databind:2.3.2"
