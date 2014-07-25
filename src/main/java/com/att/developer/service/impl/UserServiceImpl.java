@@ -24,6 +24,7 @@ public class UserServiceImpl implements UserService {
 		return userDAO.loadUserByEmail(email);
 	}
 	
+	@Override
 	public User getUser(User user) {
 		return userDAO.load(user);
 	}
