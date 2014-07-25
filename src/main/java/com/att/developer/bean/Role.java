@@ -25,6 +25,7 @@ public class Role implements Serializable{
 	
     // user level key roles
     public static final String ROLE_NAME_ORG_ADMIN = "OrganizationAdminAccess";
+    public static final String ROLE_NAME_SYS_ADMIN = "ROLE_SYS_ADMIN";
 	
 	public Role() {
 		this.setId(java.util.UUID.randomUUID().toString());
