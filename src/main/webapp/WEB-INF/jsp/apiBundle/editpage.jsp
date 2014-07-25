@@ -37,6 +37,7 @@
 	</table>
 	
 	<input type="submit" value="Save" />
+	to string : ${postAttribute}
 </form:form>
 
 </body>

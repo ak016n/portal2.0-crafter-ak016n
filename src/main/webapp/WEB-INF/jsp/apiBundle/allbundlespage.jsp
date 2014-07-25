@@ -17,9 +17,9 @@
 </p>
 
 <hr/>
-<div style="width: 900px" >
+<div style="width: 1200px" >
 	<div>
-		<table style="border: 1px solid; width: 900px; text-align:center">
+		<table style="border: 1px solid; width: 1200px; text-align:center" border="1">
 			<caption>Public Posts</caption>
 			<thead style="background:#fcf">
 				<tr>
@@ -30,7 +30,7 @@
 					<th>end date</th>
 					<th>last updated</th>
 					<th>created on</th>
-					<th colspan="2">actions</th>
+					<th colspan="4">actions</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -38,6 +38,7 @@
 											
 				<c:url var="editUrl" value="/apiBundle/edit?id=${bundle.id}" />
 				<c:url var="deleteUrl" value="/apiBundle/delete?id=${bundle.id}" />
+				<c:url var="grantPermissionUrl" value="/apiBundle/grantPermission"/>
 				<tr>
 					<td>${bundle.id}</td>
 					<td>${bundle.name}</td>
@@ -48,6 +49,19 @@
 					<td>${bundle.createdOn}</td>
 					<td><a href="${editUrl}">Edit</a></td>
 					<td><a href="${deleteUrl}">Delete</a></td>
+					<td>
+						<form action="${grantPermissionUrl}" method="post">
+							<input type="hidden" name="id" value="${bundle.id}"/>
+							orgId: <input type="text" name="orgId" />
+							<input type="submit" value="grantPermission">
+						</form>
+					</td>
+					
+					<td>
+						<c:forEach items="${bundle.accessControleEntries}" var="ace">
+							${ace.sid} : ${ace.permission}
+						</c:forEach>
+					</td>
 				</tr>
 			</c:forEach>
 			
