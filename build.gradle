@@ -6,6 +6,7 @@ apply plugin: "eclipse-wtp"
 apply plugin: "groovy"
 apply plugin: "tomcat"
 apply plugin: "java"
+apply plugin: "jacoco"
 
 ext {
  	springVersion = "4.0.6.RELEASE"
@@ -17,6 +18,10 @@ ext {
  	slf4jVersion="1.7.7"
  	log4jVersion="2.0"
  	mysqlVersion = mysqlVersion_ext // refer below buildScript block, to modify shared variable
+}
+
+jacoco {
+	toolVersion = "0.7.0.201403182114"
 }
 
 targetCompatibility = 1.8
@@ -126,6 +131,16 @@ task integrationTest(type: Test, dependsOn: jar) {
 	testClassesDir = sourceSets.integration.output.classesDir
 	classpath = sourceSets.integration.runtimeClasspath
 	systemProperties["jar.path"] = jar.archivePath
+	
+	jacoco {
+		excludes = ["com.att.developer.**.*Test*", "com.att.developer.config.IntegrationContext*"]
+	}
+}
+
+test {
+	jacoco {
+		excludes = ["com.att.developer.**.*Test*", "com.att.developer.bean.builder.*"]
+	}
 }
 
 check.dependsOn integrationTest
@@ -191,6 +206,13 @@ tomcat {
 	stopPort=9008
 	enableSSL = false
 }
+
+task jacocoIntegrationTestReport(type: JacocoReport) {
+	sourceSets sourceSets.main
+	executionData integrationTest
+}
+
+
 
 /*eclipse {
 	classpath {
