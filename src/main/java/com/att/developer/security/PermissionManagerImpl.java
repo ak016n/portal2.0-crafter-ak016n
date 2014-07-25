@@ -209,4 +209,15 @@ public class PermissionManagerImpl implements PermissionManager {
 		});
 	}
 	
+	
+	public void setTransactionTemplate(TransactionTemplate tTemplate){
+		this.transactionTemplate = tTemplate;
+	}
+
+
+	public void setMutableAclService(MutableAclService svc) {
+		this.mutableAclService = svc;
+	}
+	
+	
 }
