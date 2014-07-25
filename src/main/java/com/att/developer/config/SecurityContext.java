@@ -130,7 +130,8 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
 	
 	@Bean
 	protected AclAuthorizationStrategy aclAuthorizationStrategy(){
-		return new AclAuthorizationStrategyImpl(new SimpleGrantedAuthority("ADMINISTRATOR"));
+		//controls who can grant and remove permissions
+		return new AclAuthorizationStrategyImpl(new SimpleGrantedAuthority("ROLE_SYS_ADMIN"));
 	}
 	
 
