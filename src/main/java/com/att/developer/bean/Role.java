@@ -1,5 +1,6 @@
 package com.att.developer.bean;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 import javax.persistence.Entity;
@@ -10,7 +11,12 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 
 @Entity
 @Table(name="role")
-public class Role {
+public class Role implements Serializable{
+	
+	
+	private static final long serialVersionUID = 595161116378001109L;
+	
+	
 	@Id
 	private String id;
 	private String name;

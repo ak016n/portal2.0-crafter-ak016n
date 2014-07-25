@@ -1,26 +1,35 @@
 package com.att.developer.bean;
 
+import java.io.Serializable;
 import java.time.Instant;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.springframework.security.acls.model.AccessControlEntry;
 
 
 /**
- * Internally the Dates are still the old java.util.Date class.  We will not change this until JPA starts supporting the new java.time.Instant type.
+ * Internally the Dates are still the old java.util.Date class.  We will not change this until JPA 
+ * starts supporting the new java.time.Instant type.
+ * 
  * @author so1234
  *
  */
 @Entity
 @Table(name = "api_bundle")
-public class ApiBundle {
+public class ApiBundle implements Serializable{
 	
+
+	private static final long serialVersionUID = 5819138290519388791L;
+
 	@Id	
 	private String id;
 	
@@ -39,7 +48,9 @@ public class ApiBundle {
 	
 	@Column(name = "last_updated")
 	private Date lastUpdated;
-	
+
+	@Transient
+	private List<AccessControlEntry> accessControleEntries;
 
 	public ApiBundle() {
 	
@@ -127,6 +138,18 @@ public class ApiBundle {
 		this.lastUpdated = Date.from(last);
 	}
 	
+	/**
+	 * Safe, ace instances not mutable.
+	 * @return
+	 */
+	public List<AccessControlEntry> getAccessControleEntries() {
+		return accessControleEntries;
+	}
+	
+	
+	public void setAccessControleEntries(List<AccessControlEntry> aces) {
+		this.accessControleEntries = aces;
+	}
 	
 	public String toString() {
 		return new ToStringBuilder(this)
@@ -137,6 +160,7 @@ public class ApiBundle {
 				.append("name", this.name)
 				.append("lastUpdated", this.lastUpdated)
 				.append("createdOn", this.createdOn)
+				.append("aces", this.accessControleEntries)
 				.toString();
 	}
 

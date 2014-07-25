@@ -29,6 +29,7 @@ import com.att.developer.typelist.UserStateType;
 @Entity
 @Table(name = "user")
 public class User implements Serializable {
+	
 	private static final long serialVersionUID = -4130170797253136478L;
 	
 	@Id
