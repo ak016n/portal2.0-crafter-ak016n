@@ -90,4 +90,14 @@ public class ApiBundleServiceImpl implements ApiBundleService {
 		
 		permissionManager.grantPermissions(ApiBundle.class, apiBundle.getId(), org, new CumulativePermission().set(BasePermission.WRITE).set(BasePermission.READ));
 	}
+	
+	
+	@Override
+	public void removeAllPermissions(ApiBundle apiBundle, Organization org){
+		ApiBundle reloadedBundle = apiBundleDAO.load(apiBundle);
+		Assert.notNull(reloadedBundle, "apiBundle passed in was not found in database, do *not* grant permissions to it. id : " + apiBundle.getId());
+		
+		permissionManager.removeAllPermissionForObject(ApiBundle.class, apiBundle.getId(), org);
+		
+	}
 }

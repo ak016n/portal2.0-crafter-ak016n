@@ -149,12 +149,33 @@ public class PermissionManagerImpl implements PermissionManager {
 	public void removeAllPermissionForObject(Class<?> type, String identifier, Organization org){
 		ObjectIdentity objId = new ObjectIdentityImpl(type, identifier);
 		List<Sid> sids = new ArrayList<>();
-		sids.add(new GrantedAuthoritySid(org.getId()));
+		Sid grantedAuthoritySid = new GrantedAuthoritySid(org.getId()); 
+		sids.add(grantedAuthoritySid);
 		AclImpl acl = (AclImpl)mutableAclService.readAclById(objId, sids);
 		List<AccessControlEntry> aces = acl.getEntries();
-		for(int i = aces.size(); i>=0; i--){
-			acl.deleteAce(0);
+		List<Integer> locationOfMatches = new ArrayList<>();
+		int location = 0;
+		int acesSize = aces.size()-1;
+		for(int i = acesSize; i >= 0; i--){
+			AccessControlEntry ace = aces.get(i);
+			if(ace.getSid().equals(grantedAuthoritySid)){
+				acl.deleteAce(i);
+			}
 		}
+		
+//		for(AccessControlEntry ace : aces){
+//			if(ace.getSid().equals(grantedAuthoritySid)){
+//				locationOfMatches.add(location++);
+//				
+//			}
+//		}
+		
+
+		
+//		for(int i = aces.size(); i>0; i--){
+//			acl.deleteAce(0);
+//		}
+		
 		updateAclInTransaction(acl);
 	}
 	

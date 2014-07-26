@@ -5,11 +5,11 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Insert title here</title>
+<title>List Bundles</title>
 </head>
 <body>
 
-<h1>Bulletin Page</h1>
+<h1>List Bundles Page</h1>
 
 <p>
 <span style="font-weight:bold">Current user: </span>${username}<br/>
@@ -39,6 +39,7 @@
 				<c:url var="editUrl" value="/apiBundle/edit?id=${bundle.id}" />
 				<c:url var="deleteUrl" value="/apiBundle/delete?id=${bundle.id}" />
 				<c:url var="grantPermissionUrl" value="/apiBundle/grantPermission"/>
+				<c:url var="removePermissionUrl" value="/apiBundle/removePermission"/>
 				<tr>
 					<td>${bundle.id}</td>
 					<td>${bundle.name}</td>
@@ -56,7 +57,13 @@
 							<input type="submit" value="grantPermission">
 						</form>
 					</td>
-					
+					<td>
+						<form action="${removePermissionUrl}" method="post">
+							<input type="hidden" name="id" value="${bundle.id}"/>
+							orgId: <input type="text" name="orgId" />
+							<input type="submit" value="removePermissions">
+						</form>
+					</td>					
 					<td>
 						<c:forEach items="${bundle.accessControleEntries}" var="ace">
 							${ace.sid} : ${ace.permission}

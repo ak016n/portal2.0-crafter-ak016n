@@ -260,6 +260,7 @@ public class ApiBundleController {
     	return "jsp/apiBundle/resultpage.jsp"; 
     }
 	
+    
     @RequestMapping(value="/grantPermission", method=RequestMethod.POST)
     public String grantPermission(Model model, @RequestParam(value="id", required=true) String id, @RequestParam(value="orgId", required=true) String orgId){
     	
@@ -269,6 +270,34 @@ public class ApiBundleController {
     	Organization org = new Organization();
     	org.setId(orgId);
     	apiBundleService.grantPermission(new ApiBundle(id), org);
+
+    	
+		User penny = new User();
+		penny.setId("3_penny");
+		
+		User leonard = new User();
+		leonard.setId("2_leonard");
+		
+		permissionManager.grantPermissions(ApiBundle.class, "1Bundle", penny, BasePermission.ADMINISTRATION);
+		permissionManager.grantPermissions(ApiBundle.class, "1Bundle", leonard, BasePermission.READ);
+
+    	
+    	model.addAttribute("result", "Permission has been granted successfully ! " + id);
+	
+    	
+    	return "jsp/apiBundle/resultpage.jsp";
+    }
+    
+    
+    @RequestMapping(value="/removePermission", method=RequestMethod.POST)
+    public String removePermission(Model model, @RequestParam(value="id", required=true) String id, @RequestParam(value="orgId", required=true) String orgId){
+    	
+       	model.addAttribute("source", "grantPermission");
+    	model.addAttribute("role", SecurityContextHolder.getContext().getAuthentication().getAuthorities());
+    	model.addAttribute("username", SecurityContextHolder.getContext().getAuthentication().getName());
+    	Organization org = new Organization();
+    	org.setId(orgId);
+    	apiBundleService.removeAllPermissions(new ApiBundle(id), org);
     	
     	
     	model.addAttribute("result", "Permission has been granted successfully ! " + id);
