@@ -8,7 +8,22 @@ public class LoginSecurityDetails {
     private int numberOfInvalidLoginAttempts;
     private User user;
 
-    public int getNumberOfInvalidLoginAttempts() {
+    
+    public LoginSecurityDetails() {
+    }
+
+    public LoginSecurityDetails(boolean isAccountLocked,
+			boolean isWarnAccountLock, String errorMessage,
+			int numberOfInvalidLoginAttempts, User user) {
+		super();
+		this.isAccountLocked = isAccountLocked;
+		this.isWarnAccountLock = isWarnAccountLock;
+		this.errorMessage = errorMessage;
+		this.numberOfInvalidLoginAttempts = numberOfInvalidLoginAttempts;
+		this.user = user;
+	}
+
+	public int getNumberOfInvalidLoginAttempts() {
         return numberOfInvalidLoginAttempts;
     }
     
