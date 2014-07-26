@@ -39,7 +39,10 @@ public class AdminController {
 	@Inject
 	private GlobalScopedParamService globalScopedParamService;
 	
-	
+	public void setGlobalScopedParamService(GlobalScopedParamService globalScopedParamService) {
+		this.globalScopedParamService = globalScopedParamService;
+	}
+
 	@RequestMapping(value="/{itemKey}/{fieldKey}", method = RequestMethod.GET)
 	public AttProperties getProperty(@PathVariable("itemKey") String itemKey, @PathVariable("fieldKey") String fieldKey, @RequestParam(value="version", required=false) String version) {
 		
@@ -177,6 +180,15 @@ public class AdminController {
 		ServerSideErrors errorColl = new ServerSideErrors();
 		
 		AttProperties lclAttProperties = getProperty(itemKey, fieldKey, null);
+		
+		if(lclAttProperties == null) {
+			ServerSideError error = new ServerSideError.Builder()
+			.id("ssGeneralError")
+			.message("Non-existing account")
+			.build();
+			throw new ServerSideException(errorColl.add(error));
+		}
+		
 		try {
 			lclAttProperties = globalScopedParamService.deleteProperties(lclAttProperties);
 		} catch (DAOException e) {
@@ -193,7 +205,7 @@ public class AdminController {
     private User getUserFromSecurityContext() {
     	User user = null;
     	Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-    	if(!(auth instanceof AnonymousAuthenticationToken)) {
+    	if(auth!= null && !(auth instanceof AnonymousAuthenticationToken)) {
     		SessionUser userDetails = (SessionUser) auth.getPrincipal();
     		user = userDetails.getUser();
     	}

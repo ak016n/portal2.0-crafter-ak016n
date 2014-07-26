@@ -139,7 +139,7 @@ task integrationTest(type: Test, dependsOn: jar) {
 
 test {
 	jacoco {
-		excludes = ["com.att.developer.**.*Test*", "com.att.developer.bean.builder.*"]
+		excludes = ["com.att.developer.**.*Test*", "com.att.developer.bean.builder.*", "com.att.developer.config.*"]
 	}
 }
 
