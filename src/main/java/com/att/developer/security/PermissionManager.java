@@ -1,7 +1,9 @@
 package com.att.developer.security;
 
 import java.io.Serializable;
+import java.util.List;
 
+import org.springframework.security.acls.model.AccessControlEntry;
 import org.springframework.security.acls.model.Permission;
 
 import com.att.developer.bean.Organization;
@@ -24,5 +26,9 @@ public interface PermissionManager {
 	public void createAclWithPermissionsAndOwner(Class<?> type, String identifier, Organization ownerAndPermissionHolder, Permission permission);
 
 	public void createAclWithPermissionsAndOwner(Class<?> type, String identifier, User ownerAndPermissionHolder, Permission permission);
+
+	public List<AccessControlEntry> getAccessControlEntries(Class<?> type, String identifier);
+
+	public void removeAllPermissionForObject(Class<?> type, String identifier, Organization org);
 
 }

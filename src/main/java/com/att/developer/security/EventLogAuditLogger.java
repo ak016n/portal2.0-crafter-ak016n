@@ -64,7 +64,7 @@ public class EventLogAuditLogger implements AuditLogger {
 		boolean foundMatch = false;
 		int i = 0;
 		for (AccessControlEntry ace : aces) {
-			if (i == 0) {
+			if (i++ == 0) {
 				aclMessage.append("\n\n");
 				aclMessage.append(ace.getAcl().getObjectIdentity());
 				aclMessage.append("\n\n");

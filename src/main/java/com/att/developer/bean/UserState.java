@@ -1,5 +1,6 @@
 package com.att.developer.bean;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 import javax.persistence.Column;
@@ -13,7 +14,12 @@ import com.att.developer.typelist.UserStateType;
 
 @Entity
 @Table(name="state")
-public class UserState {
+public class UserState implements Serializable {
+	
+	
+	private static final long serialVersionUID = 6665638242150942277L;
+
+	
 	@Id
 	private String id;
 	

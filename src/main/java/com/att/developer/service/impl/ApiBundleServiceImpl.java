@@ -9,6 +9,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.security.acls.domain.CumulativePermission;
+import org.springframework.security.acls.model.AccessControlEntry;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
@@ -36,24 +37,33 @@ public class ApiBundleServiceImpl implements ApiBundleService {
 	}
 
 	@Override
-	public ApiBundle getSingle(String id) {
+	public ApiBundle getApiBundle(String id) {
 		logger.debug("getting for id {} ", id);
-		return apiBundleDAO.load(new ApiBundle(id));
+		List<AccessControlEntry> accessControlEntries = this.permissionManager.getAccessControlEntries(ApiBundle.class, id);
+		ApiBundle loadedBundle = apiBundleDAO.load(new ApiBundle(id));
+		loadedBundle.setAccessControleEntries(accessControlEntries);
+		return loadedBundle;
 	}
 
 	@Override
 	public List<ApiBundle> getAll() {
-		return apiBundleDAO.getAll();
+		List<ApiBundle> apiBundles = apiBundleDAO.getAll();
+		if(apiBundles != null){
+			for(ApiBundle bundle : apiBundles){
+				List<AccessControlEntry> accessControlEntries = this.permissionManager.getAccessControlEntries(ApiBundle.class, bundle.getId());
+				bundle.setAccessControleEntries(accessControlEntries);
+			}
+		}
+		return apiBundles;
 	}
 
 	@Override
-	public ApiBundle create(ApiBundle bean, User user) {
-		logger.debug("trying to create the bundle " + bean);
-		
+	public ApiBundle create(ApiBundle bundle, User user) {
+		logger.debug("trying to create the bundle " + bundle);
 		Assert.notNull(user, "User cannot be null when creating bundle");
-		Assert.notNull(user.getDefaultOrganization(), "User must be part of an organization to create a bundle");
-		permissionManager.createAclWithPermissionsAndOwner(bean.getClass(), bean.getId(), user, BasePermission.ADMINISTRATION);
-		return apiBundleDAO.create(bean);
+		
+		permissionManager.createAclWithPermissionsAndOwner(bundle.getClass(), bundle.getId(), user, BasePermission.ADMINISTRATION);
+		return apiBundleDAO.create(bundle);
 	}
 
 	@Override
@@ -73,6 +83,11 @@ public class ApiBundleServiceImpl implements ApiBundleService {
 	 */
 	@Override
 	public void grantPermission(ApiBundle apiBundle, Organization org) {
+		//TODO: put in 'strict' switch to toggle on or off  
+		//load bundle to make sure it really exists
+		ApiBundle reloadedBundle = apiBundleDAO.load(apiBundle);
+		Assert.notNull(reloadedBundle, "apiBundle passed in was not found in database, do *not* grant permissions to it. id : " + apiBundle.getId());
+		
 		permissionManager.grantPermissions(ApiBundle.class, apiBundle.getId(), org, new CumulativePermission().set(BasePermission.WRITE).set(BasePermission.READ));
 	}
 }

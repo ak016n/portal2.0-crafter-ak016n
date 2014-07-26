@@ -31,6 +31,7 @@ import org.springframework.security.config.annotation.web.servlet.configuration.
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
+import com.att.developer.bean.Role;
 import com.att.developer.security.AttPasswordEncoder;
 import com.att.developer.security.CustomAclLookupStrategy;
 import com.att.developer.security.CustomPermissionGrantingStrategy;
@@ -130,7 +131,8 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
 	
 	@Bean
 	protected AclAuthorizationStrategy aclAuthorizationStrategy(){
-		return new AclAuthorizationStrategyImpl(new SimpleGrantedAuthority("ADMINISTRATOR"));
+		//controls who can grant and remove permissions
+		return new AclAuthorizationStrategyImpl(new SimpleGrantedAuthority(Role.ROLE_NAME_SYS_ADMIN));
 	}
 	
 
