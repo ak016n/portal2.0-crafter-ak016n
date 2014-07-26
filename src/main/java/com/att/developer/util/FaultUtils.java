@@ -50,7 +50,7 @@ public class FaultUtils {
      * To keep the generated full path Binding ID consistent with other JSR 303 IDs
      */
     public static String convertFirstLetterToCaps(String str) {
-        return StringUtils.overlay(str, StringUtils.upperCase(str.charAt(0) + StringUtils.EMPTY), 0, 1);
+        return StringUtils.isNotBlank(str) ? StringUtils.overlay(str, StringUtils.upperCase(str.charAt(0) + StringUtils.EMPTY), 0, 1) : null;
     }
 
     /**
