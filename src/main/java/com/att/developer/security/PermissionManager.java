@@ -21,7 +21,7 @@ public interface PermissionManager {
 
 	public void changeOwner(Class<?> type, String identifier, User newOwner);
 	
-	public void deletePermissionsForObject(Class<?> type, String identifier);
+	public void deleteAllPermissionsForObject(Class<?> type, String identifier);
 
 	public void createAclWithPermissionsAndOwner(Class<?> type, String identifier, Organization ownerAndPermissionHolder, Permission permission);
 
@@ -29,6 +29,6 @@ public interface PermissionManager {
 
 	public List<AccessControlEntry> getAccessControlEntries(Class<?> type, String identifier);
 
-	public void removeAllPermissionForObject(Class<?> type, String identifier, Organization org);
+	public void removeAllPermissionForObjectForOrganization(Class<?> type, String identifier, Organization org);
 
 }

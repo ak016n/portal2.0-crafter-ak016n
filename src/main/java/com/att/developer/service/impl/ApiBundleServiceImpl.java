@@ -73,7 +73,7 @@ public class ApiBundleServiceImpl implements ApiBundleService {
 
 	@Override
 	public void delete(ApiBundle apiBundle) {
-		permissionManager.deletePermissionsForObject(apiBundle.getClass(), apiBundle.getId());
+		permissionManager.deleteAllPermissionsForObject(apiBundle.getClass(), apiBundle.getId());
 		apiBundleDAO.delete(apiBundle);
 	}
 	
@@ -97,7 +97,7 @@ public class ApiBundleServiceImpl implements ApiBundleService {
 		ApiBundle reloadedBundle = apiBundleDAO.load(apiBundle);
 		Assert.notNull(reloadedBundle, "apiBundle passed in was not found in database, do *not* grant permissions to it. id : " + apiBundle.getId());
 		
-		permissionManager.removeAllPermissionForObject(ApiBundle.class, apiBundle.getId(), org);
+		permissionManager.removeAllPermissionForObjectForOrganization(ApiBundle.class, apiBundle.getId(), org);
 		
 	}
 }

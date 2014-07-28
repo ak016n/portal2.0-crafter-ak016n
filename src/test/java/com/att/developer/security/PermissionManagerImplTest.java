@@ -21,6 +21,7 @@ import org.springframework.security.acls.domain.ObjectIdentityImpl;
 import org.springframework.security.acls.domain.PrincipalSid;
 import org.springframework.security.acls.model.AccessControlEntry;
 import org.springframework.security.acls.model.Acl;
+import org.springframework.security.acls.model.MutableAcl;
 import org.springframework.security.acls.model.MutableAclService;
 import org.springframework.security.acls.model.ObjectIdentity;
 import org.springframework.security.acls.model.PermissionGrantingStrategy;
@@ -41,6 +42,8 @@ import com.att.developer.bean.User;
 import com.att.developer.bean.builder.OrganizationBuilder;
 import com.att.developer.bean.builder.RoleBuilder;
 import com.att.developer.bean.builder.UserBuilder;
+import com.att.developer.service.OrganizationService;
+import com.att.developer.service.UserService;
 
 
 public class PermissionManagerImplTest {
@@ -87,20 +90,89 @@ public class PermissionManagerImplTest {
 		SecurityContextHolder.getContext().setAuthentication(authRequest);
 	}
 	
+	
 	@Test
-	public void testCreateAcl() {
+	public void testCreateAcl(){
+		permissionMgr.createAcl(ApiBundle.class, "UniqueBundleIdentifier");
+		Mockito.verify(mockMutableAclService, Mockito.times(1)).createAcl(Mockito.any(ObjectIdentity.class));
+	}
+	
+	
+	@Test
+	public void testCreateAclWithPermissionsAndOwnerForUser() {
 		Role adminRole = new RoleBuilder().withName(Role.ROLE_NAME_SYS_ADMIN).build();
 		User ownerAndPermissionHolderUser = new UserBuilder().withRole(adminRole).build();
 		Mockito.when(mockMutableAclService.readAclById(Mockito.any(ObjectIdentity.class))).thenReturn(mockAclImpl);
 		permissionMgr.createAclWithPermissionsAndOwner(ApiBundle.class, "UniqueBundleIdentifier", ownerAndPermissionHolderUser, BasePermission.ADMINISTRATION);
 		Mockito.verify(mockMutableAclService, Mockito.times(1)).createAcl(Mockito.any(ObjectIdentity.class));
-		//TODO: Finish verifying mocks called.
-//		Assert.fail("Not yet implemented");
+		//two interactions, one for changing owner, one for granting permission
+		Mockito.verify(mockMutableAclService, Mockito.times(2)).updateAcl(Mockito.any(MutableAcl.class));
+	}
+
+	@Test
+	public void testCreateAclWithPermissionsAndOwnerForOrganization() {
+		Organization ownerAndPermissionHolderOrg = new OrganizationBuilder().build();
+		Mockito.when(mockMutableAclService.readAclById(Mockito.any(ObjectIdentity.class))).thenReturn(mockAclImpl);
+		permissionMgr.createAclWithPermissionsAndOwner(ApiBundle.class, "UniqueBundleIdentifier", ownerAndPermissionHolderOrg, BasePermission.ADMINISTRATION);
+		Mockito.verify(mockMutableAclService, Mockito.times(1)).createAcl(Mockito.any(ObjectIdentity.class));
+		//two interactions, one for changing owner, one for granting permission
+		Mockito.verify(mockMutableAclService, Mockito.times(2)).updateAcl(Mockito.any(MutableAcl.class));
+	}
+	
+	@Test
+	public void testGrantPermissions_forOrganization(){
+		String orgIdGrantedAuthority = "ID_ORGANIZATION_GRANTED_AUTHORITY";
+		Organization org = new OrganizationBuilder().withId(orgIdGrantedAuthority).build();
+		OrganizationService mockOrgService = Mockito.mock(OrganizationService.class);
+		AclImpl aclImpl = this.buildAclImpl();
+		Mockito.when(mockMutableAclService.readAclById(Mockito.any(ObjectIdentity.class))).thenReturn(aclImpl);
+		permissionMgr.setOrganizationService(mockOrgService);
+		Mockito.when(mockOrgService.getOrganization(Mockito.any())).thenReturn(org);
+		permissionMgr.grantPermissions(ApiBundle.class, "UniqueBundleIdentifier", org, BasePermission.WRITE);
+		Mockito.verify(mockMutableAclService, Mockito.times(1)).updateAcl(Mockito.any(MutableAcl.class));
+	}
+	
+	@Test
+	public void testGrantPermissions_forOrganizationWithExistingPermission(){
+		String orgIdGrantedAuthority = "ID_ORGANIZATION_GRANTED_AUTHORITY";
+		Organization org = new OrganizationBuilder().withId(orgIdGrantedAuthority).build();
+		OrganizationService mockOrgService = Mockito.mock(OrganizationService.class);
+		AclImpl aclImpl = this.buildAclImpl();
+		Mockito.when(mockMutableAclService.readAclById(Mockito.any(ObjectIdentity.class))).thenReturn(aclImpl);
+		permissionMgr.setOrganizationService(mockOrgService);
+		Mockito.when(mockOrgService.getOrganization(Mockito.any())).thenReturn(org);
+		
+		//check previously existing permission
+		GrantedAuthoritySid grantedSid = new GrantedAuthoritySid(orgIdGrantedAuthority);
+		List<Sid> sids = new ArrayList<>();
+		sids.add(grantedSid);
+		
+		AccessControlEntryImpl acesPrincipal1 = new AccessControlEntryImpl(9, aclImpl, new PrincipalSid("somePrincipal1"), BasePermission.READ, true, false, false);
+		AccessControlEntryImpl acesGranted = new AccessControlEntryImpl(9, aclImpl, grantedSid, BasePermission.READ, true, false, false);
+		AccessControlEntryImpl acesOtherGranted = new AccessControlEntryImpl(9, aclImpl, new GrantedAuthoritySid("someOtherGrantedAuthority"), BasePermission.READ, true, false, false);
+		
+		this.insertAces(aclImpl, acesPrincipal1, acesGranted, acesOtherGranted);
+		
+		permissionMgr.grantPermissions(ApiBundle.class, "UniqueBundleIdentifier", org, BasePermission.READ);
+		//we should NEVER insert same permission again...
+		Mockito.verify(mockMutableAclService, Mockito.never()).updateAcl(Mockito.any(MutableAcl.class));
 	}
 	
 	
 	@Test
-	public void testRemovePermissions(){
+	public void testGrantPermissions_forUser(){
+		User user = new UserBuilder().build();
+		UserService mockUserService = Mockito.mock(UserService.class);
+		AclImpl aclImpl = this.buildAclImpl();
+		Mockito.when(mockMutableAclService.readAclById(Mockito.any(ObjectIdentity.class))).thenReturn(aclImpl);
+		permissionMgr.setUserService(mockUserService);
+		Mockito.when(mockUserService.getUser(Mockito.any())).thenReturn(user);
+		permissionMgr.grantPermissions(ApiBundle.class, "UniqueBundleIdentifier", user, BasePermission.WRITE);
+		Mockito.verify(mockMutableAclService, Mockito.times(1)).updateAcl(Mockito.any(MutableAcl.class));
+	}
+	
+	@Test
+	public void testRemovePermissionsForObjectForOrganization(){
 		String orgIdGrantedAuthority = "ID_ORGANIZATION_GRANTED_AUTHORITY";
 		Organization org = new OrganizationBuilder().withId(orgIdGrantedAuthority).build();
 		
@@ -108,7 +180,55 @@ public class PermissionManagerImplTest {
 		List<Sid> sids = new ArrayList<>();
 		sids.add(grantedSid);
 		
+		
+		AclImpl aclImpl = this.buildAclImpl();
+		Mockito.when(mockMutableAclService.readAclById(Mockito.any(ObjectIdentity.class), Mockito.eq(sids))).thenReturn(aclImpl);
+		
+		AccessControlEntryImpl acesPrincipal1 = new AccessControlEntryImpl(9, aclImpl, new PrincipalSid("somePrincipal1"), BasePermission.READ, true, false, false);
+		AccessControlEntryImpl acesGranted = new AccessControlEntryImpl(9, aclImpl, grantedSid, BasePermission.READ, true, false, false);
+		AccessControlEntryImpl acesOtherGranted = new AccessControlEntryImpl(9, aclImpl, new GrantedAuthoritySid("someOtherGrantedAuthority"), BasePermission.READ, true, false, false);
+		
+		this.insertAces(aclImpl, acesPrincipal1, acesGranted, acesOtherGranted);
 
+
+		permissionMgr.removeAllPermissionForObjectForOrganization(ApiBundle.class, "UniqueBundleIdentifier", org);
+		List<AccessControlEntry> acesActual = aclImpl.getEntries();
+		
+		Assert.assertEquals("Should have been 2 permissions left in the Acl.", 2, acesActual.size());
+		
+		Assert.assertFalse("acesGranted SHOULD have been removed", acesActual.contains(acesGranted));
+		
+	}
+	
+	
+	@Test
+	public void testDeleteAllPermissionsForObject(){
+		permissionMgr.deleteAllPermissionsForObject(ApiBundle.class, "UniqueBundleIdentifier");
+		Mockito.verify(mockMutableAclService, Mockito.times(1)).deleteAcl(Mockito.any(ObjectIdentity.class), Mockito.eq(false));
+	}
+	
+	
+	@Test
+	public void testGetAccessControlEntries(){
+		AclImpl aclImpl = this.buildAclImpl();
+		GrantedAuthoritySid grantedSid = new GrantedAuthoritySid("ID_ORGANIZATION_GRANTED_AUTHORITY");
+		this.insertAces(aclImpl, new AccessControlEntryImpl(9, aclImpl, grantedSid, BasePermission.READ, true, false, false));
+		Mockito.when(mockMutableAclService.readAclById(Mockito.any(ObjectIdentity.class))).thenReturn(aclImpl);
+		List<AccessControlEntry> aces = permissionMgr.getAccessControlEntries(ApiBundle.class, "UniqueBundleIdentifier");
+		Assert.assertEquals("should be only ONE ace in list", 1, aces.size());
+	}
+	
+	
+	@Test
+	public void testChangeOwnerOrganization(){
+		Mockito.when(mockMutableAclService.readAclById(Mockito.any(ObjectIdentity.class))).thenReturn(mockAclImpl);
+		permissionMgr.changeOwner(ApiBundle.class, "UniqueBundleIdentifier", new OrganizationBuilder().build());
+		Mockito.verify(mockMutableAclService, Mockito.times(1)).readAclById(Mockito.any(ObjectIdentity.class));
+		Mockito.verify(mockMutableAclService, Mockito.times(1)).updateAcl(Mockito.any(MutableAcl.class));
+	}
+	
+	
+	private AclImpl buildAclImpl(){
 		AclAuthorizationStrategy aclAuthorizationStrategy = new AclAuthorizationStrategyImpl(new SimpleGrantedAuthority(Role.ROLE_NAME_SYS_ADMIN));
 		
 		Acl parentAcl = null;
@@ -118,30 +238,17 @@ public class PermissionManagerImplTest {
 		Sid owner = new GrantedAuthoritySid(Role.ROLE_NAME_SYS_ADMIN);
 		AclImpl aclImpl = new  AclImpl(new ObjectIdentityImpl(ApiBundle.class, "someIdentifier"), "someAclPrimaryKey", aclAuthorizationStrategy, mockPermissionGrantingStrategy, parentAcl, loadedSids, entriesInheriting, owner);
 		
-		Mockito.when(mockMutableAclService.readAclById(Mockito.any(ObjectIdentity.class), Mockito.eq(sids))).thenReturn(aclImpl);
-		
-		AccessControlEntryImpl acesPrincipal1 = new AccessControlEntryImpl(9, aclImpl, new PrincipalSid("somePrincipal1"), BasePermission.READ, true, false, false);
-		AccessControlEntryImpl acesGranted = new AccessControlEntryImpl(9, aclImpl, grantedSid, BasePermission.READ, true, false, false);
-		AccessControlEntryImpl acesOtherGranted = new AccessControlEntryImpl(9, aclImpl, new GrantedAuthoritySid("someOtherGrantedAuthority"), BasePermission.READ, true, false, false);
-		
-		List<AccessControlEntry> aces = new ArrayList<>();
-		aces.add(acesPrincipal1);
-		aces.add(acesGranted);
-		aces.add(acesOtherGranted);
-		
-
-		aclImpl.insertAce(0, BasePermission.READ, acesPrincipal1.getSid(), true);
-		aclImpl.insertAce(1, BasePermission.READ, acesGranted.getSid(), true);
-		aclImpl.insertAce(2, BasePermission.READ, acesOtherGranted.getSid(), true);
-
-		permissionMgr.removeAllPermissionForObject(ApiBundle.class, "UniqueBundleIdentifier", org);
-		List<AccessControlEntry> acesActual = aclImpl.getEntries();
-		
-		Assert.assertEquals("Should have been 2 permissions left in the Acl.", 2, acesActual.size());
-		
+		return aclImpl;
 	}
-
 	
+	
+	
+	private AclImpl insertAces(AclImpl aclImpl, AccessControlEntry... aces){
+		for(AccessControlEntry ace : aces){
+			aclImpl.insertAce(0, ace.getPermission(), ace.getSid(), true);	
+		}
+		return aclImpl;
+	}
 	
 /*
 	@Test

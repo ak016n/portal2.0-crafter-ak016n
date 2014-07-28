@@ -62,11 +62,30 @@ public class PermissionManagerImpl implements PermissionManager {
     private JdbcTemplate template;
 	
 	@Resource
-	private OrganizationService orgService;
+	private OrganizationService organizationService;
 	
 	@Resource
 	private UserService userService;
     
+
+	
+	public void setTransactionTemplate(TransactionTemplate tTemplate){
+		this.transactionTemplate = tTemplate;
+	}
+
+	public void setMutableAclService(MutableAclService service) {
+		this.mutableAclService = service;
+	}
+
+	public void setOrganizationService(OrganizationService service) {
+		this.organizationService = service;
+		
+	}
+	
+	public void setUserService(UserService service) {
+		this.userService = service;
+	}
+	
 	
 	@Override
 	public void createAcl(Class<?> type, Serializable identifier){
@@ -94,7 +113,7 @@ public class PermissionManagerImpl implements PermissionManager {
 	public void grantPermissions(Class<?> type, String identifier, Organization org, Permission permission) {
     	//TODO: turn on 'strict' checking flag to disable this assert. 
     	//load Organization to make sure it really exists in database
-    	Assert.notNull(orgService.getOrganization(org), "organization passed in is not found in our database. id : " + org.getId());
+    	Assert.notNull(organizationService.getOrganization(org), "organization passed in is not found in our database. id : " + org.getId());
     	this.grantPermissions(type, identifier, new GrantedAuthoritySid(org.getId()), permission);
     }
     
@@ -133,7 +152,7 @@ public class PermissionManagerImpl implements PermissionManager {
     
     
 	@Override
-	public void deletePermissionsForObject(Class<?> type, String identifier){
+	public void deleteAllPermissionsForObject(Class<?> type, String identifier){
 		logger.info("deleting this objectIdentity id (a.k.a. primary key) ********************* " + identifier);
 		ObjectIdentity objId = new ObjectIdentityImpl(type, identifier);
 		transactionTemplate.execute(new TransactionCallback<Object>() {
@@ -146,7 +165,7 @@ public class PermissionManagerImpl implements PermissionManager {
 	
 
 	@Override
-	public void removeAllPermissionForObject(Class<?> type, String identifier, Organization org){
+	public void removeAllPermissionForObjectForOrganization(Class<?> type, String identifier, Organization org){
 		ObjectIdentity objId = new ObjectIdentityImpl(type, identifier);
 		List<Sid> sids = new ArrayList<>();
 		Sid grantedAuthoritySid = new GrantedAuthoritySid(org.getId()); 
@@ -213,16 +232,5 @@ public class PermissionManagerImpl implements PermissionManager {
 			}
 		});
 	}
-	
-	
-	public void setTransactionTemplate(TransactionTemplate tTemplate){
-		this.transactionTemplate = tTemplate;
-	}
 
-
-	public void setMutableAclService(MutableAclService svc) {
-		this.mutableAclService = svc;
-	}
-	
-	
 }
