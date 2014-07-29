@@ -11,14 +11,17 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.security.acls.domain.BasePermission;
+import org.springframework.security.acls.domain.CumulativePermission;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.att.developer.bean.ApiBundle;
+import com.att.developer.bean.Organization;
 import com.att.developer.bean.Role;
 import com.att.developer.bean.User;
+import com.att.developer.bean.builder.OrganizationBuilder;
 import com.att.developer.bean.builder.UserBuilder;
 import com.att.developer.dao.ApiBundleDAO;
 import com.att.developer.security.PermissionManager;
@@ -108,20 +111,49 @@ public class ApiBundleServiceImplTest {
 		Mockito.verifyNoMoreInteractions(mockApiBundleDAO);
 	}
 
-	/*
+
 	@Test
 	public void testDelete() {
-		fail("Not yet implemented");
+		ApiBundle initialBundle = new ApiBundle(UNIQUE_BUNDLE_ID);
+		apiBundleService.delete(initialBundle);
+		Mockito.verify(mockApiBundleDAO, Mockito.times(1)).delete(initialBundle);
+		Mockito.verifyNoMoreInteractions(mockApiBundleDAO);
 	}
+
 
 	@Test
 	public void testGrantPermission() {
-		fail("Not yet implemented");
+		ApiBundle initialBundle = new ApiBundle(UNIQUE_BUNDLE_ID);
+		Organization org = new OrganizationBuilder().build();
+		Mockito.when(mockApiBundleDAO.load(initialBundle)).thenReturn(initialBundle);
+		apiBundleService.grantPermission(initialBundle, org);
+		Mockito.verify(mockApiBundleDAO, Mockito.times(1)).load(initialBundle);
+		Mockito.verifyNoMoreInteractions(mockApiBundleDAO);
+		Mockito.verify(mockPermissionManager, Mockito.times(1)).grantPermissions(ApiBundle.class, UNIQUE_BUNDLE_ID, org, new CumulativePermission().set(BasePermission.WRITE).set(BasePermission.READ));
+		Mockito.verifyNoMoreInteractions(mockPermissionManager);
 	}
+
+	
+	@Test(expected=IllegalArgumentException.class)
+	public void testGrantPermission_noBundleFound() {
+		ApiBundle initialBundle = new ApiBundle(UNIQUE_BUNDLE_ID);
+		Organization org = new OrganizationBuilder().build();
+		apiBundleService.grantPermission(initialBundle, org);
+		Mockito.verify(mockApiBundleDAO, Mockito.times(1)).load(initialBundle);
+		Mockito.verifyNoMoreInteractions(mockApiBundleDAO);
+	}
+	
 
 	@Test
 	public void testRemoveAllPermissions() {
-		fail("Not yet implemented");
+		ApiBundle initialBundle = new ApiBundle(UNIQUE_BUNDLE_ID);
+		Organization org = new OrganizationBuilder().build();
+		Mockito.when(mockApiBundleDAO.load(initialBundle)).thenReturn(initialBundle);
+		apiBundleService.removeAllPermissions(initialBundle, org);
+		Mockito.verify(mockApiBundleDAO, Mockito.times(1)).load(initialBundle);
+		Mockito.verifyNoMoreInteractions(mockApiBundleDAO);
+		Mockito.verify(mockPermissionManager, Mockito.times(1)).removeAllPermissionForObjectForOrganization(ApiBundle.class, UNIQUE_BUNDLE_ID, org);
+		Mockito.verifyNoMoreInteractions(mockPermissionManager);
 	}
-*/
+	
 }
