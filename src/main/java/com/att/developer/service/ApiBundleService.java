@@ -72,8 +72,8 @@ public interface ApiBundleService {
 	public void delete(ApiBundle apiBundle);
 
 	@PreAuthorize("hasRole('ROLE_SYS_ADMIN')")
-	public void grantPermission(ApiBundle apiBundle, Organization org);
+	public void grantPermission(ApiBundle apiBundle, Organization org, User actor);
 
 	@PreAuthorize("hasRole('ROLE_SYS_ADMIN')")
-	public void removeAllPermissions(ApiBundle apiBundle, Organization org);
+	public void removeAllPermissions(ApiBundle apiBundle, Organization org, User actor);
 }

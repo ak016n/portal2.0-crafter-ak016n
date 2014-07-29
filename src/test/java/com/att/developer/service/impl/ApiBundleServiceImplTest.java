@@ -7,6 +7,7 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -18,6 +19,7 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.att.developer.bean.ApiBundle;
+import com.att.developer.bean.EventLog;
 import com.att.developer.bean.Organization;
 import com.att.developer.bean.Role;
 import com.att.developer.bean.User;
@@ -25,6 +27,8 @@ import com.att.developer.bean.builder.OrganizationBuilder;
 import com.att.developer.bean.builder.UserBuilder;
 import com.att.developer.dao.ApiBundleDAO;
 import com.att.developer.security.PermissionManager;
+import com.att.developer.service.EventTrackingService;
+import com.att.developer.typelist.EventType;
 
 public class ApiBundleServiceImplTest {
 
@@ -39,14 +43,16 @@ public class ApiBundleServiceImplTest {
 	@Mock
 	private PermissionManager mockPermissionManager;
 	
+	@Mock
+	private EventTrackingService mockEventTrackingService;
 	
 	@Before
 	public void before(){
 		MockitoAnnotations.initMocks(this);
 		apiBundleService = new ApiBundleServiceImpl();
 		apiBundleService.setApiBundleDAO(mockApiBundleDAO);
-		
 		apiBundleService.setPermissionManager(mockPermissionManager);
+		apiBundleService.setEventTrackingService(mockEventTrackingService);
 		
 		Authentication authRequest = new UsernamePasswordAuthenticationToken("rod", "koala", AuthorityUtils.createAuthorityList(Role.ROLE_NAME_SYS_ADMIN));
 		SecurityContextHolder.getContext().setAuthentication(authRequest);
@@ -125,12 +131,19 @@ public class ApiBundleServiceImplTest {
 	public void testGrantPermission() {
 		ApiBundle initialBundle = new ApiBundle(UNIQUE_BUNDLE_ID);
 		Organization org = new OrganizationBuilder().build();
+		User actor = new UserBuilder().build();
 		Mockito.when(mockApiBundleDAO.load(initialBundle)).thenReturn(initialBundle);
-		apiBundleService.grantPermission(initialBundle, org);
+		
+		ArgumentCaptor<EventLog> argCaptor = ArgumentCaptor.forClass(EventLog.class);
+		
+		apiBundleService.grantPermission(initialBundle, org, actor);
 		Mockito.verify(mockApiBundleDAO, Mockito.times(1)).load(initialBundle);
 		Mockito.verifyNoMoreInteractions(mockApiBundleDAO);
 		Mockito.verify(mockPermissionManager, Mockito.times(1)).grantPermissions(ApiBundle.class, UNIQUE_BUNDLE_ID, org, new CumulativePermission().set(BasePermission.WRITE).set(BasePermission.READ));
 		Mockito.verifyNoMoreInteractions(mockPermissionManager);
+		Mockito.verify(mockEventTrackingService, Mockito.times(1)).writeEvent(argCaptor.capture());
+		Mockito.verifyNoMoreInteractions(mockEventTrackingService);
+		Assert.assertEquals("event allowed should have been sent to EventTrackingService", EventType.API_BUNDLE_PERMISSION_UPDATED, argCaptor.getValue().getEventType());
 	}
 
 	
@@ -138,22 +151,39 @@ public class ApiBundleServiceImplTest {
 	public void testGrantPermission_noBundleFound() {
 		ApiBundle initialBundle = new ApiBundle(UNIQUE_BUNDLE_ID);
 		Organization org = new OrganizationBuilder().build();
-		apiBundleService.grantPermission(initialBundle, org);
+		apiBundleService.grantPermission(initialBundle, org, null);
 		Mockito.verify(mockApiBundleDAO, Mockito.times(1)).load(initialBundle);
 		Mockito.verifyNoMoreInteractions(mockApiBundleDAO);
 	}
+
 	
+	@Test(expected=IllegalArgumentException.class)
+	public void testGrantPermission_noActor() {
+		ApiBundle initialBundle = new ApiBundle(UNIQUE_BUNDLE_ID);
+		Organization org = new OrganizationBuilder().build();
+		apiBundleService.grantPermission(initialBundle, org, null);
+		Mockito.verifyNoMoreInteractions(mockApiBundleDAO);
+	}
+
 
 	@Test
 	public void testRemoveAllPermissions() {
 		ApiBundle initialBundle = new ApiBundle(UNIQUE_BUNDLE_ID);
 		Organization org = new OrganizationBuilder().build();
+		User actor = new UserBuilder().build();
 		Mockito.when(mockApiBundleDAO.load(initialBundle)).thenReturn(initialBundle);
-		apiBundleService.removeAllPermissions(initialBundle, org);
+		
+		ArgumentCaptor<EventLog> argCaptor = ArgumentCaptor.forClass(EventLog.class);
+		
+		apiBundleService.removeAllPermissions(initialBundle, org, actor);
 		Mockito.verify(mockApiBundleDAO, Mockito.times(1)).load(initialBundle);
 		Mockito.verifyNoMoreInteractions(mockApiBundleDAO);
 		Mockito.verify(mockPermissionManager, Mockito.times(1)).removeAllPermissionForObjectForOrganization(ApiBundle.class, UNIQUE_BUNDLE_ID, org);
 		Mockito.verifyNoMoreInteractions(mockPermissionManager);
+		Mockito.verify(mockEventTrackingService, Mockito.times(1)).writeEvent(argCaptor.capture());
+		Mockito.verifyNoMoreInteractions(mockEventTrackingService);
+		Assert.assertEquals("event allowed should have been sent to EventTrackingService", EventType.API_BUNDLE_PERMISSION_UPDATED, argCaptor.getValue().getEventType());
+
 	}
 	
 }

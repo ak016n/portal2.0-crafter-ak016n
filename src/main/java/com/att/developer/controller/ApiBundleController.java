@@ -259,9 +259,11 @@ public class ApiBundleController {
        	model.addAttribute("source", "grantPermission");
     	model.addAttribute("role", SecurityContextHolder.getContext().getAuthentication().getAuthorities());
     	model.addAttribute("username", SecurityContextHolder.getContext().getAuthentication().getName());
+    	SessionUser sessionUser = (SessionUser)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    	User actor = sessionUser.getUser();
     	Organization org = new Organization();
     	org.setId(orgId);
-    	apiBundleService.grantPermission(new ApiBundle(id), org);
+    	apiBundleService.grantPermission(new ApiBundle(id), org, actor);
 
     	
 //		User penny = new User();
@@ -287,9 +289,13 @@ public class ApiBundleController {
        	model.addAttribute("source", "remove Permission");
     	model.addAttribute("role", SecurityContextHolder.getContext().getAuthentication().getAuthorities());
     	model.addAttribute("username", SecurityContextHolder.getContext().getAuthentication().getName());
+    	
+    	SessionUser sessionUser = (SessionUser)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    	User actor = sessionUser.getUser();
+    	
     	Organization org = new Organization();
     	org.setId(orgId);
-    	apiBundleService.removeAllPermissions(new ApiBundle(id), org);
+    	apiBundleService.removeAllPermissions(new ApiBundle(id), org, actor);
     	
     	
     	model.addAttribute("result", "Permission has been removed successfully ! " + id);
