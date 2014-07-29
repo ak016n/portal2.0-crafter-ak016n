@@ -11,7 +11,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.security.acls.domain.BasePermission;
-import org.springframework.security.acls.domain.CumulativePermission;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -90,6 +89,7 @@ public class ApiBundleServiceImplTest {
 		Mockito.verify(mockApiBundleDAO, Mockito.times(1)).create(Mockito.eq(initialBundle));
 		
 	}
+
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void testCreate_noUser() {
@@ -98,13 +98,17 @@ public class ApiBundleServiceImplTest {
 		apiBundleService.create(initialBundle, actor);
 	}
 
-
-	/*
+	
 	@Test
 	public void testEdit() {
-		fail("Not yet implemented");
+		ApiBundle initialBundle = new ApiBundle(UNIQUE_BUNDLE_ID);
+		
+		apiBundleService.edit(initialBundle);
+		Mockito.verify(mockApiBundleDAO, Mockito.times(1)).update(initialBundle);
+		Mockito.verifyNoMoreInteractions(mockApiBundleDAO);
 	}
 
+	/*
 	@Test
 	public void testDelete() {
 		fail("Not yet implemented");
