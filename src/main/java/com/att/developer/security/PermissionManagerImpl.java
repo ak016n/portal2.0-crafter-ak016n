@@ -166,6 +166,7 @@ public class PermissionManagerImpl implements PermissionManager {
 
 	@Override
 	public void removeAllPermissionForObjectForOrganization(Class<?> type, String identifier, Organization org){
+		Assert.notNull(organizationService.getOrganization(org), "organization passed in is not found in our database. id : " + org.getId());
 		ObjectIdentity objId = new ObjectIdentityImpl(type, identifier);
 		List<Sid> sids = new ArrayList<>();
 		Sid grantedAuthoritySid = new GrantedAuthoritySid(org.getId()); 

@@ -32,19 +32,34 @@ public class ApiBundleServiceImpl implements ApiBundleService {
 	@Resource
 	private PermissionManager permissionManager;
 	
+	
 	public void setApiBundleDAO(ApiBundleDAO apiBundleDAO) {
 		this.apiBundleDAO = apiBundleDAO;
 	}
 
+	
+	public void setPermissionManager(PermissionManager manager) {
+		this.permissionManager = manager;
+	}
+	
+	
 	@Override
 	public ApiBundle getApiBundle(String id) {
 		logger.debug("getting for id {} ", id);
-		List<AccessControlEntry> accessControlEntries = this.permissionManager.getAccessControlEntries(ApiBundle.class, id);
 		ApiBundle loadedBundle = apiBundleDAO.load(new ApiBundle(id));
-		loadedBundle.setAccessControleEntries(accessControlEntries);
+		if(loadedBundle != null){
+			List<AccessControlEntry> accessControlEntries = this.permissionManager.getAccessControlEntries(ApiBundle.class, id);
+			loadedBundle.setAccessControleEntries(accessControlEntries);
+		}
 		return loadedBundle;
 	}
 
+	/**
+	 * TODO: if we ever have a huge list of Bundles (think thousands) we may 
+	 * want to revisit this to not get the AccessControlEntry List for each bundle one at a time.
+	 * 
+	 * Some direct JDBC call to the Spring ACL tables would be faster
+	 */
 	@Override
 	public List<ApiBundle> getAll() {
 		List<ApiBundle> apiBundles = apiBundleDAO.getAll();
@@ -96,8 +111,9 @@ public class ApiBundleServiceImpl implements ApiBundleService {
 	public void removeAllPermissions(ApiBundle apiBundle, Organization org){
 		ApiBundle reloadedBundle = apiBundleDAO.load(apiBundle);
 		Assert.notNull(reloadedBundle, "apiBundle passed in was not found in database, do *not* grant permissions to it. id : " + apiBundle.getId());
-		
 		permissionManager.removeAllPermissionForObjectForOrganization(ApiBundle.class, apiBundle.getId(), org);
 		
 	}
+
+
 }

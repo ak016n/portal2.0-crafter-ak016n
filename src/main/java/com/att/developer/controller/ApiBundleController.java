@@ -85,7 +85,7 @@ public class ApiBundleController {
     	}
 
     	// Add source to model to help us determine the source of the JSP page
-    	model.addAttribute("source", "Personal");
+    	model.addAttribute("source", "Edit Bundle");
     	
     	// Add our current role and username
     	model.addAttribute("role", SecurityContextHolder.getContext().getAuthentication().getAuthorities());
@@ -113,7 +113,7 @@ public class ApiBundleController {
     	model.addAttribute("postAttribute", new ApiBundle());
 
     	// Add source to model to help us determine the source of the JSP page
-    	model.addAttribute("source", "Personal");
+    	model.addAttribute("source", "Add Bundle Page");
     	
 
     	return "jsp/apiBundle/addpage.jsp";
@@ -176,17 +176,9 @@ public class ApiBundleController {
     	bundle.setId(id);
 
     	apiBundleService.delete(bundle);
-//    	// Delegate to service
-//    	if (apiBundleService.delete(bundle)) {
-//        	// Add result to model
-//        	model.addAttribute("result", "Entry has been deleted successfully!");
-//    	} else {
-//        	// Add result to model
-//        	model.addAttribute("result", "You're not allowed to perform that action!");
-//    	}
     	
     	// Add source to model to help us determine the source of the JSP page
-    	model.addAttribute("source", "Personal");
+    	model.addAttribute("source", "Delete Bundle Page");
     	
     	// Add our current role and username
     	model.addAttribute("role", SecurityContextHolder.getContext().getAuthentication().getAuthorities());
@@ -272,14 +264,14 @@ public class ApiBundleController {
     	apiBundleService.grantPermission(new ApiBundle(id), org);
 
     	
-		User penny = new User();
-		penny.setId("3_penny");
-		
-		User leonard = new User();
-		leonard.setId("2_leonard");
-		
-		permissionManager.grantPermissions(ApiBundle.class, "1Bundle", penny, BasePermission.ADMINISTRATION);
-		permissionManager.grantPermissions(ApiBundle.class, "1Bundle", leonard, BasePermission.READ);
+//		User penny = new User();
+//		penny.setId("3_penny");
+//		
+//		User leonard = new User();
+//		leonard.setId("2_leonard");
+//		
+//		permissionManager.grantPermissions(ApiBundle.class, "1Bundle", penny, BasePermission.ADMINISTRATION);
+//		permissionManager.grantPermissions(ApiBundle.class, "1Bundle", leonard, BasePermission.READ);
 
     	
     	model.addAttribute("result", "Permission has been granted successfully ! " + id);
@@ -292,7 +284,7 @@ public class ApiBundleController {
     @RequestMapping(value="/removePermission", method=RequestMethod.POST)
     public String removePermission(Model model, @RequestParam(value="id", required=true) String id, @RequestParam(value="orgId", required=true) String orgId){
     	
-       	model.addAttribute("source", "grantPermission");
+       	model.addAttribute("source", "remove Permission");
     	model.addAttribute("role", SecurityContextHolder.getContext().getAuthentication().getAuthorities());
     	model.addAttribute("username", SecurityContextHolder.getContext().getAuthentication().getName());
     	Organization org = new Organization();
@@ -300,7 +292,7 @@ public class ApiBundleController {
     	apiBundleService.removeAllPermissions(new ApiBundle(id), org);
     	
     	
-    	model.addAttribute("result", "Permission has been granted successfully ! " + id);
+    	model.addAttribute("result", "Permission has been removed successfully ! " + id);
 	
     	
     	return "jsp/apiBundle/resultpage.jsp";

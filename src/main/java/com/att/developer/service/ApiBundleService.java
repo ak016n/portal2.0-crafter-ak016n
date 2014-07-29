@@ -67,7 +67,8 @@ public interface ApiBundleService {
 	 * Access-control will be evaluated before this method is invoked.
 	 * <b>#post</b> refers to the current object in the method argument.
 	 */
-	@PreAuthorize("hasPermission(#apiBundle, 'WRITE')")
+//	@PreAuthorize("hasPermission(#apiBundle, 'WRITE')")
+	@PreAuthorize("hasRole('ROLE_SYS_ADMIN')")
 	public void delete(ApiBundle apiBundle);
 
 	@PreAuthorize("hasRole('ROLE_SYS_ADMIN')")

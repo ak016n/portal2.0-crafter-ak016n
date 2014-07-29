@@ -23,5 +23,8 @@ ${source} <br/><br/>
 ${result}
 </p>
 
+<c:url var="listBundlesUrl" value="/apiBundle/list"/>
+<a href="${listBundlesUrl}">list bundles</a>
+
 </body>
 </html>
