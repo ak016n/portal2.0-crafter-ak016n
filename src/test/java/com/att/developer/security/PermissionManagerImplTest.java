@@ -42,6 +42,7 @@ import com.att.developer.bean.User;
 import com.att.developer.bean.builder.OrganizationBuilder;
 import com.att.developer.bean.builder.RoleBuilder;
 import com.att.developer.bean.builder.UserBuilder;
+import com.att.developer.service.GlobalScopedParamService;
 import com.att.developer.service.OrganizationService;
 import com.att.developer.service.UserService;
 
@@ -70,7 +71,11 @@ public class PermissionManagerImplTest {
 	
 	@Mock
 	private OrganizationService mockOrganizationService;
+	
+	@Mock
+	private GlobalScopedParamService mockGlobalScopedParamService;
 
+	
 	@Before
 	public void before(){
 		MockitoAnnotations.initMocks(this);
@@ -78,6 +83,10 @@ public class PermissionManagerImplTest {
 		permissionMgr.setTransactionTemplate(mockTransactionTemplate);
 		permissionMgr.setMutableAclService(mockMutableAclService);
 		permissionMgr.setOrganizationService(mockOrganizationService);
+		permissionMgr.setGlobalScopedParamService(mockGlobalScopedParamService);
+		
+		//make all checking Strict
+		Mockito.when(mockGlobalScopedParamService.get("aclStrictParameterChecking")).thenReturn("true");
 		
 		Mockito.when(mockTransactionTemplate.execute(Mockito.<TransactionCallback<?>> any())).thenAnswer(new Answer<Object>() {
 			public Object answer(InvocationOnMock invocation) {
