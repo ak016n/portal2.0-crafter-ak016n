@@ -3,6 +3,7 @@ package com.att.developer.service.impl;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -21,15 +22,12 @@ public class LoginSecurityServiceImplTest {
 	@Mock
 	private EventTrackingService mockEventTrackingService;
 	
+	@InjectMocks
 	LoginSecurityServiceImpl loginSecurityService = null;
 	
 	@Before
 	public void init() {
 		MockitoAnnotations.initMocks(this);
-		
-		loginSecurityService = new LoginSecurityServiceImpl();
-		loginSecurityService.setEventTrackingService(mockEventTrackingService);
-		loginSecurityService.setUserService(mockUserService);
 	}
 	
 	@Test

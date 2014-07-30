@@ -3,6 +3,7 @@ package com.att.developer.service.impl;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -22,14 +23,12 @@ public class UserDetailsServiceImplTest {
     @Mock
     private LoginSecurityService mockLoginSecurityService;
 	
+    @InjectMocks
     UserDetailsServiceImpl userDetailsServiceImpl = null;
     
     @Before
     public void init() {
     	MockitoAnnotations.initMocks(this);
-    	userDetailsServiceImpl = new UserDetailsServiceImpl();
-    	
-    	userDetailsServiceImpl.setLoginSecurityService(mockLoginSecurityService);
     }
     
 	@Test(expected=UsernameNotFoundException.class)

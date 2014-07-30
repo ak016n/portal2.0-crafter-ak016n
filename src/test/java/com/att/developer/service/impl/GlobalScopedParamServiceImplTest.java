@@ -9,6 +9,7 @@ import javax.persistence.PersistenceException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -24,6 +25,7 @@ import com.att.developer.service.EventTrackingService;
 
 public class GlobalScopedParamServiceImplTest {
 
+	@InjectMocks
 	GlobalScopedParamServiceImpl globalScopedParamService;
 	
 	@Mock
@@ -35,9 +37,6 @@ public class GlobalScopedParamServiceImplTest {
 	@Before
 	public void init() {
 		MockitoAnnotations.initMocks(this);
-		globalScopedParamService = new GlobalScopedParamServiceImpl();
-		globalScopedParamService.setAttPropertiesDAO(mockAttPropertiesDAO);
-		globalScopedParamService.setEventTrackingService(mockEventTrackingService);
 	}
 	
 	@Test

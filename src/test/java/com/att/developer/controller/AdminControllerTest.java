@@ -8,6 +8,7 @@ import java.util.Map;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -29,6 +30,7 @@ public class AdminControllerTest {
 	private static final String FIELD_KEY_CAPS = "Y";
 	private static final String ITEM_KEY_CAPS = "X";
 
+	@InjectMocks
 	AdminController adminController = null;
 	
 	@Mock
@@ -43,8 +45,6 @@ public class AdminControllerTest {
 	@Before
 	public void init() {
 		MockitoAnnotations.initMocks(this);
-		adminController = new AdminController();
-		adminController.setGlobalScopedParamService(mockGlobalScopedParamService);
 	}
 	
 	@Test

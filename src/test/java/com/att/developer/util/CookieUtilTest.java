@@ -5,18 +5,23 @@ import javax.servlet.http.Cookie;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 
 public class CookieUtilTest {
 
+	@InjectMocks
     private CookieUtil cookieUtil;
+	
+    @Mock
     private Cookie mockCookie;
     private final static String COOKIE_VALUE = "testCookie";
     
     @Before
     public void initialize() {
-        cookieUtil = new CookieUtil();
-        mockCookie = Mockito.mock(Cookie.class);
+    	MockitoAnnotations.initMocks(this);
     }
     
     @Test
