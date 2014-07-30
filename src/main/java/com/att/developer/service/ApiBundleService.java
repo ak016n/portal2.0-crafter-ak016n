@@ -18,7 +18,7 @@ public interface ApiBundleService {
 	 * Access-control will be evaluated after this method is invoked.
 	 * returnObject refers to the returned object.
 	 */
-	@PostAuthorize("hasPermission(returnObject, 'WRITE')")
+	@PostAuthorize("hasRole('ROLE_SYS_ADMIN') or hasPermission(returnObject, 'WRITE')")
 	public ApiBundle getApiBundle(String id);
 
 	/**
@@ -62,12 +62,8 @@ public interface ApiBundleService {
 	public ApiBundle edit(ApiBundle apiBundle);
 
 	/**
-	 * Deletes a Bundle.
-	 * <p>
-	 * Access-control will be evaluated before this method is invoked.
-	 * <b>#post</b> refers to the current object in the method argument.
+	 * Deletes a Bundle.  Must be an Administrator
 	 */
-//	@PreAuthorize("hasPermission(#apiBundle, 'WRITE')")
 	@PreAuthorize("hasRole('ROLE_SYS_ADMIN')")
 	public void delete(ApiBundle apiBundle);
 
