@@ -9,7 +9,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.acls.domain.BasePermission;
@@ -23,7 +22,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import org.springframework.test.context.transaction.TransactionConfiguration;
-import org.springframework.transaction.PlatformTransactionManager;
 
 import com.att.developer.bean.ApiBundle;
 import com.att.developer.bean.Organization;
@@ -37,7 +35,6 @@ import com.att.developer.bean.builder.UserBuilder;
 import com.att.developer.config.IntegrationContext;
 import com.att.developer.config.IntegrationSecurityContext;
 import com.att.developer.service.ApiBundleService;
-import com.att.developer.service.GlobalScopedParamService;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -51,11 +48,6 @@ public class ApiBundleServiceIntegrationTest {
     @Resource
     private ApiBundleService apiBundleService;
     
-    @Resource
-    private PlatformTransactionManager txManager; 
-    
-    @Mock
-    private GlobalScopedParamService mockGlobalScopedParamService;
     
     private ApiBundle apiBundle;
     
@@ -99,7 +91,6 @@ public class ApiBundleServiceIntegrationTest {
                                 .withName("noBundles")
                                 .withUser(userNoBundlesOrgMember)
                                 .build();
-
         
     }
 

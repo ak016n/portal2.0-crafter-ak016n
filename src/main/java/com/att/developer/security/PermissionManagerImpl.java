@@ -43,48 +43,36 @@ public class PermissionManagerImpl implements PermissionManager {
 
     private final Logger logger = LogManager.getLogger();
 
-    @Autowired
+
+    
     private PlatformTransactionManager txManager;
 
-    @Autowired
     private MutableAclService mutableAclService;
 
-    @Autowired
     private TransactionTemplate transactionTemplate;
 
-    @Autowired
     private DataSource dataSource;
 
-    @Autowired
     private JdbcTemplate template;
 
-    @Resource
     private OrganizationService organizationService;
 
-    @Resource
     private UserService userService;
-
-    @Resource
+    
     private GlobalScopedParamService globalScopedParamService;
 
-    public void setTransactionTemplate(TransactionTemplate tTemplate) {
-        this.transactionTemplate = tTemplate;
-    }
-
-    public void setMutableAclService(MutableAclService service) {
-        this.mutableAclService = service;
-    }
-
-    public void setOrganizationService(OrganizationService service) {
-        this.organizationService = service;
-    }
-
-    public void setUserService(UserService service) {
-        this.userService = service;
-    }
-
-    public void setGlobalScopedParamService(GlobalScopedParamService service) {
-        this.globalScopedParamService = service;
+    @Autowired
+    public PermissionManagerImpl(PlatformTransactionManager txMgr, MutableAclService mutableAclSvc,
+            TransactionTemplate txTemplate, DataSource ds, JdbcTemplate jdbcTemp,
+            OrganizationService orgSvc, UserService userSvc, GlobalScopedParamService globalScopedParamSvc) {
+        this.txManager = txMgr;
+        this.mutableAclService = mutableAclSvc;
+        this.transactionTemplate = txTemplate;
+        this.dataSource = ds;
+        this.template = jdbcTemp;
+        this.organizationService = orgSvc;
+        this.userService = userSvc;
+        this.globalScopedParamService = globalScopedParamSvc;
     }
 
     @Override

@@ -51,11 +51,7 @@ public class ApiBundleServiceImplTest {
     @Before
     public void before() {
         MockitoAnnotations.initMocks(this);
-        apiBundleService = new ApiBundleServiceImpl();
-        apiBundleService.setApiBundleDAO(mockApiBundleDAO);
-        apiBundleService.setPermissionManager(mockPermissionManager);
-        apiBundleService.setEventTrackingService(mockEventTrackingService);
-        apiBundleService.setGlobalScopedParamService(mockGlobalScopedParamService);
+        apiBundleService = new ApiBundleServiceImpl(mockApiBundleDAO, mockPermissionManager, mockEventTrackingService, mockGlobalScopedParamService);
         
         //make all checking Strict
         Mockito.when(mockGlobalScopedParamService.get("aclStrictParameterChecking")).thenReturn("true");

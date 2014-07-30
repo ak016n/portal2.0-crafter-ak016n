@@ -2,11 +2,11 @@ package com.att.developer.service.impl;
 
 import java.util.List;
 
-import javax.annotation.Resource;
 import javax.transaction.Transactional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.security.acls.domain.CumulativePermission;
 import org.springframework.security.acls.model.AccessControlEntry;
@@ -31,37 +31,25 @@ public class ApiBundleServiceImpl implements ApiBundleService {
 
     private final Logger logger = LogManager.getLogger();
 
-    @Resource
+
     private ApiBundleDAO apiBundleDAO;
 
-    @Resource
     private PermissionManager permissionManager;
-
-    @Resource
+    
     private EventTrackingService eventTrackingService;
     
-    @Resource
     private GlobalScopedParamService globalScopedParamService;
 
-    public void setApiBundleDAO(ApiBundleDAO apiBundleDAO) {
-        this.apiBundleDAO = apiBundleDAO;
-    }
-
-    public void setPermissionManager(PermissionManager manager) {
-        this.permissionManager = manager;
-    }
-
-    public void setEventTrackingService(EventTrackingService service) {
-        this.eventTrackingService = service;
-    }
     
-    public void setGlobalScopedParamService(GlobalScopedParamService service) {
-        this.globalScopedParamService = service;
-    }
-    
-    
-    public GlobalScopedParamService getGlobalScopedParamService() {
-        return globalScopedParamService;
+    @Autowired
+    public ApiBundleServiceImpl(ApiBundleDAO bundleDao, 
+                                PermissionManager permMgr, 
+                                EventTrackingService eventTrackingSvc,
+                                GlobalScopedParamService globalScopedParamSvc){
+        this.apiBundleDAO = bundleDao;
+        this.permissionManager = permMgr;
+        this.eventTrackingService = eventTrackingSvc;
+        this.globalScopedParamService = globalScopedParamSvc;
     }
     
     
@@ -122,21 +110,19 @@ public class ApiBundleServiceImpl implements ApiBundleService {
      */
     @Override
     public void grantPermission(ApiBundle apiBundle, Organization org, User actor) {
-        // TODO: put in 'strict' switch to toggle on or off
-        // load bundle to make sure it really exists
+
         Assert.notNull(actor, "User actor required to grant permissions");
         if(isStrictChecking()){
+            // load bundle to make sure it really exists
             ApiBundle reloadedBundle = apiBundleDAO.load(apiBundle);
             Assert.notNull(reloadedBundle, "apiBundle passed in was not found in database, do *not* grant permissions to it. id : "+ apiBundle.getId());
         }
         CumulativePermission permission = new CumulativePermission().set(BasePermission.WRITE).set(BasePermission.READ);
         permissionManager.grantPermissions(ApiBundle.class, apiBundle.getId(), org, permission);
-        String info = "granting to ApiBundle id : "
-                      + apiBundle.getId()
-                      + " to Organization id : "
-                      + org.getId()
-                      + "  permissions "
-                      + permission;
+        String info = "granting to ApiBundle id : " + apiBundle.getId()
+                      + " to Organization id : " + org.getId()
+                      + "  permissions " + permission;
+        
         EventLog eventLog = new EventLog(actor.getId(), null, org.getId(), EventType.API_BUNDLE_PERMISSION_UPDATED, info, ActorType.DEV_PROGRAM_USER, null);
         eventTrackingService.writeEvent(eventLog);
     }
@@ -148,11 +134,10 @@ public class ApiBundleServiceImpl implements ApiBundleService {
             Assert.notNull(reloadedBundle, "apiBundle passed in was not found in database, do *not* grant permissions to it. id : " + apiBundle.getId());
         }
         permissionManager.removeAllPermissionForObjectForOrganization(ApiBundle.class, apiBundle.getId(), org);
-        String info = "removing from ApiBundle id : "
-                      + apiBundle.getId()
-                      + " to Organization id : "
-                      + org.getId()
+        String info = "removing from ApiBundle id : " + apiBundle.getId()
+                      + " to Organization id : " + org.getId()
                       + "  all permissions";
+        
         EventLog eventLog = new EventLog(actor.getId(), null, org.getId(), EventType.API_BUNDLE_PERMISSION_UPDATED, info, ActorType.DEV_PROGRAM_USER, null);
         eventTrackingService.writeEvent(eventLog);
     }

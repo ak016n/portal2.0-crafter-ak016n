@@ -9,6 +9,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.ehcache.EhCacheFactoryBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.access.PermissionCacheOptimizer;
@@ -31,6 +32,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import com.att.developer.bean.Role;
+import com.att.developer.dao.ApiBundleDAO;
 import com.att.developer.security.CustomAclLookupStrategy;
 import com.att.developer.security.CustomPermissionGrantingStrategy;
 import com.att.developer.security.EventLogAuditLogger;
@@ -45,6 +47,7 @@ import com.att.developer.service.impl.ApiBundleServiceImpl;
 
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled=true)
+@ComponentScan({"com.att.developer.service.impl.ApiBundleServiceImpl"})
 public class IntegrationSecurityContext extends WebSecurityConfigurerAdapter{
 
     @Inject
@@ -53,6 +56,9 @@ public class IntegrationSecurityContext extends WebSecurityConfigurerAdapter{
     
     @Inject
     private PlatformTransactionManager txManager;
+    
+    @Inject 
+    private ApiBundleDAO apiBundleDAO;
     
 
     @Autowired
@@ -138,7 +144,16 @@ public class IntegrationSecurityContext extends WebSecurityConfigurerAdapter{
 
     @Bean
     public PermissionManager permissionManager() {
-        return new PermissionManagerImpl();
+        PermissionManager mgr = new PermissionManagerImpl(this.txManager, 
+                                    aclService(dataSource), 
+                                    transactionTemplate(), 
+                                    dataSource, 
+                                    jdbcTemplate(), 
+                                    organizationService(), 
+                                    userService(), 
+                                    globalScopedParamService());
+        
+        return mgr;
     }
 
     @Bean
@@ -180,12 +195,12 @@ public class IntegrationSecurityContext extends WebSecurityConfigurerAdapter{
     }
 
     @Bean
-    public TransactionTemplate transactionTemplate() throws Throwable {
+    public TransactionTemplate transactionTemplate() {
          return new TransactionTemplate(txManager);
     }
     
     @Bean
     public ApiBundleService apiBundleService(){
-        return new ApiBundleServiceImpl();
+        return new ApiBundleServiceImpl(this.apiBundleDAO, permissionManager(), eventTrackingService(), globalScopedParamService());
     }
 }
