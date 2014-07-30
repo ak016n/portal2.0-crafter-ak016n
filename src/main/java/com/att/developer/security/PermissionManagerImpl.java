@@ -33,205 +33,203 @@ import org.springframework.util.Assert;
 
 import com.att.developer.bean.Organization;
 import com.att.developer.bean.User;
+import com.att.developer.service.GlobalScopedParamService;
 import com.att.developer.service.OrganizationService;
 import com.att.developer.service.UserService;
-
 
 @Service
 @Transactional
 public class PermissionManagerImpl implements PermissionManager {
 
-	
-	private final Logger logger = LogManager.getLogger();
-	
-	
-	@Autowired
-	private PlatformTransactionManager txManager;
-	
-	
+    private final Logger logger = LogManager.getLogger();
+
+    @Autowired
+    private PlatformTransactionManager txManager;
+
     @Autowired
     private MutableAclService mutableAclService;
-    
+
     @Autowired
     private TransactionTemplate transactionTemplate;
-    
-	@Autowired
-	private DataSource dataSource;
-	
-	@Autowired
+
+    @Autowired
+    private DataSource dataSource;
+
+    @Autowired
     private JdbcTemplate template;
-	
-	@Resource
-	private OrganizationService organizationService;
-	
-	@Resource
-	private UserService userService;
-    
 
-	
-	public void setTransactionTemplate(TransactionTemplate tTemplate){
-		this.transactionTemplate = tTemplate;
-	}
+    @Resource
+    private OrganizationService organizationService;
 
-	public void setMutableAclService(MutableAclService service) {
-		this.mutableAclService = service;
-	}
+    @Resource
+    private UserService userService;
 
-	public void setOrganizationService(OrganizationService service) {
-		this.organizationService = service;
-		
-	}
-	
-	public void setUserService(UserService service) {
-		this.userService = service;
-	}
-	
-	
-	@Override
-	public void createAcl(Class<?> type, Serializable identifier){
-    	logger.debug("creating an ACL for this objectIdentity id (a.k.a. primary key) ********************* " + identifier);
-		ObjectIdentity objId = new ObjectIdentityImpl(type, identifier);
-		transactionTemplate.execute(new TransactionCallback<Object>() {
-			public Object doInTransaction(TransactionStatus arg0) {
-				mutableAclService.createAcl(objId);
-				return null;
-			}
-		});
-	}
-    
-    
+    @Resource
+    private GlobalScopedParamService globalScopedParamService;
+
+    public void setTransactionTemplate(TransactionTemplate tTemplate) {
+        this.transactionTemplate = tTemplate;
+    }
+
+    public void setMutableAclService(MutableAclService service) {
+        this.mutableAclService = service;
+    }
+
+    public void setOrganizationService(OrganizationService service) {
+        this.organizationService = service;
+    }
+
+    public void setUserService(UserService service) {
+        this.userService = service;
+    }
+
+    public void setGlobalScopedParamService(GlobalScopedParamService service) {
+        this.globalScopedParamService = service;
+    }
+
     @Override
-	public void grantPermissions(Class<?> type, String identifier,  User user, Permission permission) {
-    	//TODO: turn on 'strict' checking flag to disable this assert. 
-    	//load User to make sure it really exists in database
-    	Assert.notNull(userService.getUser(user), "user passed in is not found in our database. id : " + user.getId());
-    	
+    public void createAcl(Class<?> type, Serializable identifier) {
+        logger.debug("creating an ACL for this objectIdentity id (a.k.a. primary key) ********************* " + identifier);
+        ObjectIdentity objId = new ObjectIdentityImpl(type, identifier);
+        transactionTemplate.execute(new TransactionCallback<Object>() {
+
+            public Object doInTransaction(TransactionStatus arg0) {
+                mutableAclService.createAcl(objId);
+                return null;
+            }
+        });
+    }
+
+    @Override
+    public void grantPermissions(Class<?> type, String identifier, User user, Permission permission) {
+        // load User to make sure it really exists in database
+        if(isStrictChecking()){
+            Assert.notNull(userService.getUser(user), "user passed in is not found in our database. id : " + user.getId());
+        }
+
         this.grantPermissions(type, identifier, new PrincipalSid(user.getId()), permission);
     }
-    
+
     @Override
-	public void grantPermissions(Class<?> type, String identifier, Organization org, Permission permission) {
-    	//TODO: turn on 'strict' checking flag to disable this assert. 
-    	//load Organization to make sure it really exists in database
-    	Assert.notNull(organizationService.getOrganization(org), "organization passed in is not found in our database. id : " + org.getId());
-    	this.grantPermissions(type, identifier, new GrantedAuthoritySid(org.getId()), permission);
+    public void grantPermissions(Class<?> type, String identifier, Organization org, Permission permission) {
+        // load Organization to make sure it really exists in database
+        if(isStrictChecking()){
+            Assert.notNull(organizationService.getOrganization(org), "organization passed in is not found in our database. id : "+ org.getId());
+        }
+        
+        this.grantPermissions(type, identifier, new GrantedAuthoritySid(org.getId()), permission);
     }
-    
-    
+
     private void grantPermissions(Class<?> type, String identifier, Sid sid, Permission permission) {
         AclImpl acl = (AclImpl) mutableAclService.readAclById(new ObjectIdentityImpl(type, identifier));
-        for(AccessControlEntry ace : acl.getEntries()){
-        	if(ace.getSid().equals(sid) && ace.getPermission().equals(permission)){
-        		logger.info("trying to create a duplicate ace entry, don't bother");
-        		return;
-        	}
+        for (AccessControlEntry ace : acl.getEntries()) {
+            if (ace.getSid().equals(sid) && ace.getPermission().equals(permission)) {
+                logger.info("trying to create a duplicate ace entry, don't bother");
+                return;
+            }
         }
         acl.insertAce(acl.getEntries().size(), permission, sid, true);
         updateAclInTransaction(acl);
     }
-    
-    
 
     @Override
-	public void changeOwner(Class<?> type, String identifier, User newOwnerUser) {
-    	this.changeOwner(type, identifier, new PrincipalSid(newOwnerUser.getId()));
+    public void changeOwner(Class<?> type, String identifier, User newOwnerUser) {
+        this.changeOwner(type, identifier, new PrincipalSid(newOwnerUser.getId()));
     }
-    
 
     @Override
-	public void changeOwner(Class<?> type, String identifier, Organization newOwningOrg) {
-    	this.changeOwner(type, identifier, new GrantedAuthoritySid(newOwningOrg.getId()));
+    public void changeOwner(Class<?> type, String identifier, Organization newOwningOrg) {
+        this.changeOwner(type, identifier, new GrantedAuthoritySid(newOwningOrg.getId()));
     }
 
-    
     private void changeOwner(Class<?> type, String identifier, Sid newOwner) {
-    	AclImpl acl = (AclImpl) mutableAclService.readAclById(new ObjectIdentityImpl(type, identifier));
+        AclImpl acl = (AclImpl) mutableAclService.readAclById(new ObjectIdentityImpl(type, identifier));
         acl.setOwner(newOwner);
         updateAclInTransaction(acl);
     }
-    
-    
-	@Override
-	public void deleteAllPermissionsForObject(Class<?> type, String identifier){
-		logger.info("deleting this objectIdentity id (a.k.a. primary key) ********************* " + identifier);
-		ObjectIdentity objId = new ObjectIdentityImpl(type, identifier);
-		transactionTemplate.execute(new TransactionCallback<Object>() {
-			public Object doInTransaction(TransactionStatus arg0) {
-				mutableAclService.deleteAcl(objId, false);
-				return null;
-			}
-		});
-	}
-	
 
-	@Override
-	public void removeAllPermissionForObjectForOrganization(Class<?> type, String identifier, Organization org){
-		Assert.notNull(organizationService.getOrganization(org), "organization passed in is not found in our database. id : " + org.getId());
-		ObjectIdentity objId = new ObjectIdentityImpl(type, identifier);
-		List<Sid> sids = new ArrayList<>();
-		Sid grantedAuthoritySid = new GrantedAuthoritySid(org.getId()); 
-		sids.add(grantedAuthoritySid);
-		AclImpl acl = (AclImpl)mutableAclService.readAclById(objId, sids);
-		List<AccessControlEntry> aces = acl.getEntries();
-		int acesSize = aces.size()-1;
-		for(int i = acesSize; i >= 0; i--){
-			AccessControlEntry ace = aces.get(i);
-			if(ace.getSid().equals(grantedAuthoritySid)){
-				acl.deleteAce(i);
-			}
-		}
-		updateAclInTransaction(acl);
-	}
-	
-	
-	
-	/**
-	 * 
-	 * @param type
-	 * @param identifier
-	 * @return null if there is no Acl entry.
-	 */
-	@Override
-	public List<AccessControlEntry> getAccessControlEntries(Class<?> type, String identifier){
-		try{
-			Acl acl = (AclImpl) mutableAclService.readAclById(new ObjectIdentityImpl(type, identifier));
-			return acl.getEntries();
-		}
-		catch(NotFoundException e){
-			//no entry, warn and return null;
-			logger.warn("No Acl entry for type {}, identifier {} ", type, identifier);
-			return null;
-		}
-	}
-	
-	@Override
-	public void createAclWithPermissionsAndOwner(Class<?> type, String identifier, User ownerAndPermissionHolder, Permission permission){
-		PrincipalSid sid = new PrincipalSid(ownerAndPermissionHolder.getId());
-		this.createAclWithPermissionsAndOwner(type, identifier, sid, permission, sid);
-	}
-	
-	@Override
-	public void createAclWithPermissionsAndOwner(Class<?> type, String identifier, Organization ownerAndPermissionHolder, Permission permission){
-		PrincipalSid sid = new PrincipalSid(ownerAndPermissionHolder.getId());
-		this.createAclWithPermissionsAndOwner(type, identifier, sid, permission, sid);
-	}
-	
-	
-	private void createAclWithPermissionsAndOwner(Class<?> type, String identifier, Sid owner, Permission permission, Sid permissionRecipient){
-		this.createAcl(type, identifier);
-		this.grantPermissions(type, identifier, permissionRecipient, permission);
-		this.changeOwner(type, identifier, owner);
-	}
-	
-	
-	private void updateAclInTransaction(final MutableAcl acl) {
-		transactionTemplate.execute(new TransactionCallback<Object>() {
-			public Object doInTransaction(TransactionStatus arg0) {
-				mutableAclService.updateAcl(acl);
-				return null;
-				
-			}
-		});
-	}
+    @Override
+    public void deleteAllPermissionsForObject(Class<?> type, String identifier) {
+        logger.info("deleting this objectIdentity id (a.k.a. primary key) ********************* " + identifier);
+        ObjectIdentity objId = new ObjectIdentityImpl(type, identifier);
+        transactionTemplate.execute(new TransactionCallback<Object>() {
 
+            public Object doInTransaction(TransactionStatus arg0) {
+                mutableAclService.deleteAcl(objId, false);
+                return null;
+            }
+        });
+    }
+
+    @Override
+    public void removeAllPermissionForObjectForOrganization(Class<?> type, String identifier, Organization org) {
+        if(isStrictChecking()){
+            Assert.notNull(organizationService.getOrganization(org), "organization passed in is not found in our database. id : "+ org.getId());
+        }
+        ObjectIdentity objId = new ObjectIdentityImpl(type, identifier);
+        List<Sid> sids = new ArrayList<>();
+        Sid grantedAuthoritySid = new GrantedAuthoritySid(org.getId());
+        sids.add(grantedAuthoritySid);
+        AclImpl acl = (AclImpl) mutableAclService.readAclById(objId, sids);
+        List<AccessControlEntry> aces = acl.getEntries();
+        int acesSize = aces.size() - 1;
+        for (int i = acesSize; i >= 0; i--) {
+            AccessControlEntry ace = aces.get(i);
+            if (ace.getSid().equals(grantedAuthoritySid)) {
+                acl.deleteAce(i);
+            }
+        }
+        updateAclInTransaction(acl);
+    }
+
+    /**
+     * 
+     * @param type
+     * @param identifier
+     * @return null if there is no Acl entry.
+     */
+    @Override
+    public List<AccessControlEntry> getAccessControlEntries(Class<?> type, String identifier) {
+        try {
+            Acl acl = (AclImpl) mutableAclService.readAclById(new ObjectIdentityImpl(type, identifier));
+            return acl.getEntries();
+        } catch (NotFoundException e) {
+            // no entry, warn and return null;
+            logger.warn("No Acl entry for type {}, identifier {} ", type, identifier);
+            return null;
+        }
+    }
+
+    @Override
+    public void createAclWithPermissionsAndOwner(Class<?> type, String identifier, User ownerAndPermissionHolder, Permission permission) {
+        PrincipalSid sid = new PrincipalSid(ownerAndPermissionHolder.getId());
+        this.createAclWithPermissionsAndOwner(type, identifier, sid, permission, sid);
+    }
+
+    @Override
+    public void createAclWithPermissionsAndOwner(Class<?> type, String identifier, Organization ownerAndPermissionHolder, Permission permission) {
+        PrincipalSid sid = new PrincipalSid(ownerAndPermissionHolder.getId());
+        this.createAclWithPermissionsAndOwner(type, identifier, sid, permission, sid);
+    }
+
+    private void createAclWithPermissionsAndOwner(Class<?> type, String identifier, Sid owner, Permission permission, Sid permissionRecipient) {
+        this.createAcl(type, identifier);
+        this.grantPermissions(type, identifier, permissionRecipient, permission);
+        this.changeOwner(type, identifier, owner);
+    }
+
+    private void updateAclInTransaction(final MutableAcl acl) {
+        transactionTemplate.execute(new TransactionCallback<Object>() {
+            public Object doInTransaction(TransactionStatus arg0) {
+                mutableAclService.updateAcl(acl);
+                return null;
+
+            }
+        });
+    }
+    
+    private boolean isStrictChecking(){
+        String aclStrictParameterChecking  = globalScopedParamService.get("aclStrictParameterChecking");
+        return Boolean.TRUE.equals(Boolean.valueOf(aclStrictParameterChecking));    
+    }
 }
