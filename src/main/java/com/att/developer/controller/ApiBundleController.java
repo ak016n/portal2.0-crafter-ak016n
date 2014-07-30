@@ -171,9 +171,7 @@ public class ApiBundleController {
     	logger.debug("Received request to view delete page");
     
     	// Create new post
-    	ApiBundle bundle = new ApiBundle();
-    	// Assign id
-    	bundle.setId(id);
+    	ApiBundle bundle = new ApiBundle(id);
 
     	apiBundleService.delete(bundle);
     	

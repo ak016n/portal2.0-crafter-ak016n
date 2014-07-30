@@ -5,6 +5,7 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -53,7 +54,7 @@ public class ApiBundle implements Serializable{
 	private List<AccessControlEntry> accessControleEntries;
 
 	public ApiBundle() {
-	
+	    this(UUID.randomUUID().toString());
 	}
 	
 	public ApiBundle(String id){
