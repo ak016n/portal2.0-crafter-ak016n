@@ -7,7 +7,6 @@ import javax.transaction.Transactional;
 
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -168,7 +167,7 @@ public class ApiBundleServiceIntegrationTest {
         
         //Retrieve ALL bundles as Admin
         List<ApiBundle> afterRemoveAllBundlesForAdmin = apiBundleService.getAll();
-        Assert.assertTrue("missing bundle", allBundles.contains(afterRemovePermissionsBundle));
+        Assert.assertTrue("missing bundle", afterRemoveAllBundlesForAdmin.contains(afterRemovePermissionsBundle));
 
 
         //Retrieve all Bundles as userNoBundlesOrgMember user
@@ -182,6 +181,8 @@ public class ApiBundleServiceIntegrationTest {
         SecurityContextHolder.getContext().setAuthentication(authRequest);
         List<ApiBundle> afterRemoveAllBundlesForOrgWithApiBundles = apiBundleService.getAll();
         Assert.assertFalse("contains bundle for which we should NOT have a privilege after the removal of this org's permissions", afterRemoveAllBundlesForOrgWithApiBundles.contains(afterRemovePermissionsBundle));
+        
+        //TODO: add EDIT ApiBundle Test
         
         //DELETE ApiBundle
         //try to Delete as normal member

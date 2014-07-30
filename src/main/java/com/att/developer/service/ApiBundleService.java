@@ -58,6 +58,7 @@ public interface ApiBundleService {
 	 * Access-control will be evaluated before this method is invoked.
 	 * <b>#post</b> refers to the current object in the method argument.
 	 */
+	//TODO: remove hasPermission and replace with hasRole.  Left in place temporarily for demo/poc purposes.
 	@PreAuthorize("hasPermission(#apiBundle, 'WRITE')")
 	public ApiBundle edit(ApiBundle apiBundle);
 
