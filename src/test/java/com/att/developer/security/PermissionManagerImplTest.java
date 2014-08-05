@@ -78,11 +78,8 @@ public class PermissionManagerImplTest {
     @Before
     public void before() {
         MockitoAnnotations.initMocks(this);
-        permissionMgr = new PermissionManagerImpl(null, 
-                                                  mockMutableAclService, 
+        permissionMgr = new PermissionManagerImpl(mockMutableAclService, 
                                                   mockTransactionTemplate, 
-                                                  null, 
-                                                  null, 
                                                   mockOrganizationService, 
                                                   mockUserService, 
                                                   mockGlobalScopedParamService);

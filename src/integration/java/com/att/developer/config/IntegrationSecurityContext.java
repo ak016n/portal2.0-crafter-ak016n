@@ -144,11 +144,9 @@ public class IntegrationSecurityContext extends WebSecurityConfigurerAdapter{
 
     @Bean
     public PermissionManager permissionManager() {
-        PermissionManager mgr = new PermissionManagerImpl(this.txManager, 
+        PermissionManager mgr = new PermissionManagerImpl(
                                     aclService(dataSource), 
                                     transactionTemplate(), 
-                                    dataSource, 
-                                    jdbcTemplate(), 
                                     organizationService(), 
                                     userService(), 
                                     globalScopedParamService());
