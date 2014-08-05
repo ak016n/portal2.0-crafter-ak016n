@@ -17,13 +17,28 @@
 	      <AppenderRef ref="LOG_FILE"/>
 	      <AppenderRef ref="CONSOLE"/>
 	    </Async>
+	    
+	    <!-- Added for managing the JAMON reporting information being added when the JVM is shutdown -->
+	    <RollingFile name="PERFORMANCE_FILE"
+	    			 filename="logs/performance.log"
+	    			 filePattern="logs/$${date:yyyy-MM}/performance-%d{MM-dd-yyyy}-%i.log.gz">
+			<PatternLayout pattern="%d %-5p [%t] %C{2} (%F:%L) - %m%n"/>
+	    	<Policies>
+	    		<OnStartupTriggeringPolicy />
+	    	</Policies>
+	    	<DefaultRolloverStrategy max="250"/>
+	    </RollingFile>
 	</Appenders>
 	<Loggers>
-		<Root level="debug">
+		<Root level="WARN">
       		<AppenderRef ref="ASYNC"/>
     	</Root>
-		<logger name="org.hibernate" level="ERROR" />
-		<logger name="com.att.developer" level="DEBUG"/>
+		<logger name="org.hibernate" level="WARN" />
+		<logger name="com.att.developer" level="trace"/>
 		<logger name="atomikos" level="INFO"/>
+		<logger name="org.springframework" level="WARN"/>
+		<logger name="performance" level="INFO">
+			<AppenderRef ref="PERFORMANCE_FILE"/>
+		</logger>
 	</Loggers>
 </Configuration>

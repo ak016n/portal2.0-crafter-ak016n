@@ -32,5 +32,9 @@
 		type="org.apache.activemq.ActiveMQConnectionFactory" description="JMS Connection Factory"
 		factory="org.apache.activemq.jndi.JNDIReferenceFactory" brokerURL="vm://localhost"
 		brokerName="LocalActiveMQBroker" useEmbeddedBroker="true" maximumRedeliveries="5"/>
+	
+	
+	<Environment name="configLocation" value="/workspace/developer/config/" type="java.lang.String" override="false"/>  
+	
 </Context>
 
