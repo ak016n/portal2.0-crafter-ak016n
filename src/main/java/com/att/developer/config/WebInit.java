@@ -9,26 +9,25 @@ import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatche
 @Order(1)
 public class WebInit extends AbstractAnnotationConfigDispatcherServletInitializer {
 
-	@Override
-	protected Class<?>[] getRootConfigClasses() {
-		return  new Class[] {SecurityContext.class, AppContext.class };
-	}
+    @Override
+    protected Class<?>[] getRootConfigClasses() {
+        return new Class[] {SecurityContext.class, AppContext.class};
+    }
 
-	@Override
-	protected Class<?>[] getServletConfigClasses() {
-		return new Class[] { WebContext.class};
-	}
+    @Override
+    protected Class<?>[] getServletConfigClasses() {
+        return new Class[] {WebContext.class};
+    }
 
-	@Override
-	protected String[] getServletMappings() {
-		return new String[] {"/"};
-	}
+    @Override
+    protected String[] getServletMappings() {
+        return new String[] {"/"};
+    }
 
-	@Override
-	public void onStartup(ServletContext servletContext) throws ServletException {
-		super.onStartup(servletContext);
-		servletContext.addListener(DBConnectionCleaner.class);
-	}
-	
-	
+    @Override
+    public void onStartup(ServletContext servletContext) throws ServletException {
+        super.onStartup(servletContext);
+        servletContext.addListener(DBConnectionCleaner.class);
+    }
+
 }
