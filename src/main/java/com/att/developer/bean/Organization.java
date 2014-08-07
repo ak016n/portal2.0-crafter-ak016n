@@ -28,100 +28,99 @@ import com.att.developer.typelist.OrgRelationshipType;
 @Table(name="organization", uniqueConstraints= @UniqueConstraint(columnNames = {"name"}))
 public class Organization implements Serializable {
 	
-	private static final long serialVersionUID = 2117541682366680664L;
-	
-	
-	@Id
-    private String id;
-	private String name;
-	private String description;
-	
-	@Column(name="parent_id")
-	private String parentId;
-	
-	@Column(name="relationship_type")
-	private Integer relationshipType;
+    private static final long serialVersionUID = 2117541682366680664L;
 
-	@Column(name="created_on")
-	private Date createdOn;
-	
-	@OneToMany(cascade=CascadeType.ALL)
+    @Id
+    private String id;
+    private String name;
+    private String description;
+
+    @Column(name = "parent_id")
+    private String parentId;
+
+    @Column(name = "relationship_type")
+    private Integer relationshipType;
+
+    @Column(name = "created_on")
+    private Date createdOn;
+
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "org_id")
-	private Set<OrganizationState> organizationStates;
-	
-	@Column(name="last_updated")
-	private Date lastUpdated;
-	
-	@OrderColumn(name = "sequence_number")
+    private Set<OrganizationState> organizationStates;
+
+    @Column(name = "last_updated")
+    private Date lastUpdated;
+
+    @OrderColumn(name = "sequence_number")
     @ManyToMany(cascade = CascadeType.MERGE)
     @JoinTable(name = "user_org_membership", joinColumns = {@JoinColumn(name = "org_id", referencedColumnName = "id")}, inverseJoinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")})
-	private Set<User> users;
+    private Set<User> users;
 
     public Organization() {
-		this.setId(java.util.UUID.randomUUID().toString());
+        this.setId(java.util.UUID.randomUUID().toString());
     }
-    
-	public String getId() {
-		return id;
-	}
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    public String getId() {
+        return id;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public void setId(String id) {
+        this.id = id;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public String getDescription() {
-		return description;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public String getDescription() {
+        return description;
+    }
 
-	public String getParentId() {
-		return parentId;
-	}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-	public void setParentId(String parentId) {
-		this.parentId = parentId;
-	}
+    public String getParentId() {
+        return parentId;
+    }
 
-	public OrgRelationshipType getRelationshipType() {
-		return OrgRelationshipType.getEnumValue(relationshipType);
-	}
+    public void setParentId(String parentId) {
+        this.parentId = parentId;
+    }
 
-	public void setRelationshipType(OrgRelationshipType relationshipType) {
-		this.relationshipType = (relationshipType != null)? relationshipType.getId(): null;
-	}
+    public OrgRelationshipType getRelationshipType() {
+        return OrgRelationshipType.getEnumValue(relationshipType);
+    }
 
-	public Date getCreatedOn() {
-		return createdOn;
-	}
+    public void setRelationshipType(OrgRelationshipType relationshipType) {
+        this.relationshipType = (relationshipType != null) ? relationshipType.getId() : null;
+    }
 
-	public void setCreatedOn(Date createdOn) {
-		this.createdOn = createdOn;
-	}
+    public Date getCreatedOn() {
+        return createdOn;
+    }
 
-	public Date getLastUpdated() {
-		return lastUpdated;
-	}
+    public void setCreatedOn(Date createdOn) {
+        this.createdOn = createdOn;
+    }
 
-	public void setLastUpdated(Date lastUpdated) {
-		this.lastUpdated = lastUpdated;
-	}
+    public Date getLastUpdated() {
+        return lastUpdated;
+    }
 
-	public Set<User> getUsers() {
-		return users;
-	}
+    public void setLastUpdated(Date lastUpdated) {
+        this.lastUpdated = lastUpdated;
+    }
 
-	public void setUsers(Set<User> users) {
+    public Set<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(Set<User> users) {
         if (this.users != null && (users == null || users.isEmpty())) {
             for (User user : this.users) {
                 user.removeOrganization(this);
@@ -136,8 +135,8 @@ public class Organization implements Serializable {
             }
         }
         this.users = users;
-	}
-	
+    }
+
     public void addUser(final User user) {
         if (users == null) {
             users = new HashSet<User>();
@@ -150,70 +149,69 @@ public class Organization implements Serializable {
         users.remove(user);
         user.removeOrganization(this);
     }
-    
-	public Set<OrganizationState> getOrganizationStates() {
-		return organizationStates;
-	}
 
-	public void setOrganizationStates(Set<OrganizationState> organizationStates) {
-		this.organizationStates = organizationStates;
-	}
+    public Set<OrganizationState> getOrganizationStates() {
+        return organizationStates;
+    }
+
+    public void setOrganizationStates(Set<OrganizationState> organizationStates) {
+        this.organizationStates = organizationStates;
+    }
 
 	
     @Transient
     public User getOrganizationAdmin() {
         if (users != null) {
             for (User user : users) {
-            	if(user.getRoles() != null){
-	                for (Role role : user.getRoles()) {
-	                    if (Role.ROLE_NAME_ORG_ADMIN.equals(role.getName())) {
-	                        return user;
-	                    }
-	                }
-            	}
+                if (user.getRoles() != null) {
+                    for (Role role : user.getRoles()) {
+                        if (Role.ROLE_NAME_ORG_ADMIN.equals(role.getName())) {
+                            return user;
+                        }
+                    }
+                }
             }
         }
         return null;
     }
 
-	@Override
-	public String toString() {
-		return new ToStringBuilder(this)
-		.append("id", this.id)
-		.append("name", this.name)
-		.append("parentId", this.parentId)
-		.append("description", this.description)
-		.append("relationshipType", this.getRelationshipType())
-		.append("organizationStates", this.getOrganizationStates())
-		//skip users
-		.append("createdOn", this.createdOn)
-		.append("lastUpdated", this.lastUpdated)
-		.toString();
+    @Override
+    public String toString() {
+	return new ToStringBuilder(this)
+	    .append("id", this.id)
+	    .append("name", this.name)
+	    .append("parentId", this.parentId)
+	    .append("description", this.description)
+	    .append("relationshipType", this.getRelationshipType())
+	    .append("organizationStates", this.getOrganizationStates())
+	    //skip users
+	    .append("createdOn", this.createdOn)
+	    .append("lastUpdated", this.lastUpdated)
+	    .toString();
 	}
 
 	
-	@Override
-	public int hashCode() {
-		return Objects.hash(id);
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 
 	
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj){
-			return true;
-		}
-		if (obj == null){
-			return false;
-		}
-		if (getClass() != obj.getClass()){
-			return false;
-		}
-			
-		Organization other = (Organization) obj;
-		return Objects.equals(this.getId(), other.getId());
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
 
+        Organization other = (Organization) obj;
+        return Objects.equals(this.getId(), other.getId());
+    }
 	
 	
 }
