@@ -16,7 +16,7 @@ ext {
  	atomikosVersion = "3.9.3"
  	activeMqVersion = "5.10.0"
  	slf4jVersion="1.7.7"
- 	log4jVersion="2.0"
+ 	log4jVersion="2.0.1"
  	mysqlVersion = mysqlVersion_ext // refer below buildScript block, to modify shared variable
 }
 
