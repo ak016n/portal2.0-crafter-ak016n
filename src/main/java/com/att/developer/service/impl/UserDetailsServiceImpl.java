@@ -88,14 +88,13 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         return user;
     }
 
-    private void addOrgAuthority(Collection<GrantedAuthority> authorities, List<Organization> orgs) {
-        if (orgs != null) {
-            for (Organization org : orgs) {
-                authorities.add(new SimpleGrantedAuthority(org.getId()));
-                this.addOrgAuthority(authorities, new ArrayList<Organization>(org.getChildOrganizations()));
-            }
-        }
-    }
+	private void addOrgAuthority(Collection<GrantedAuthority> authorities, List<Organization> orgs) {
+		if(orgs != null) {
+	        for(Organization org : orgs){
+	        	authorities.add(new SimpleGrantedAuthority(org.getId()));
+	        }
+		}
+	}
 
 	private void addRoles(Collection<GrantedAuthority> authorities, Set<Role> roles) {
 		if(roles != null) {

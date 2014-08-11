@@ -9,12 +9,10 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
 import javax.persistence.Table;
@@ -38,14 +36,8 @@ public class Organization implements Serializable {
     private String description;
 
     @Column(name = "parent_id")
-//    @Transient
     private String parentId;
 
-//   works @ManyToOne(cascade={CascadeType.ALL})
-//   works @JoinColumn(name="parent_id")
-    @Transient
-    private Organization parent;
-    
     @Column(name = "relationship_type")
     private Integer relationshipType;
 
@@ -64,10 +56,6 @@ public class Organization implements Serializable {
     @JoinTable(name = "user_org_membership", joinColumns = {@JoinColumn(name = "org_id", referencedColumnName = "id")}, inverseJoinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")})
     private Set<User> users;
 
-    @OneToMany(fetch=FetchType.EAGER) 
-    @JoinColumn(name = "parent_id")
-    private Set<Organization> childOrganizations;
-    
     public Organization() {
         this.setId(java.util.UUID.randomUUID().toString());
     }
@@ -102,14 +90,6 @@ public class Organization implements Serializable {
 
     public void setParentId(String parentId) {
         this.parentId = parentId;
-    }
-    
-    public Set<Organization> getChildOrganizations() {
-        return childOrganizations;
-    }
-    
-    public void setChildOrganizations(Set<Organization> childOrganizations) {
-        this.childOrganizations = childOrganizations;
     }
 
     public OrgRelationshipType getRelationshipType() {
@@ -176,16 +156,6 @@ public class Organization implements Serializable {
 
     public void setOrganizationStates(Set<OrganizationState> organizationStates) {
         this.organizationStates = organizationStates;
-    }
-
-    
-    public Organization getParent() {
-        return parent;
-    }
-    
-    
-    public void setParent(Organization parent) {
-        this.parent = parent;
     }
 
 	

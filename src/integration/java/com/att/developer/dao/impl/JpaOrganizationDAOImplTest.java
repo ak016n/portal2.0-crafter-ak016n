@@ -2,9 +2,6 @@ package com.att.developer.dao.impl;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import javax.annotation.Resource;
 import javax.transaction.Transactional;
 
@@ -45,7 +42,8 @@ public class JpaOrganizationDAOImplTest {
         organizationDAO.create(organization);
 
         // read
-        Organization afterCreateOrganization = new OrganizationBuilder().withVanillaOrganization().withId(organization.getId()).build();
+        Organization afterCreateOrganization = new OrganizationBuilder().withVanillaOrganization().withId(organization.getId())
+                .build();
         afterCreateOrganization = organizationDAO.load(afterCreateOrganization);
         assertThat(afterCreateOrganization.getName(), CoreMatchers.equalTo(organization.getName()));
 
@@ -59,51 +57,6 @@ public class JpaOrganizationDAOImplTest {
         assertThat(organizationDAO.load(afterCreateOrganization), CoreMatchers.nullValue());
     }
 
-    
-    @Test
-    public void testCRUD_parent() {
-        // create
-        Organization organization = new OrganizationBuilder().build();
-        
-        
-        organizationDAO.create(organization);
-
-
-        // read
-        Organization afterCreateOrganization = new OrganizationBuilder().withVanillaOrganization().withId(organization.getId()).build();
-        afterCreateOrganization = organizationDAO.load(afterCreateOrganization);
-        assertThat(afterCreateOrganization.getName(), CoreMatchers.equalTo(organization.getName()));
-        
-//        Organization childAfterCreate = new OrganizationBuilder().withVanillaOrganization().withId(organizationChild.getId()).build();
-//        childAfterCreate = organizationDAO.load(childAfterCreate);
-//        Assert.assertNotNull(afterCreateOrganization.getChildOrganizations());
-        
-
-        // update
-        afterCreateOrganization.setDescription("its a funny show");
-        Organization afterUpdate = organizationDAO.update(afterCreateOrganization);
-        assertThat(afterUpdate.getDescription(), CoreMatchers.equalTo(afterCreateOrganization.getDescription()));
-        
-        Organization organizationChild = new OrganizationBuilder().withName("c_" + organization.getId()).build();
-        organizationChild.setParentId(organization.getId());
-//        organizationChild.setParent(organization);
-        Set<Organization> childOrganizations = new HashSet<>();
-        childOrganizations.add(organizationChild);
-        afterUpdate.setChildOrganizations(childOrganizations);
-        organizationDAO.create(organizationChild);
-        Organization childAfterCreate = new OrganizationBuilder().withVanillaOrganization().withId(organizationChild.getId()).build();
-        childAfterCreate = organizationDAO.load(childAfterCreate);
-        Organization afterUpdate2 = organizationDAO.update(afterUpdate);
-        
-        Assert.assertNotNull(afterUpdate2.getChildOrganizations());
-        
-
-        // delete
-        organizationDAO.delete(afterUpdate);
-        assertThat(organizationDAO.load(afterCreateOrganization), CoreMatchers.nullValue());
-    }
-
-    
     @Test(expected = DuplicateDataException.class)
     public void testCreate_withDuplicateName() {
         // create
@@ -126,7 +79,8 @@ public class JpaOrganizationDAOImplTest {
         organizationDAO.create(organization);
 
         // read
-        Organization afterCreateOrganization = new OrganizationBuilder().withVanillaOrganization().withId(organization.getId()).build();
+        Organization afterCreateOrganization = new OrganizationBuilder().withVanillaOrganization().withId(organization.getId())
+                .build();
         afterCreateOrganization = organizationDAO.load(afterCreateOrganization);
         assertThat(afterCreateOrganization.getName(), CoreMatchers.equalTo(organization.getName()));
         Assert.assertTrue(afterCreateOrganization.getUsers().contains(user));
@@ -149,7 +103,8 @@ public class JpaOrganizationDAOImplTest {
         organizationDAO.create(organization);
 
         // read
-        Organization afterCreateOrganization = new OrganizationBuilder().withVanillaOrganization().withId(organization.getId()).build();
+        Organization afterCreateOrganization = new OrganizationBuilder().withVanillaOrganization().withId(organization.getId())
+                .build();
         afterCreateOrganization = organizationDAO.load(afterCreateOrganization);
         assertThat(afterCreateOrganization.getName(), CoreMatchers.equalTo(organization.getName()));
         Assert.assertTrue(afterCreateOrganization.getUsers().contains(user));
@@ -163,7 +118,8 @@ public class JpaOrganizationDAOImplTest {
         organizationDAO.create(organization);
 
         // read
-        Organization afterCreateOrganization = new OrganizationBuilder().withVanillaOrganization().withId(organization.getId()).build();
+        Organization afterCreateOrganization = new OrganizationBuilder().withVanillaOrganization().withId(organization.getId())
+                .build();
         afterCreateOrganization = organizationDAO.load(afterCreateOrganization);
 
         Assert.assertNotNull(afterCreateOrganization.getOrganizationStates());
