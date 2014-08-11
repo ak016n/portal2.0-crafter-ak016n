@@ -59,6 +59,7 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
 		
 	}
 	
+	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http
 			.authorizeRequests()
@@ -71,6 +72,8 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
 				.loginPage("/auth/login")
 				.defaultSuccessUrl("/auth/loginsuccess")
 				.permitAll();
+			
+		        
 		
 		http.csrf().disable();
 		
