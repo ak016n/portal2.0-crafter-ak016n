@@ -12,7 +12,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.security.acls.domain.CumulativePermission;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -40,12 +39,12 @@ public class ApiBundleController {
     private PermissionManager permissionManager;
 
     @RequestMapping(value = "/edit", method = RequestMethod.GET)
-    public String getEdit(@RequestParam(value = "id", required = true) String id, Model model) {
+    public String getEdit(@RequestParam(value = "id", required = true) String id, Model model, @ModelAttribute SessionUser sessionUser) {
         logger.debug("Received request to show edit page");
-        SessionUser sessionUser = (SessionUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        sessionUser.getAuthorities();
-
+        
+        logger.debug("user from advice is " + sessionUser);
+        
         // Retrieve existing post and add to model
         // This is the formBackingOBject
         model.addAttribute("postAttribute", apiBundleService.getApiBundle(id));
@@ -61,7 +60,8 @@ public class ApiBundleController {
      * Saves the edited post from the Edit page and returns a result page.
      */
     @RequestMapping(value = "/edit", method = RequestMethod.POST)
-    public String getEditPage(@ModelAttribute("postAttribute") ApiBundle bundle, @RequestParam(value="id", required=true) String id, @RequestParam(value="comment", required=false) String comment, Model model) {
+    public String getEditPage(@ModelAttribute("postAttribute") ApiBundle bundle, @RequestParam(value="id", required=true) String id, 
+            @RequestParam(value="comment", required=false) String comment, Model model,  @ModelAttribute SessionUser sessionUser) {
         logger.debug("Received request to view edit page");
 
         // Re-assign id
@@ -84,10 +84,12 @@ public class ApiBundleController {
 
         // Add source to model to help us determine the source of the JSP page
         model.addAttribute("source", "Edit Bundle");
-
-        // Add our current role and username
-        model.addAttribute("role", SecurityContextHolder.getContext().getAuthentication().getAuthorities());
-        model.addAttribute("username", SecurityContextHolder.getContext().getAuthentication().getName());
+        
+        
+        // Add our current authorities and username
+        model.addAttribute("authoritiesFromSessionUser", sessionUser.getAuthorities());
+        model.addAttribute("username", sessionUser.getUsername());
+        
 
         // This will resolve to /WEB-INF/jsp/crud-personal/resultpage.jsp
         return "jsp/apiBundle/resultpage.jsp";
@@ -120,12 +122,10 @@ public class ApiBundleController {
      * Saves a new post from the Add page and returns a result page.
      */
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public String getAddPage(@ModelAttribute("postAttribute") ApiBundle bundle, Model model) {
+    public String getAddPage(@ModelAttribute("postAttribute") ApiBundle bundle, Model model,  @ModelAttribute SessionUser sessionUser) {
         logger.debug("Received request to view add page");
 
-        SessionUser sessionUser = (SessionUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = sessionUser.getUser();
-        sessionUser.getAuthorities();
 
         String bundleId = UUID.randomUUID().toString();
         bundle.setId(bundleId);
@@ -150,9 +150,9 @@ public class ApiBundleController {
         // Add source to model to help us determine the source of the JSP page
         model.addAttribute("source", "Personal");
 
-        // Add our current role and username
-        model.addAttribute("role", SecurityContextHolder.getContext().getAuthentication().getAuthorities());
-        model.addAttribute("username", SecurityContextHolder.getContext().getAuthentication().getName());
+        // Add our current authorities and username
+        model.addAttribute("authoritiesFromSessionUser", sessionUser.getAuthorities());
+        model.addAttribute("username", sessionUser.getUsername());
 
         // This will resolve to /WEB-INF/jsp/crud-personal/resultpage.jsp
         return "jsp/apiBundle/resultpage.jsp";
@@ -163,7 +163,7 @@ public class ApiBundleController {
      * Deletes an existing post and returns a result page.
      */
     @RequestMapping(value = "/delete", method = RequestMethod.GET)
-    public String getDeletePage(@RequestParam(value = "id", required = true) String id, Model model) {
+    public String getDeletePage(@RequestParam(value = "id", required = true) String id, Model model, @ModelAttribute SessionUser sessionUser) {
         logger.debug("Received request to view delete page");
 
         // Create new post
@@ -175,9 +175,10 @@ public class ApiBundleController {
         model.addAttribute("source", "Delete Bundle Page");
 
         // Add our current role and username
-        model.addAttribute("role", SecurityContextHolder.getContext().getAuthentication().getAuthorities());
-        model.addAttribute("username", SecurityContextHolder.getContext().getAuthentication().getName());
-
+        // Add our current authorities and username
+        model.addAttribute("authoritiesFromSessionUser", sessionUser.getAuthorities());
+        model.addAttribute("username", sessionUser.getUsername());
+        
         // This will resolve to /WEB-INF/jsp/crud-personal/resultpage.jsp
         return "jsp/apiBundle/resultpage.jsp";
     }
@@ -188,12 +189,14 @@ public class ApiBundleController {
      * @return
      */
     @RequestMapping(value = "/list", method = RequestMethod.GET)
-    public String list(Model model) {
-        model.addAttribute("role", SecurityContextHolder.getContext().getAuthentication().getAuthorities());
-        model.addAttribute("username", SecurityContextHolder.getContext().getAuthentication().getName());
+    public String list(Model model, @ModelAttribute SessionUser sessionUser) {
+        
+        // Add our current authorities and username
+        model.addAttribute("authoritiesFromSessionUser", sessionUser.getAuthorities());
+        model.addAttribute("username", sessionUser.getUsername());
+        
 
         List<ApiBundle> allApiBundles = apiBundleService.getAll();
-
         model.addAttribute("allBundles", allApiBundles);
 
         return "jsp/apiBundle/allbundlespage.jsp";
@@ -202,12 +205,15 @@ public class ApiBundleController {
     
     @RequestMapping(value = "/grantPermission", method = RequestMethod.POST)
     public String grantPermission(Model model, @RequestParam(value = "id", required = true) String id,
-            @RequestParam(value = "orgId", required = true) String orgId) {
+            @RequestParam(value = "orgId", required = true) String orgId, @ModelAttribute SessionUser sessionUser) {
 
         model.addAttribute("source", "grantPermission");
-        model.addAttribute("role", SecurityContextHolder.getContext().getAuthentication().getAuthorities());
-        model.addAttribute("username", SecurityContextHolder.getContext().getAuthentication().getName());
-        SessionUser sessionUser = (SessionUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        // Add our current authorities and username
+        model.addAttribute("authoritiesFromSessionUser", sessionUser.getAuthorities());
+        model.addAttribute("username", sessionUser.getUsername());
+        
+        
         User actor = sessionUser.getUser();
         Organization org = new Organization();
         org.setId(orgId);
@@ -231,13 +237,15 @@ public class ApiBundleController {
     
     
     @RequestMapping(value="/removePermission", method=RequestMethod.POST)
-    public String removePermission(Model model, @RequestParam(value="id", required=true) String id, @RequestParam(value="orgId", required=true) String orgId){
+    public String removePermission(Model model, @RequestParam(value="id", required=true) String id, 
+            @RequestParam(value="orgId", required=true) String orgId, @ModelAttribute SessionUser sessionUser){
     	
        	model.addAttribute("source", "remove Permission");
-    	model.addAttribute("role", SecurityContextHolder.getContext().getAuthentication().getAuthorities());
-    	model.addAttribute("username", SecurityContextHolder.getContext().getAuthentication().getName());
+       	
+        // Add our current authorities and username
+        model.addAttribute("authoritiesFromSessionUser", sessionUser.getAuthorities());
+        model.addAttribute("username", sessionUser.getUsername());
     	
-    	SessionUser sessionUser = (SessionUser)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     	User actor = sessionUser.getUser();
     	
     	Organization org = new Organization();
@@ -253,11 +261,13 @@ public class ApiBundleController {
   
     
     // @RequestMapping(value="/initialize", method=RequestMethod.GET)
-    public String initialize(Model model) {
+    public String initialize(Model model, @ModelAttribute SessionUser sessionUser) {
 
         model.addAttribute("source", "Initialize");
-        model.addAttribute("role", SecurityContextHolder.getContext().getAuthentication().getAuthorities());
-        model.addAttribute("username", SecurityContextHolder.getContext().getAuthentication().getName());
+        
+        // Add our current authorities and username
+        model.addAttribute("authoritiesFromSessionUser", sessionUser.getAuthorities());
+        model.addAttribute("username", sessionUser.getUsername());
 
         // Create acl_object_identity rows (and also acl_class rows as needed)
         Set<String> objIdentitifiers = new HashSet<>();

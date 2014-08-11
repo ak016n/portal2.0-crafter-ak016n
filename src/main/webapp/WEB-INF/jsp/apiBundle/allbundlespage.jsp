@@ -13,7 +13,7 @@
 
 <p>
 <span style="font-weight:bold">Current user: </span>${username}<br/>
-<span style="font-weight:bold">Current role: </span>${role}
+<span style="font-weight:bold">Current role: </span>${authoritiesFromSessionUser}
 </p>
 
 <hr/>
