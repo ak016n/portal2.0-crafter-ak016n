@@ -22,6 +22,7 @@ module.exports = function(config) {
       'src/main/webapp/resources/script/vendor/jquery/*.js',
       'src/main/webapp/resources/script/vendor/angular-mocks/*.js',
       'src/main/webapp/resources/script/vendor/angular-bootstrap/*.js',
+      'src/main/webapp/resources/script/vendor/google-diff-match-patch-js/*.js',
       'client/app/*.js',
       'client/app/**/*.js',
       'client/test/unit/**/*.js'

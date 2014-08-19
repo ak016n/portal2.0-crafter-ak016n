@@ -1,6 +1,4 @@
-var adminCtrl = angular.module('portalApp');
-
-adminCtrl.controller('AdminCtrl', ['$scope', 'adminService', 'adminVersionService', 'globalHandleErrorService', '$sce', '$q', '$http', function(sc, adminService, adminVersionService, globalHandleErrorService, sce, $q, $http) {
+angular.module('portalApp').controller('AdminCtrl', ['$scope', 'adminService', 'adminVersionService', 'globalHandleErrorService', '$sce', '$q', '$http', function(sc, adminService, adminVersionService, globalHandleErrorService, sce, $q, $http) {
   sc.adminProp = {
 		  description: 'empty'
   };
@@ -79,7 +77,7 @@ adminCtrl.controller('AdminCtrl', ['$scope', 'adminService', 'adminVersionServic
 	  sc.diff.responseText2 = '';
 	  $q.all([propertyByVersion(sc.fromVersion, 'responseText1'), propertyByVersion(sc.withVersion, 'responseText2')])
 	  			.then(function(success) {
-	  				var diffResult = lineDiff(sc.diff.responseText1, sc.diff.responseText2);
+	  				var diffResult = lineDiff.diffTwoTexts(sc.diff.responseText1, sc.diff.responseText2);
 	  				sc.diff.results = sce.trustAsHtml(diffResult);
 	  				console.log('after method invocation : ' + sc.diff.results);
 	  				}, function(error) {

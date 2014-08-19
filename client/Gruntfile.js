@@ -14,6 +14,15 @@
 				}
 			},
 
+			copy: {
+				main : {
+					files: [
+					        {expand: true, cwd: 'app/css', src: ['**'], dest: '../src/main/webapp/resources/css/ext'},
+							{expand: true, src: ['dist/app.js'], dest: '../src/main/webapp/script/app/'}
+					]
+				}
+			},
+			
 			uglify: {
 				dist: {
 					files: {
@@ -37,7 +46,7 @@
 					separator: ';'
 				},
 				dist: {
-					src: [ 'app/js/**/*.js', 'tmp/*.js' ],
+					src: [ 'app/*.js', 'app/js/**/*.js', 'tmp/*.js' ],
 					dest: 'dist/app.js'
 				}
 			},
@@ -76,9 +85,10 @@
 		grunt.loadNpmTasks('grunt-contrib-watch');
 		grunt.loadNpmTasks('grunt-bower-task');
 		grunt.loadNpmTasks('grunt-karma');
+		grunt.loadNpmTasks('grunt-contrib-copy');
 		
 		grunt.registerTask('dev', [ 'bower', 'watch:dev' ]);
 		grunt.registerTask('test', [ 'bower', 'jshint', 'karma:continuous' ]);
 		grunt.registerTask('minified', [ 'bower', 'connect:server', 'watch:min' ]);
-		grunt.registerTask('package', [ 'bower', 'jshint', 'karma:unit', 'html2js:dist', 'concat:dist', 'uglify:dist', 'clean:temp' ]);
+		grunt.registerTask('package', [ 'bower', 'jshint', 'karma:unit', 'html2js:dist', 'concat:dist', 'uglify:dist', 'copy', 'clean:temp' ]);
     };

@@ -12,4 +12,3 @@ adminCtrl.factory('adminVersionService', ['$resource', function($resource, $scop
     	 //get: {method:'GET', params:{}, isArray:true}
     });
 }]);
-
