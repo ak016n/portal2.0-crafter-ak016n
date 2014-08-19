@@ -21,10 +21,11 @@ import com.att.developer.bean.Role;
 import com.att.developer.bean.SessionUser;
 import com.att.developer.bean.User;
 import com.att.developer.bean.UserState;
+import com.att.developer.service.UserCreator;
 import com.att.developer.typelist.UserStateType;
 
 @Component("attUserDetailsService")
-public class UserDetailsServiceImpl implements UserDetailsService {
+public class UserDetailsServiceImpl implements UserDetailsService, UserCreator {
 
     private static final String USER_NOT_FOUND_MESSAGE = "User not found.";
     
@@ -103,5 +104,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	        }
 		}
 	}
-
+	
+	@Override
+	public SessionUser buildSessionUserFromUserEntity(User portalUser){
+	    return (SessionUser)this.buildUserFromUserEntity(portalUser);
+	}
 }
