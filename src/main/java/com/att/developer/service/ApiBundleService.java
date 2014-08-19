@@ -33,21 +33,7 @@ public interface ApiBundleService {
 	public List<ApiBundle> getAll();
 
 	/**
-	 * <p>
-	 * We don't provide any access control here because the new object doesn't
-	 * have an id yet.
-	 * <p>
-	 * Instead we place the access control on the URL-level because the Add page
-	 * shouldn't be visible in the first place.
-	 * <p>
-	 * There are two places where we can place this restriction:
-	 * 
-	 * <pre>
-	 * 1. At the controller method
-	 * 2. At the external spring-security.xml file
-	 * </pre>
-	 * <p>
-	 * 
+	 * Need to be admin to create 
 	 */
 	@PreAuthorize("hasRole('ROLE_SYS_ADMIN')")
 	public ApiBundle create(ApiBundle apiBundle, User user);
@@ -68,6 +54,7 @@ public interface ApiBundleService {
 	@PreAuthorize("hasRole('ROLE_SYS_ADMIN')")
 	public void delete(ApiBundle apiBundle);
 
+//	@PreAuthorize("hasRole('ROLE_SYS_ADMIN')  and #oauth2.isUser()")
 	@PreAuthorize("hasRole('ROLE_SYS_ADMIN')")
 	public void grantPermission(ApiBundle apiBundle, Organization org, User actor);
 
