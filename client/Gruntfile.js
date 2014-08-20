@@ -1,14 +1,16 @@
     module.exports = function(grunt) {
      
+      var baseDestination = '../src/main/webapp/resources'; 
+    	 
       grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
 
         // Task configuration will be written here
-		    bower: {
+		   bower: {
 				install: {
 					options: {
 						install: true,
-						targetDir: '../src/main/webapp/resources/script/vendor',
+						targetDir: baseDestination + '/script/vendor',
 						cleanTargetDir: true
 					}
 				}
@@ -17,8 +19,8 @@
 			copy: {
 				main : {
 					files: [
-					        {expand: true, cwd: 'app/css', src: ['**'], dest: '../src/main/webapp/resources/css/ext'},
-							{expand: true, src: ['dist/app.js'], dest: '../src/main/webapp/script/app/'}
+					        {expand: true, cwd: 'app/css', src: ['**'], dest: baseDestination + '/css/ext'},
+							{expand: true, cwd: 'dist', src: ['**'], dest: baseDestination + '/script/app/'}
 					]
 				}
 			},
@@ -35,8 +37,11 @@
 			},
 			
 		    html2js: {
+		    	options: {
+		    		base: 'app/js'
+		    	},
 				dist: {
-					src: [ 'app/partials/**/*.html' ],
+					src: [ 'app/**/*.tpl.html' ],
 					dest: 'tmp/templates.js'
 				}
 			},
@@ -56,9 +61,9 @@
 			},
 			
 		    clean: {
-				temp: {
-					src: [ 'tmp' ]
-				}
+		    	options: { force: true }, // Needed to delete files outside of current directory
+				temp: [ 'tmp'],
+				build: [baseDestination + '/css/ext', baseDestination + '/script/app']
 			},
 			
 			karma: {
@@ -87,8 +92,8 @@
 		grunt.loadNpmTasks('grunt-karma');
 		grunt.loadNpmTasks('grunt-contrib-copy');
 		
-		grunt.registerTask('dev', [ 'bower', 'watch:dev' ]);
+		//grunt.registerTask('dev', [ 'bower', 'watch:dev' ]);
 		grunt.registerTask('test', [ 'bower', 'jshint', 'karma:continuous' ]);
-		grunt.registerTask('minified', [ 'bower', 'connect:server', 'watch:min' ]);
-		grunt.registerTask('package', [ 'bower', 'jshint', 'karma:unit', 'html2js:dist', 'concat:dist', 'uglify:dist', 'copy', 'clean:temp' ]);
+		//grunt.registerTask('minified', [ 'bower', 'connect:server', 'watch:min' ]);
+		grunt.registerTask('build', [ 'clean:build', 'bower', 'jshint', 'karma:unit', 'html2js:dist', 'concat:dist', 'uglify:dist', 'copy', 'clean:temp' ]);
     };

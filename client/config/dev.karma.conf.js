@@ -15,19 +15,19 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-	  'src/main/webapp/resources/script/vendor/angular/*.js',
-      'src/main/webapp/resources/script/vendor/angular-resource/*.js',
-      'src/main/webapp/resources/script/vendor/angular-translate/*.js',
-      'src/main/webapp/resources/script/vendor/angular-translate-loader-url/*.js',
-      'src/main/webapp/resources/script/vendor/jquery/*.js',
-      'src/main/webapp/resources/script/vendor/angular-mocks/*.js',
-      'src/main/webapp/resources/script/vendor/angular-bootstrap/*.js',
-      'src/main/webapp/resources/script/vendor/google-diff-match-patch-js/*.js',
+	  'client/bower_components/angular/angular.js',
+      'client/bower_components/angular-resource/angular-resource.js',
+      'client/bower_components/angular-translate/angular-translate.js',
+      'client/bower_components/angular-translate-loader-url/angular-translate-loader-url.js',
+      'client/bower_components/jquery/dist/*.js',
+      'client/bower_components/angular-mocks/angular-mocks.js',
+      'client/bower_components/angular-bootstrap/*.js',
+      'client/bower_components/google-diff-match-patch-js/*.js',
+      'client/test/mock/*.js',
       'client/app/*.js',
       'client/app/**/*.js',
       'client/test/unit/**/*.js'
     ],
-
 
     // list of files to exclude
     exclude: [
@@ -38,7 +38,6 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-    
     },
 
 
