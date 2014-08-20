@@ -19,7 +19,7 @@
 			copy: {
 				main : {
 					files: [
-					        {expand: true, cwd: 'app/css', src: ['**'], dest: baseDestination + '/css/ext'},
+					        {expand: true, cwd: 'src/css', src: ['**'], dest: baseDestination + '/css/ext'},
 							{expand: true, cwd: 'dist', src: ['**'], dest: baseDestination + '/script/app/'}
 					]
 				}
@@ -38,10 +38,10 @@
 			
 		    html2js: {
 		    	options: {
-		    		base: 'app/js'
+		    		base: 'src/js'
 		    	},
 				dist: {
-					src: [ 'app/**/*.tpl.html' ],
+					src: [ 'src/**/*.tpl.html' ],
 					dest: 'tmp/templates.js'
 				}
 			},
@@ -51,13 +51,13 @@
 					separator: ';'
 				},
 				dist: {
-					src: [ 'app/*.js', 'app/js/**/*.js', 'tmp/*.js' ],
+					src: [ 'src/app/app.js', 'src/common/**/*.js', 'src/app/**/*.js', 'tmp/*.js' ],
 					dest: 'dist/app.js'
 				}
 			},
 			
 			jshint: {
-				all: [ 'Gruntfile.js', 'app/*.js', 'app/**/*.js' ]
+				all: [ 'Gruntfile.js', 'src/app.js', 'src/**/*.js' ]
 			},
 			
 		    clean: {
@@ -68,7 +68,7 @@
 			
 			karma: {
 				options: {
-					configFile: 'config/dev.karma.conf.js'
+					configFile: 'dev.karma.conf.js'
 				},
 				unit: {
 					singleRun: true
@@ -76,6 +76,10 @@
 				continuous: {
 					singleRun: false,
 					autoWatch: true
+				},
+				build: {
+					singleRun: true,
+					browsers: ['PhantomJS']
 				}
 			}
       });
@@ -95,5 +99,5 @@
 		//grunt.registerTask('dev', [ 'bower', 'watch:dev' ]);
 		grunt.registerTask('test', [ 'bower', 'jshint', 'karma:continuous' ]);
 		//grunt.registerTask('minified', [ 'bower', 'connect:server', 'watch:min' ]);
-		grunt.registerTask('build', [ 'clean:build', 'bower', 'jshint', 'karma:unit', 'html2js:dist', 'concat:dist', 'uglify:dist', 'copy', 'clean:temp' ]);
+		grunt.registerTask('build', [ 'clean:build', 'bower', 'jshint', 'karma:build', 'html2js:dist', 'concat:dist', 'uglify:dist', 'copy', 'clean:temp' ]);
     };

@@ -1,1 +1,1 @@
-angular.module('templates-dest', []);
+angular.module('templates-dist', []);
