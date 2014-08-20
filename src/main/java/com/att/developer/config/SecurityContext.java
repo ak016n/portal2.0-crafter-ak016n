@@ -41,7 +41,6 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
-import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.approval.ApprovalStore;
@@ -52,9 +51,11 @@ import org.springframework.security.oauth2.provider.request.DefaultOAuth2Request
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
+import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 
 import com.att.developer.bean.Role;
 import com.att.developer.security.AttPasswordEncoder;
+import com.att.developer.security.AuthenticationEnhancementFilter;
 import com.att.developer.security.CustomAclLookupStrategy;
 import com.att.developer.security.CustomPermissionGrantingStrategy;
 import com.att.developer.security.EventLogAuditLogger;
@@ -228,6 +229,9 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
         
         @Autowired
         private TokenStore tokenStore;
+
+        @Autowired
+        private AuthenticationEnhancementFilter authenticationAdderFilter;
         
         @Resource(name="attUserDetailsService")
         private UserDetailsService userDetailsService;
@@ -246,23 +250,24 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
          */
         @Override
         public void configure(HttpSecurity http) throws Exception {
-                // @formatter:off
-                http
+            // @formatter:off
+            http
 //                    .requestMatchers().antMatchers("/photos/**", "/oauth/users/**", "/oauth/clients/**","/me", "/admin/**", "/cauth/**", "/uauth/**")
-                    .requestMatchers().antMatchers("/admin/**", "/cauth/**", "/uauth/**")
-                .and()
-                    .authorizeRequests()
-                        .antMatchers("/views/home.html").permitAll()
-                        .antMatchers("/resources/**").permitAll()
+                .requestMatchers().antMatchers("/admin/**", "/cauth/**", "/uauth/**", "/oauth/revoke/**")
+            .and()
+                .authorizeRequests()
+                    .antMatchers("/views/home.html").permitAll()
+                    .antMatchers("/resources/**").permitAll()
 
-                        .antMatchers("/admin/**", "/views/adminConsole/**", "**/apiBundle/add/**").hasRole("SYS_ADMIN")
+                    .antMatchers("/admin/**", "/views/adminConsole/**", "**/apiBundle/add/**").hasRole("SYS_ADMIN")
 //                                .antMatchers("/eventLog/**").access("#oauth2.hasScope('trust') and #oauth2.clientHasRole('ROLE_INTERNAL_CLIENT')")//no worky, client loses authorities for some reason.
-                        .antMatchers("/cauth/**").access("#oauth2.isClient()")
-                        .antMatchers("/uauth/**").access("#oauth2.isUser() and #oauth2.hasScope('trust')")
+                    .antMatchers("/cauth/**").access("#oauth2.isClient()")
+                    .antMatchers("/uauth/**").access("#oauth2.isUser() and #oauth2.hasScope('trust')")
 
-                        .antMatchers("/cauth/eventLog/**").access("#oauth2.hasScope('trust')")
-                        .anyRequest().authenticated()
-                        //below is taken from sample spring oauth    
+                    .antMatchers("/cauth/eventLog/**").access("#oauth2.hasScope('trust')")
+                    .antMatchers("/oauth/revoke/**").access("#oauth2.isClient() and #oauth2.hasScope('trust')")
+                    .anyRequest().authenticated()
+                    //below is taken from sample spring oauth    
 //                        .antMatchers("/me").access("#oauth2.hasScope('read')")
 //                        .antMatchers("/photos").access("#oauth2.hasScope('read')")
 //                        .antMatchers("/photos/trusted/**").access("#oauth2.hasScope('trust')")
@@ -274,13 +279,19 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
 //                                .access("#oauth2.clientHasRole('ROLE_CLIENT') and (hasRole('ROLE_USER') or #oauth2.isClient()) and #oauth2.hasScope('read')")
 //                        .regexMatchers(HttpMethod.GET, "/oauth/clients/.*")
 //                                .access("#oauth2.clientHasRole('ROLE_CLIENT') and #oauth2.isClient() and #oauth2.hasScope('read')")
-                .and()
-                    .csrf().disable()
-                    .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-                // @formatter:on
-         
+            .and()
+                .csrf().disable()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+            // @formatter:on
+            http.addFilterAfter(authenticationAdderFilter, FilterSecurityInterceptor.class);
         }
 
+
+    }
+    
+    @Bean 
+    public AuthenticationEnhancementFilter authenticationAdderFilter(){
+        return new AuthenticationEnhancementFilter();
     }
 
     @Configuration
@@ -305,15 +316,15 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
                         .secret("somesecret_ticwu")
                         .accessTokenValiditySeconds(300) //5 minutes
                         .refreshTokenValiditySeconds(60*60) //one hour
+                        
                  .and()
+                     //oauth2 spec recommends against refresh tokens for clients. NO REFRESH TOKEN here.
                      .withClient("trusted_internal_client")
-                         .authorizedGrantTypes("client_credentials", "refresh_token")
+                         .authorizedGrantTypes("client_credentials")
                          .authorities("ROLE_INTERNAL_CLIENT")
                          .scopes("read", "write", "trust")
                          .secret("somesecret_tic")   
-                         .accessTokenValiditySeconds(60*60) //one hour
-                         .refreshTokenValiditySeconds(24*60*60);//24 hours
-            
+                         .accessTokenValiditySeconds(60*60); //one hour
             
         }
         
@@ -407,12 +418,13 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
                     .userApprovalHandler(userApprovalHandler)
                     .authenticationManager(authenticationManager)
                     .accessTokenConverter(accessTokenConverter());
+            
         }
     
 //        @Override
 //        public void configure(AuthorizationServerSecurityConfigurer oauthServer) throws Exception {
-//            oauthServer.tokenKeyAccess(tokenKeyAccess)
-//                oauthServer.realm("sparklr2/client");
+////            oauthServer.tokenKeyAccess(tokenKeyAccess)
+////                oauthServer.realm("sparklr2/client");
 //        }
     }
     
@@ -426,6 +438,7 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
 
         @Autowired
         private TokenStore tokenStore;
+        
 
         @Bean
         public ApprovalStore approvalStore() throws Exception {
