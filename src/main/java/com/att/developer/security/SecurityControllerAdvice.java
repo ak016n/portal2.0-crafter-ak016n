@@ -11,7 +11,7 @@ import com.att.developer.bean.SessionUser;
 
 
 /**
- * makes the currentUser available for any controller in system (if they are logged in...)
+ * makes the currentUser (SessionUser) available for any controller in system (if they are logged in...)
  * @author so1234
  *
  */
