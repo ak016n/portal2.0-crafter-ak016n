@@ -33,8 +33,6 @@ public class JpaApiBundleDAOImpl extends JpaDAO<ApiBundle> implements ApiBundleD
         } catch (NoResultException e) {
             // ok to swallow
             logger.debug("found no ApiBundles at ALL!!");
-        } catch (Exception e) {
-            logger.error(e);
         }
         return allBundles;
     }
