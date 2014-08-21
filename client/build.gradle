@@ -1,7 +1,5 @@
 /**
  * Grunt Related Tasks
- * 
- * Nice to split it out, but done this way to cut down gradle lookup time.
  */
 
 buildscript {
