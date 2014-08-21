@@ -6,7 +6,6 @@ import java.util.Collections;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.MockitoAnnotations;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -29,8 +28,6 @@ public class SecurityControllerAdviceTest {
 
     @Before
     public void before() {
-        MockitoAnnotations.initMocks(this);
-
         Role unprivilegedRole = new RoleBuilder().withName("notPrilegedRole").build();
         actor = new UserBuilder().withRole(unprivilegedRole).withId(USER_NOT_PRIVILEGED_ID).build();
     }
