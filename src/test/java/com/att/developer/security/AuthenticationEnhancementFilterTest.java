@@ -123,5 +123,14 @@ public class AuthenticationEnhancementFilterTest {
         String clientId = (String)actualAuth.getPrincipal();
         Assert.assertNotNull("ClientId is not null", clientId);
     }
+    
+    @Test 
+    public void testDoFilter_nullAuthentication() throws Exception{
+        
+        filter.doFilter(request, response, filterChain);
+        Authentication actualAuth = SecurityContextHolder.getContext().getAuthentication();
+        
+        Assert.assertNull("Acutal auth should be null", actualAuth);
+    }
 
 }
