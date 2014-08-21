@@ -12,8 +12,10 @@
 /logs
 /client/node_modules
 /client/bower_components
+/client/dist
 bower_components
 /src/main/webapp/resources/css
 /src/main/webapp/resources/script
 script
 css
+dist

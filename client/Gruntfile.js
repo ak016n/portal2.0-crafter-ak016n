@@ -5,7 +5,6 @@
       grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
 
-        // Task configuration will be written here
 		   bower: {
 				install: {
 					options: {
@@ -84,7 +83,6 @@
 			}
       });
 
-      // Loading of tasks and registering tasks will be written here
 		grunt.loadNpmTasks('grunt-contrib-jshint');
 		grunt.loadNpmTasks('grunt-contrib-clean');
 		grunt.loadNpmTasks('grunt-contrib-compress');
