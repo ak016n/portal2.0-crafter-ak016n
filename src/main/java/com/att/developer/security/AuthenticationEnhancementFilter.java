@@ -45,32 +45,44 @@ public class AuthenticationEnhancementFilter extends OncePerRequestFilter {
     
     @Resource
     private UserCreator userCreator;
+
+    
+    public void setUserCreator(UserCreator creator) {
+        this.userCreator = creator;
+    }
+    
+    
+    public void setUserService(UserService svc) {
+        this.userService = svc;
+    }
+    
     
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        logger.info("doFilterInternal in progress..............................");
+        logger.trace("doFilterInternal in progress..............................");
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         
         buildUserAuth(authentication);
         filterChain.doFilter(request, response);
     }
     
+    
     private void buildUserAuth(Authentication authentication){
-        logger.info("auth is {}", authentication);
+        logger.debug("auth is {}", authentication);
         
-        if (authentication == null
-                || authentication.getPrincipal() == null){
+        if (authentication == null || authentication.getPrincipal() == null){
                 logger.warn("no Authentication or Principal, might be a problem!");
                 return;
-            }
-            Object principal = authentication.getPrincipal();
+        }
+        
 
-            if(authentication instanceof OAuth2Authentication){
-                OAuth2Authentication oauth = (OAuth2Authentication) authentication;
-                if(!oauth.isClientOnly()){
-                    String userId = (String)principal;
-                    logger.info("userId is {}", userId);
+        if(authentication instanceof OAuth2Authentication){
+            OAuth2Authentication oauth = (OAuth2Authentication) authentication;
+            if(!oauth.isClientOnly()){
+                try{
+                    String userId = (String)oauth.getPrincipal();
+                    logger.debug("userId is {}", userId);
                     User u = new User(); 
                     u.setId(userId);
                     User retrievedUser = userService.getUser(u);
@@ -81,17 +93,23 @@ public class AuthenticationEnhancementFilter extends OncePerRequestFilter {
                     OAuth2Authentication revisedOauth = new OAuth2Authentication(oauth.getOAuth2Request(), new UsernamePasswordAuthenticationToken(sessionUser, "N/A", sessionUser.getAuthorities()));
                     SecurityContextHolder.getContext().setAuthentication(revisedOauth);
                     return;
-                }
-                else{
-                    logger.info("We only have a Client ID as the principal, we don't need a session user");
+
+                }catch(ClassCastException e){
+                    //hmmm, maybe it was already a SessionUser
+                    logger.info("ClassCastException occurred, probably is already a SessionUser");
                     return;
                 }
             }
             else{
-                logger.info("Not an OAuth2Authentication, might be a pure Client Auth.");
+                logger.info("We only have a Client ID as the principal, we don't need a session user");
                 return;
             }
-        
+        }
+        else{
+            logger.info("Not an OAuth2Authentication, might be a pure Client Auth.");
+            return;
+        }
     }
-
+    
+    
 }

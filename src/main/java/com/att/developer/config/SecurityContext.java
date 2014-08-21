@@ -231,7 +231,7 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
         private TokenStore tokenStore;
 
         @Autowired
-        private AuthenticationEnhancementFilter authenticationAdderFilter;
+        private AuthenticationEnhancementFilter authenticationEnhancementFilter;
         
         @Resource(name="attUserDetailsService")
         private UserDetailsService userDetailsService;
@@ -283,14 +283,14 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
             // @formatter:on
-            http.addFilterAfter(authenticationAdderFilter, FilterSecurityInterceptor.class);
+            http.addFilterAfter(authenticationEnhancementFilter, FilterSecurityInterceptor.class);
         }
 
 
     }
     
     @Bean 
-    public AuthenticationEnhancementFilter authenticationAdderFilter(){
+    public AuthenticationEnhancementFilter authenticationEnhancementFilter(){
         return new AuthenticationEnhancementFilter();
     }
 
