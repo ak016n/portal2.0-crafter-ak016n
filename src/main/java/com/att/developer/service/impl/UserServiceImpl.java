@@ -1,6 +1,7 @@
 package com.att.developer.service.impl;
 
 import javax.annotation.Resource;
+import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Component;
 
@@ -9,6 +10,7 @@ import com.att.developer.dao.UserDAO;
 import com.att.developer.service.UserService;
 
 @Component
+@Transactional
 public class UserServiceImpl implements UserService {
 
 	@Resource

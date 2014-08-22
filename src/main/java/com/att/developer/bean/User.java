@@ -29,157 +29,155 @@ import com.att.developer.typelist.UserStateType;
 @Entity
 @Table(name = "user")
 public class User implements Serializable {
-	
-	private static final long serialVersionUID = -4130170797253136478L;
-	
-	@Id
-	private String id;
-	private String login;
 
-	@Column(name="password")
-	private String encryptedPassword;
-	
-	@Transient
-	private String password;
-	
-	private String email;
+    private static final long serialVersionUID = -4130170797253136478L;
 
-	@Column(name = "last_updated")
-	private Date lastUpdated;
+    @Id
+    private String id;
+    private String login;
 
-	//TODO: temporarily fetch eagerly.  What do we want to do here? 
+    @Column(name = "password")
+    private String encryptedPassword;
+
+    @Transient
+    private String password;
+
+    private String email;
+
+    @Column(name = "last_updated")
+    private Date lastUpdated;
+
+    // TODO: temporarily fetch eagerly. What do we want to do here?
     @OrderColumn(name = "sequence_number")
-    @ManyToMany(cascade=CascadeType.MERGE, mappedBy="users", fetch=FetchType.EAGER)
-	private List<Organization> organizations;
-    
-	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+    @ManyToMany(cascade = CascadeType.MERGE, mappedBy = "users", fetch = FetchType.EAGER)
+    private List<Organization> organizations;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
-	private Set<UserState> userStates;
-	
-	@OneToMany(cascade={CascadeType.PERSIST, CascadeType.MERGE}, fetch=FetchType.EAGER)
-	@JoinTable(name = "user_role_relationship", joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")}, inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")})
-	private Set<Role> roles;
-	
-	public User() {
-		this.setId(java.util.UUID.randomUUID().toString());
+    private Set<UserState> userStates;
+
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
+    @JoinTable(name = "user_role_relationship", joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")}, inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")})
+    private Set<Role> roles;
+
+    public User() {
+        this.setId(java.util.UUID.randomUUID().toString());
     }
-    
-	public String getId() {
-		return id;
-	}
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    public String getId() {
+        return id;
+    }
 
-	public String getLogin() {
-		return login;
-	}
+    public void setId(String id) {
+        this.id = id;
+    }
 
-	public void setLogin(String login) {
-		this.login = login;
-	}
+    public String getLogin() {
+        return login;
+    }
 
-	public String getEmail() {
-		return email;
-	}
+    public void setLogin(String login) {
+        this.login = login;
+    }
 
-	public void setEmail(String email) {
-		this.email = email;
-	}
-	
-	public String getPassword() {
-		return password;
-	}
+    public String getEmail() {
+        return email;
+    }
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-	public String getEncryptedPassword() {
-		return encryptedPassword;
-	}
+    public String getPassword() {
+        return password;
+    }
 
-	public void setEncryptedPassword(String encryptedPassword) {
-		this.encryptedPassword = encryptedPassword;
-	}
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
-	public Date getLastUpdated() {
-		return lastUpdated;
-	}
+    public String getEncryptedPassword() {
+        return encryptedPassword;
+    }
 
-	public void setLastUpdated(Instant lastUpdated) {
-		if (lastUpdated != null) {
-			this.lastUpdated = Date.from(lastUpdated);
-		} else {
-			this.lastUpdated = null;
-		}
-	}
+    public void setEncryptedPassword(String encryptedPassword) {
+        this.encryptedPassword = encryptedPassword;
+    }
 
-	public List<Organization> getOrganizations() {
-		return organizations;
-	}
+    public Date getLastUpdated() {
+        return lastUpdated;
+    }
 
-	public void setOrganizations(List<Organization> organizations) {
-		this.organizations = organizations;
-	}
+    public void setLastUpdated(Instant lastUpdated) {
+        if (lastUpdated != null) {
+            this.lastUpdated = Date.from(lastUpdated);
+        } else {
+            this.lastUpdated = null;
+        }
+    }
 
-	public void removeOrganization(Organization organization) {
-		if(organizations != null && !organizations.isEmpty()) {
-			organizations.remove(organization);
-		}
-	}
-	
-	public void addOrganization(Organization organization) {
-		if(organizations == null) {
-			organizations = new ArrayList<>();
-		}	
-		organizations.add(organization);
-	}
+    public List<Organization> getOrganizations() {
+        return organizations;
+    }
 
-	
-	/**
-	 * Simple logic to encapsulate rules around what the 'default' organization is.
-	 * 
-	 * @return organization in the zeroth position
-	 */
-	public Organization getDefaultOrganization(){
-		if(organizations != null && organizations.size() > 0){ 
-			return organizations.get(0);
-		}
-		else{
-			return null;
-		}
-	}
-	
-	
-	public Set<UserState> getUserStates() {
-		return userStates;
-	}
+    public void setOrganizations(List<Organization> organizations) {
+        this.organizations = organizations;
+    }
 
-	public void setUserStates(Set<UserState> userStates) {
-		this.userStates = userStates;
-	}
-	
-	public boolean hasUserState(UserStateType userStateType) {
-		boolean status = false;
-		for(UserState userState : userStates) {
-			if(userState.getState().equals(userStateType)) {
-				status = true;
-				break;
-			}
-		}
-		return status;
-	}
-	
+    public void removeOrganization(Organization organization) {
+        if (organizations != null && !organizations.isEmpty()) {
+            organizations.remove(organization);
+        }
+    }
+
+    public void addOrganization(Organization organization) {
+        if (organizations == null) {
+            organizations = new ArrayList<>();
+        }
+        organizations.add(organization);
+    }
+
+    /**
+     * Simple logic to encapsulate rules around what the 'default' organization
+     * is.
+     * 
+     * @return organization in the zeroth position
+     */
+    public Organization getDefaultOrganization() {
+        if (organizations != null && organizations.size() > 0) {
+            return organizations.get(0);
+        } else {
+            return null;
+        }
+    }
+
+    public Set<UserState> getUserStates() {
+        return userStates;
+    }
+
+    public void setUserStates(Set<UserState> userStates) {
+        this.userStates = userStates;
+    }
+
+    public boolean hasUserState(UserStateType userStateType) {
+        boolean status = false;
+        for (UserState userState : userStates) {
+            if (userState.getState().equals(userStateType)) {
+                status = true;
+                break;
+            }
+        }
+        return status;
+    }
+
     public Set<Role> getRoles() {
-		return roles;
-	}
+        return roles;
+    }
 
-	public void setRoles(Set<Role> roles) {
-		this.roles = roles;
-	}
-	
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
+
     public void addRole(final Role role) {
         if (roles == null) {
             roles = new HashSet<>();
@@ -188,40 +186,37 @@ public class User implements Serializable {
     }
 
     public void removeRole(Role role) {
-        if(roles != null){
-        	roles.remove(role);
+        if (roles != null) {
+            roles.remove(role);
         }
     }
 	
-	@Override
-	public String toString() {
-		return new ToStringBuilder(this)
-			.append("organizations", this.organizations)
-			.append("login", this.login).append("encryptedPassword", this.encryptedPassword)
-			.append("lastUpdated", this.lastUpdated).append("id", this.id).append("password", this.password)
-			.toString();
-	}
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this).append("organizations", this.organizations).append("login", this.login)
+                .append("encryptedPassword", this.encryptedPassword).append("lastUpdated", this.lastUpdated)
+                .append("id", this.id).append("password", this.password).toString();
+    }
 	
-	@Override
-	public int hashCode() {
-		return Objects.hash(id);
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+	
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
 
-	
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj){
-			return true;
-		}
-		if (obj == null){
-			return false;
-		}
-		if (getClass() != obj.getClass()){
-			return false;
-		}
-			
-		User other = (User) obj;
-		return Objects.equals(this.getId(), other.getId());
-	}
+        User other = (User) obj;
+        return Objects.equals(this.getId(), other.getId());
+    }
 
 }

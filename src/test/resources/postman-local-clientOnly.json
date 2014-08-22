@@ -1,0 +1,66 @@
+{
+	"id": "f26d20f0-4e88-82b7-5e3c-7d2e4ab45d1b",
+	"name": "local-clientOnly",
+	"description": "",
+	"order": [
+		"d90f81a4-d7a9-ba2e-898f-fc185372827c",
+		"0a3041e8-53bf-c6bf-5eb8-2322d84bcb36",
+		"ec4068a1-8de0-ff0c-1f1a-45f70c434de5"
+	],
+	"folders": [],
+	"timestamp": 1408382760012,
+	"synced": false,
+	"requests": [
+		{
+			"id": "0a3041e8-53bf-c6bf-5eb8-2322d84bcb36",
+			"headers": "Accept: application/json\nAuthorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzY29wZSI6WyJ0cnVzdCJdLCJleHAiOjE0MDgzOTI2MDMsImp0aSI6IjU0YTQ2NzM0LTZmYzYtNDE0Yy05Mzc4LWNkMjYzNmI1NGVlNCIsImNsaWVudF9pZCI6InRydXN0ZWRfaW50ZXJuYWxfY2xpZW50In0.xx_3NtzMi3HForfDPSa2_I9iJIvhrfzXOJGDzku1OrI\n",
+			"url": "http://localhost:9080/developer/cauth/eventLog/2354543",
+			"preRequestScript": "",
+			"pathVariables": {},
+			"method": "GET",
+			"data": [],
+			"dataMode": "params",
+			"version": 2,
+			"tests": "",
+			"time": 1408389031232,
+			"name": "oauth2-GetResource-EventLogRetrieve",
+			"description": "",
+			"collectionId": "f26d20f0-4e88-82b7-5e3c-7d2e4ab45d1b",
+			"synced": false
+		},
+		{
+			"id": "d90f81a4-d7a9-ba2e-898f-fc185372827c",
+			"headers": "Authorization: Basic dHJ1c3RlZF9pbnRlcm5hbF9jbGllbnQ6c29tZXNlY3JldF90aWM=\n",
+			"url": "http://localhost:9080/developer/oauth/token?grant_type=client_credentials&scope=trust",
+			"preRequestScript": "",
+			"pathVariables": {},
+			"method": "GET",
+			"data": [],
+			"dataMode": "params",
+			"version": 2,
+			"tests": "",
+			"time": 1408386137943,
+			"name": "oauth2-GetToken-clientOnly",
+			"description": "",
+			"collectionId": "f26d20f0-4e88-82b7-5e3c-7d2e4ab45d1b",
+			"synced": false
+		},
+		{
+			"id": "ec4068a1-8de0-ff0c-1f1a-45f70c434de5",
+			"headers": "Accept: application/json\nContent-Type: application/json\nAuthorization: Bearer eyJhbGciOiJSUzI1NiJ9.eyJzY29wZSI6WyJ0cnVzdCJdLCJleHAiOjE0MDg1MDAyMDEsImp0aSI6ImFhZGM2NzAyLTdlNWEtNDUyMi1hZGU5LWRmYzg0NGQ5NzUyNSIsImNsaWVudF9pZCI6InRydXN0ZWRfaW50ZXJuYWxfY2xpZW50In0.HlDKVIQjEY5J767awhVOR2oAOKRR5FasrFwYf6d8Q2KIuOtwL_DF3SrSYbah090HuzCg2-66pKyYLpw_ayduScROd5I89Lp_6qEuHpfzJ4zw0j53keASxMp-ihFrpxcgP5nhHy3bVaNLZvKC9Fzaj8CL0Pz8lXAA2A5MeYeH2-J4rd1dyEmz382s6T0_NGJbdXnyRbXggG1BMsjQXvdeNabSv7UWfMS4PEYU5hGsNYFXBOLp5v8tg0jJW6B54mZdF9qtOH3BaUmLtZHq8JAQnnQ7z-6P_kisdF6k6PefvlDZTFy4FlmbZHyISi05OmojqJyBx1CfRUqZYecsOqTgnpsrsCIfsAvIDGOEYzBWLmL1YROo097CFXAyb9QZD4qHCz0lXTQP8jpkRCaW63reQykQHsnbyycQkia-CYK516zsGRiq63KBWUl0hHuqqy_WE1tAJnV15x18jcD3crp4ica4btLZcYBgoQlSuv4j4p37EIMVoNLq7agaD9TEqj0ERXNz985l0su2HL5A_M2J3QTjeySdO6h8qnQSqyjZiWXbRfAv0-cuI-MFPGud5eT7dF2qmi4lOziUDNA6MuYQHcn_-P1SGZj-2nbglIrnrXGUqS_EvnRxnUfbAv7E6cumN_rgrgTbSWkIm6Tmh26zO5cZu9Vdw28A5vQebzbsXSg\n",
+			"url": "http://localhost:9080/developer/cauth/eventLog",
+			"preRequestScript": "",
+			"pathVariables": {},
+			"method": "POST",
+			"data": "{\"id\":\"5\",\"actorId\":\"actor_id\",\"impactedUserId\":null,\"orgId\":null,\"eventType\":\"API_BUNDLE_PERMISSION_UPDATED\",\"info\":\"some info\",\"actorType\":1,\"transactionId\":null,\"createdOn\":null}",
+			"dataMode": "raw",
+			"version": 2,
+			"tests": "",
+			"time": 1408496658140,
+			"name": "oauth2-CreateResource-EventLog",
+			"description": "",
+			"collectionId": "f26d20f0-4e88-82b7-5e3c-7d2e4ab45d1b",
+			"synced": false
+		}
+	]
+}

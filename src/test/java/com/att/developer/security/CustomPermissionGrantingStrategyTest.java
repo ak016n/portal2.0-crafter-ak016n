@@ -129,84 +129,67 @@ public class CustomPermissionGrantingStrategyTest {
 	}
 	
 	
-	@Test
-	public void testIsGranted_writePermissionRequired() throws Exception{
-		
-		AclImpl acl = Mockito.mock(AclImpl.class);
-		
-		AccessControlEntryImpl acesSomasAdmin = new AccessControlEntryImpl(9, acl, new PrincipalSid("somas"), BasePermission.WRITE, true, false, false);
-		AccessControlEntryImpl acesUnauthorizedUser = new AccessControlEntryImpl(10, acl, new PrincipalSid("unauthorizedUser"), BasePermission.READ, true, false, false);
-		List<AccessControlEntry> aces = new ArrayList<>();
-		aces.add(acesSomasAdmin);
-		aces.add(acesUnauthorizedUser);
+    @Test
+    public void testIsGranted_writePermissionRequired() throws Exception {
 
-		Mockito.when(acl.getEntries()).thenReturn(aces);
-		
-		
-		List<Permission> requiredPermissions = new ArrayList<>(); 
-		requiredPermissions.add(BasePermission.WRITE);
-		List<Sid> sids = new ArrayList<>(2);
-		sids.add(new PrincipalSid("somas"));
-		sids.add(new GrantedAuthoritySid("ROLE_ADMINISTRATOR"));
-		
-			
-		boolean administrativeMode = false;
-		
-		boolean isGrantedActual = customPermissionGrantingStrategy.isGranted(acl, requiredPermissions, sids, administrativeMode);
-		
-		Assert.assertTrue("somas with WRITE privileges should be granted access", isGrantedActual);
-		
-		sids.clear();
-		sids.add(new PrincipalSid("unauthorizedUser"));
-		try{
-			customPermissionGrantingStrategy.isGranted(acl, requiredPermissions, sids, administrativeMode);
-			Assert.fail("unauthorizedUser with READ privileges should NOT be granted access, exception should have been thrown ");
-		}
-		catch(NotFoundException e){
-			//success, ignore.  NOTE: not annotated with expected exception as we are doing two tests (see above)
-		}
-		
-	}
+        AclImpl acl = Mockito.mock(AclImpl.class);
+
+        AccessControlEntryImpl acesSomasAdmin = new AccessControlEntryImpl(9, acl, new PrincipalSid("somas"), BasePermission.WRITE, true, false, false);
+        AccessControlEntryImpl acesUnauthorizedUser = new AccessControlEntryImpl(10, acl, new PrincipalSid("unauthorizedUser"), BasePermission.READ, true, false, false);
+        List<AccessControlEntry> aces = new ArrayList<>();
+        aces.add(acesSomasAdmin);
+        aces.add(acesUnauthorizedUser);
+
+        Mockito.when(acl.getEntries()).thenReturn(aces);
+
+        List<Permission> requiredPermissions = new ArrayList<>();
+        requiredPermissions.add(BasePermission.WRITE);
+        List<Sid> sids = new ArrayList<>(2);
+        sids.add(new PrincipalSid("somas"));
+        sids.add(new GrantedAuthoritySid("ROLE_ADMINISTRATOR"));
+
+        boolean administrativeMode = false;
+
+        boolean isGrantedActual = customPermissionGrantingStrategy.isGranted(acl, requiredPermissions, sids, administrativeMode);
+
+        Assert.assertTrue("somas with WRITE privileges should be granted access", isGrantedActual);
+
+        sids.clear();
+        sids.add(new PrincipalSid("unauthorizedUser"));
+        try {
+            customPermissionGrantingStrategy.isGranted(acl, requiredPermissions, sids, administrativeMode);
+            Assert.fail("unauthorizedUser with READ privileges should NOT be granted access, exception should have been thrown ");
+        } catch (NotFoundException e) {
+            // success, ignore. NOTE: not annotated with expected exception as
+            // we are doing two tests (see above)
+        }
+
+    }
 	
-	@Test
-	public void testIsGranted_writePermissionRequired_userWithAdministrationPermission() throws Exception{
-	
-		
-//		Sid owner = new PrincipalSid("somas");
-//		boolean entriesInheriting = true;
-//		List<Sid> loadedSids = null;
-//		Acl parentAcl = null;
-//		AclAuthorizationStrategy aclAuthorizationStrategy = new AclAuthorizationStrategyImpl(new SimpleGrantedAuthority("ADMINISTRATOR"));
-//		Long id = 2l;
-//		ObjectIdentity objectIdentity = new ObjectIdentityImpl("com.att.developer.bean.ApiBundl", "1");
-		
-//		AclImpl acl = new AclImpl(objectIdentity, id, aclAuthorizationStrategy, strategy, parentAcl, loadedSids, entriesInheriting, owner);
-		AclImpl acl = Mockito.mock(AclImpl.class);
-		
-//		AccessControlEntryImpl acesSomasAdmin = new AccessControlEntryImpl(id, acl, sid, permission, granting, auditSuccess, auditFailure)
-//		AccessControlEntryImpl[id: 9; granting: true; sid: PrincipalSid[somas]; permission: BasePermission[...........................A....=16]; auditSuccess: false; auditFailure: false]
-		AccessControlEntryImpl acesSomasAdmin = new AccessControlEntryImpl(9, acl, new PrincipalSid("somas"), BasePermission.ADMINISTRATION, true, false, false);
-		AccessControlEntryImpl acesUnauthorizedUser = new AccessControlEntryImpl(10, acl, new PrincipalSid("unauthorizedUser"), BasePermission.WRITE, true, false, false);
-		List<AccessControlEntry> aces = new ArrayList<>();
-		aces.add(acesSomasAdmin);
-		aces.add(acesUnauthorizedUser);
+    @Test
+    public void testIsGranted_writePermissionRequired_userWithAdministrationPermission() throws Exception {
 
-		Mockito.when(acl.getEntries()).thenReturn(aces);
-		
-		
-		List<Permission> requiredPermissions = new ArrayList<>(); 
-		requiredPermissions.add(BasePermission.WRITE);
-		List<Sid> sids = new ArrayList<>(2);
-		sids.add(new PrincipalSid("somas"));
-		sids.add(new GrantedAuthoritySid("ROLE_ADMINISTRATOR"));
-		
-			
-		boolean administrativeMode = false;
-		
-		boolean isGrantedActual = customPermissionGrantingStrategy.isGranted(acl, requiredPermissions, sids, administrativeMode);
-		
-		Assert.assertTrue("somas with Administration privileges should be granted access", isGrantedActual);
-	}
+        AclImpl acl = Mockito.mock(AclImpl.class);
 
+        AccessControlEntryImpl acesSomasAdmin = new AccessControlEntryImpl(9, acl, new PrincipalSid("somas"), BasePermission.ADMINISTRATION, true, false, false);
+        AccessControlEntryImpl acesUnauthorizedUser = new AccessControlEntryImpl(10, acl, new PrincipalSid("unauthorizedUser"), BasePermission.WRITE, true, false, false);
+        List<AccessControlEntry> aces = new ArrayList<>();
+        aces.add(acesSomasAdmin);
+        aces.add(acesUnauthorizedUser);
+
+        Mockito.when(acl.getEntries()).thenReturn(aces);
+
+        List<Permission> requiredPermissions = new ArrayList<>();
+        requiredPermissions.add(BasePermission.WRITE);
+        List<Sid> sids = new ArrayList<>(2);
+        sids.add(new PrincipalSid("somas"));
+        sids.add(new GrantedAuthoritySid("ROLE_ADMINISTRATOR"));
+
+        boolean administrativeMode = false;
+
+        boolean isGrantedActual = customPermissionGrantingStrategy.isGranted(acl, requiredPermissions, sids, administrativeMode);
+
+        Assert.assertTrue("somas with Administration privileges should be granted access", isGrantedActual);
+    }
 
 }

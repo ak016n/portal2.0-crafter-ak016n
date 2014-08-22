@@ -27,7 +27,7 @@ import com.att.developer.security.PermissionManager;
 import com.att.developer.service.ApiBundleService;
 
 @Controller
-@RequestMapping("/apiBundle")
+@RequestMapping("/uauth/apiBundle")
 public class ApiBundleController {
 
     private final Logger logger = LogManager.getLogger();
@@ -260,7 +260,7 @@ public class ApiBundleController {
     }
   
     
-    // @RequestMapping(value="/initialize", method=RequestMethod.GET)
+//     @RequestMapping(value="/initialize", method=RequestMethod.GET)
     public String initialize(Model model, @ModelAttribute SessionUser sessionUser) {
 
         model.addAttribute("source", "Initialize");

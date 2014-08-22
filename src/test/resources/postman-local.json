@@ -1,0 +1,222 @@
+{
+	"id": "c20fd77d-8778-d88d-4e32-bb531540017b",
+	"name": "local",
+	"description": "",
+	"order": [
+		"044759ae-3e1f-3bc0-f512-ea7af28e8b2e",
+		"71e77b8f-99f1-4dc4-fe30-b5dec1fdde92",
+		"a5d1033b-c497-5f1d-4bcd-ae32f4143825",
+		"2cef54e7-490e-a7fa-1018-efeeefaa384f",
+		"7545a5fd-308f-3d77-58a1-4d244f5a1c9c",
+		"92b77106-a62e-d8f1-38a6-bd63474edb5c",
+		"c080b51c-9948-3ec7-2524-20257b606856",
+		"ad89e36f-2671-273b-4513-7c23d1856901",
+		"47333ed5-f58f-c5b3-d24a-6b29342bcf2c",
+		"ac7d205d-3e55-3a3b-7ebc-397831ce1114"
+	],
+	"folders": [],
+	"timestamp": 1407950674473,
+	"synced": false,
+	"requests": [
+		{
+			"collectionId": "c20fd77d-8778-d88d-4e32-bb531540017b",
+			"id": "044759ae-3e1f-3bc0-f512-ea7af28e8b2e",
+			"name": "oauth2-GetToken",
+			"description": "",
+			"url": "http://localhost:9080/developer/oauth/token?scope=read%20write%20trust&client_id=my-trusted-client-with-secret&username=penny_test&grant_type=password&client_secret=somesecret&password=password123",
+			"method": "GET",
+			"headers": "Accept: application/json\nAuthorization: Basic bXktdHJ1c3RlZC1jbGllbnQtd2l0aC1zZWNyZXQ6c29tZXNlY3JldA==\n",
+			"data": [],
+			"dataMode": "params",
+			"timestamp": 0,
+			"version": 2,
+			"time": 1408145908255,
+			"synced": false
+		},
+		{
+			"id": "2cef54e7-490e-a7fa-1018-efeeefaa384f",
+			"headers": "Authorization: Bearer eyJhbGciOiJSUzI1NiJ9.eyJleHAiOjE0MDg0MDk1MDgsInVzZXJfbmFtZSI6IjJfbGVvbmFyZCIsImF1dGhvcml0aWVzIjpbIjFfQkJUIl0sImp0aSI6IjY1OWUyZWVkLTRiYjUtNDNhOS04YzUwLTAwYzk4MTNjYTc0ZCIsImNsaWVudF9pZCI6InRydXN0ZWRfaW50ZXJuYWxfY2xpZW50X3dpdGhfdXNlciIsInNjb3BlIjpbInJlYWQiLCJ0cnVzdCIsIndyaXRlIl19.YvJe-ZuxQ2lD-rYCh-ca9oKhb7AIf67dqsNGk9x1rnQQvCzMhLsHswapKq2EBZgcf1Jyjn2GiP6Vtzn5D__kGLT5nmslNedgbcNCOr8_8FPqnedfM3Cueyu0NovtVaCplSHYM1zm6qZBtKNW9PYbqLiKsKcZXQH13SF6QUUio9XVY_DL0HmggALlV-Oro_JmnjbPmWVRD_y_0X-Lz2szsFZjN2aUSD1UaqhigP24fZIDmdiopchLOebmBeLW2GPhijJgnsMwTJy7WCNIUi16g59h5gPX2_eesPANH-rLJueb_Lt3wVVTsppJU1ih1jVDYHhg7WC0Gkd_veNLV7nyfJV6sUl0DC62EcAN-pVYzOkXxvvyvMLlUJqSwGfhZcFufmT9QI_UNZZzKxS4dcvM5H-onno4E-jhZa9MNIGDHVIcvNjokaYeYBJUXMfVJFtsg1IvGpeGo8GqfcYoQfAP7TfPpUPogoAWM6kK59tczAJVNn0BvzBzpmHOZ9LL0c_FCVhigc_FOouJKutdl0cb4OZ1E_YPpn7Y8BuTnns9TWZP-v3Clb9w_6HvuhrsjczKIG8JipcXfqzu86YdbaY6filpLnV3gBNYiBI06F0xny21u_sGHo-zj-i0mQ3H-0ZQVdybTjNRvT5TkbLAQUpaMbp5jiNBC1Uze6c4QbJomkc\n",
+			"url": "http://localhost:9080/developer/uauth/apiBundle/grantPermission?id=2Bundle&orgId=1_BBT",
+			"preRequestScript": "",
+			"pathVariables": {},
+			"method": "POST",
+			"data": [
+				{
+					"key": "id",
+					"value": "2Bundle",
+					"type": "text"
+				},
+				{
+					"key": "orgId",
+					"value": "1_BBT",
+					"type": "text"
+				}
+			],
+			"dataMode": "params",
+			"version": 2,
+			"tests": "",
+			"time": 1408409235900,
+			"name": "oauth2-GetResource-ApiBundleGrant",
+			"description": "",
+			"collectionId": "c20fd77d-8778-d88d-4e32-bb531540017b",
+			"synced": false
+		},
+		{
+			"id": "47333ed5-f58f-c5b3-d24a-6b29342bcf2c",
+			"headers": "Accept: application/json\nAuthorization: Bearer eyJhbGciOiJSUzI1NiJ9.eyJzY29wZSI6WyJ0cnVzdCJdLCJleHAiOjE0MDg0ODkyODAsImp0aSI6IjMwMmRmMTE2LWIxNGQtNDlmNy04MjU5LWQ2ZjAwN2JiYWQ1ZSIsImNsaWVudF9pZCI6InRydXN0ZWRfaW50ZXJuYWxfY2xpZW50In0.kpUCwEMaHM-B5H1cCG-LmMMhJILEJ7TyGrDwDb63R6trYtvDR-3jv63EPqMguFhMsPgGr-mcoWhMv9I38zbUxmo0_Kh7zesqF5UyEnjtn5A3YGN6PZLCzbcWhLk8fwJfR9dI2Ng-r_GdpmLJtjf0HYCXZ3dlco08hpHOIUAihB2Nep4FfvPZYuxUXBSnIS63JW5VZs7dlVICtaL1wwR8O0JGlJ-NMxQZGvXnFLBhwc9l9PvM0qRaaBb1xahf_eh1pcmznW2TougZZ14ExliwaqPyNW1l8vRJoy4hd1lpUPofSs9HzRfJkC_nk0EpMNf9vfNXp_vdlqisQnu5hAGq9-nNY9MXHSQC-QI1w_ikMkS-e-oypiEc4zRQ9QrjbnFPU2Xrvz5bTOGPZN-k8TrOx8CxHN1VEWcq_DvHgma7W1SXE7NzbexmTX79cb2bI4fXT7-tJFYg2FwgAolcFJ3qyXGSj25S2nWEwvJPfyWTZJIqnPqltIqvafqs2KjufrPKuxejp_rjImTK8LPcYIyoKJnBJkXDPcwIfoEsgUNnpCgdxhv_gadKs6VDKDmp3uedLYTLSOAJZXAdSWNen6nYSxFUVtWu9kE8uQJ-XqxzPNCky1eK6EclQmEsNE6B5IDzbd0k8e83T3YZxi4MOFAgK2KyXs7KNlk6XkovaFxotPA\nContent-Type: application/x-www-form-urlencoded\n",
+			"url": "http://localhost:9080/developer/oauth/revoke?token=eyJhbGciOiJSUzI1NiJ9.eyJzY29wZSI6WyJ0cnVzdCJdLCJleHAiOjE0MDg0ODkyODAsImp0aSI6IjMwMmRmMTE2LWIxNGQtNDlmNy04MjU5LWQ2ZjAwN2JiYWQ1ZSIsImNsaWVudF9pZCI6InRydXN0ZWRfaW50ZXJuYWxfY2xpZW50In0.kpUCwEMaHM-B5H1cCG-LmMMhJILEJ7TyGrDwDb63R6trYtvDR-3jv63EPqMguFhMsPgGr-mcoWhMv9I38zbUxmo0_Kh7zesqF5UyEnjtn5A3YGN6PZLCzbcWhLk8fwJfR9dI2Ng-r_GdpmLJtjf0HYCXZ3dlco08hpHOIUAihB2Nep4FfvPZYuxUXBSnIS63JW5VZs7dlVICtaL1wwR8O0JGlJ-NMxQZGvXnFLBhwc9l9PvM0qRaaBb1xahf_eh1pcmznW2TougZZ14ExliwaqPyNW1l8vRJoy4hd1lpUPofSs9HzRfJkC_nk0EpMNf9vfNXp_vdlqisQnu5hAGq9-nNY9MXHSQC-QI1w_ikMkS-e-oypiEc4zRQ9QrjbnFPU2Xrvz5bTOGPZN-k8TrOx8CxHN1VEWcq_DvHgma7W1SXE7NzbexmTX79cb2bI4fXT7-tJFYg2FwgAolcFJ3qyXGSj25S2nWEwvJPfyWTZJIqnPqltIqvafqs2KjufrPKuxejp_rjImTK8LPcYIyoKJnBJkXDPcwIfoEsgUNnpCgdxhv_gadKs6VDKDmp3uedLYTLSOAJZXAdSWNen6nYSxFUVtWu9kE8uQJ-XqxzPNCky1eK6EclQmEsNE6B5IDzbd0k8e83T3YZxi4MOFAgK2KyXs7KNlk6XkovaFxotPA&token_type_hint=refresh_token",
+			"preRequestScript": "",
+			"pathVariables": {},
+			"method": "POST",
+			"data": [],
+			"dataMode": "urlencoded",
+			"version": 2,
+			"tests": "",
+			"time": 1408488865233,
+			"name": "oauth2-RevokeToken",
+			"description": "",
+			"collectionId": "c20fd77d-8778-d88d-4e32-bb531540017b",
+			"synced": false
+		},
+		{
+			"id": "71e77b8f-99f1-4dc4-fe30-b5dec1fdde92",
+			"headers": "Accept: application/json\nAuthorization: Basic dHJ1c3RlZF9pbnRlcm5hbF9jbGllbnRfd2l0aF91c2VyOnNvbWVzZWNyZXRfdGljd3U=\n",
+			"url": "http://localhost:9080/developer/oauth/token?username=leonard_test&password=password123&grant_type=password&scope=read%20write%20trust",
+			"preRequestScript": "",
+			"pathVariables": {},
+			"method": "GET",
+			"data": [
+				{
+					"key": "id",
+					"value": "2Bundle",
+					"type": "text"
+				},
+				{
+					"key": "orgId",
+					"value": "1_BBT",
+					"type": "text"
+				}
+			],
+			"dataMode": "params",
+			"version": 2,
+			"tests": "",
+			"time": 1408409219709,
+			"name": "oauth2-GetTokenStripped",
+			"description": "",
+			"collectionId": "c20fd77d-8778-d88d-4e32-bb531540017b",
+			"synced": false
+		},
+		{
+			"id": "7545a5fd-308f-3d77-58a1-4d244f5a1c9c",
+			"headers": "Authorization: Bearer eyJhbGciOiJSUzI1NiJ9.eyJleHAiOjE0MDg0MDk1MDgsInVzZXJfbmFtZSI6IjJfbGVvbmFyZCIsImF1dGhvcml0aWVzIjpbIjFfQkJUIl0sImp0aSI6IjY1OWUyZWVkLTRiYjUtNDNhOS04YzUwLTAwYzk4MTNjYTc0ZCIsImNsaWVudF9pZCI6InRydXN0ZWRfaW50ZXJuYWxfY2xpZW50X3dpdGhfdXNlciIsInNjb3BlIjpbInJlYWQiLCJ0cnVzdCIsIndyaXRlIl19.YvJe-ZuxQ2lD-rYCh-ca9oKhb7AIf67dqsNGk9x1rnQQvCzMhLsHswapKq2EBZgcf1Jyjn2GiP6Vtzn5D__kGLT5nmslNedgbcNCOr8_8FPqnedfM3Cueyu0NovtVaCplSHYM1zm6qZBtKNW9PYbqLiKsKcZXQH13SF6QUUio9XVY_DL0HmggALlV-Oro_JmnjbPmWVRD_y_0X-Lz2szsFZjN2aUSD1UaqhigP24fZIDmdiopchLOebmBeLW2GPhijJgnsMwTJy7WCNIUi16g59h5gPX2_eesPANH-rLJueb_Lt3wVVTsppJU1ih1jVDYHhg7WC0Gkd_veNLV7nyfJV6sUl0DC62EcAN-pVYzOkXxvvyvMLlUJqSwGfhZcFufmT9QI_UNZZzKxS4dcvM5H-onno4E-jhZa9MNIGDHVIcvNjokaYeYBJUXMfVJFtsg1IvGpeGo8GqfcYoQfAP7TfPpUPogoAWM6kK59tczAJVNn0BvzBzpmHOZ9LL0c_FCVhigc_FOouJKutdl0cb4OZ1E_YPpn7Y8BuTnns9TWZP-v3Clb9w_6HvuhrsjczKIG8JipcXfqzu86YdbaY6filpLnV3gBNYiBI06F0xny21u_sGHo-zj-i0mQ3H-0ZQVdybTjNRvT5TkbLAQUpaMbp5jiNBC1Uze6c4QbJomkc\n",
+			"url": "http://localhost:9080/developer/uauth/apiBundle/add",
+			"preRequestScript": "",
+			"pathVariables": {},
+			"method": "POST",
+			"data": [],
+			"dataMode": "params",
+			"version": 2,
+			"tests": "",
+			"time": 1408409240999,
+			"name": "oauth2-CreateResource-AddBundle",
+			"description": "",
+			"collectionId": "c20fd77d-8778-d88d-4e32-bb531540017b",
+			"synced": false
+		},
+		{
+			"collectionId": "c20fd77d-8778-d88d-4e32-bb531540017b",
+			"id": "92b77106-a62e-d8f1-38a6-bd63474edb5c",
+			"name": "oauth2-GetResource-admin",
+			"description": "",
+			"url": "localhost:9080/developer/admin/fieldKey/itemKey",
+			"method": "GET",
+			"headers": "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE0MDgxODQ4NDMsInVzZXJfbmFtZSI6InN5c2FkbWluIiwiYXV0aG9yaXRpZXMiOlsiUk9MRV9TWVNfQURNSU4iXSwianRpIjoiNjFlNDAwZWUtMTQ2YS00NzJmLTliMjMtYjBiNjI4NmViOWRmIiwiY2xpZW50X2lkIjoibXktdHJ1c3RlZC1jbGllbnQtd2l0aC1zZWNyZXQiLCJzY29wZSI6WyJyZWFkIiwidHJ1c3QiLCJ3cml0ZSJdfQ.a_f24-ly567TnwicT0rH_8HTm7NuGBmMUtasTZFKygY\n",
+			"data": [],
+			"dataMode": "params",
+			"timestamp": 0,
+			"version": 2,
+			"time": 1408141703730,
+			"synced": false
+		},
+		{
+			"id": "a5d1033b-c497-5f1d-4bcd-ae32f4143825",
+			"headers": "Accept: application/json\nAuthorization: Basic dHJ1c3RlZF9pbnRlcm5hbF9jbGllbnRfd2l0aF91c2VyOnNvbWVzZWNyZXRfdGljd3U=\n",
+			"url": "http://localhost:9080/developer/oauth/token?grant_type=refresh_token&refresh_token=eyJhbGciOiJSUzI1NiJ9.eyJleHAiOjE0MDg0MTMzMzEsInVzZXJfbmFtZSI6IjJfbGVvbmFyZCIsImF1dGhvcml0aWVzIjpbIjFfQkJUIl0sImp0aSI6ImI4NjExNTVlLTFhMTItNGE5YS1iYzUxLWI0MDRkZDdiMjk5ZiIsImNsaWVudF9pZCI6InRydXN0ZWRfaW50ZXJuYWxfY2xpZW50X3dpdGhfdXNlciIsInNjb3BlIjpbInJlYWQiLCJ0cnVzdCIsIndyaXRlIl19.ZldLxHCNIFPYtzKh08Q9XedIMbB5ij8JgY5naLIye-UVlc57cKJ7Hh-bb0nMFp5BaZbFffW70l0MPEqyHNTJFKByv1W72d8o1Nk9aU34iZtxcOkZMbBhgN50CYEShV2URbjbdq2PSo99aaf67ZK1VG8jjBvbDdIrLFWtNLEE1goWCJNsrPSIZfTMHHA-6zAPg2YqRfLoqdyKkGM3P8zEDmDREjMO2jtGG5VXN08QR6WiEsq95kNLdOYONYR7wmaNaq3PyAjaGTsV09xIc44TVbzeMn6FSwznehrtEX8JmkOpoVIcweBD_9KZaZDguD3v25ye0F7qkFGn6UWIAp-TXtbqeBly6xDR9reqq7kSlffhu-jSra-hNNnvebj6SAX-gpENAxcmyD6Veqkm_vm-dZnZiGIl0rfnKY4rdX9GQkXktIVyWvHr_Ok8g8C_5VbVndICH6oZlWaLv4bDaPo6MphlWaG_WymsLPbTZhzIWo3rwfTkDeK_KyfiOMOBSvSYalSHUqtxwt6IhRTuMhyBxxGYTS3FUShDzaqL9y5zeZS10pjRTGjdImOIowKv8Xt2_6amjCdfW_rOWgyXOEWtu00IKcMo9vusxLyYq-ST96l8cQOv1FUaZ6zu86DORNqI5oMzA41DByr-jFa4XXT-HtwQEfmf1BjazigexfoY9fI",
+			"preRequestScript": "",
+			"pathVariables": {},
+			"method": "GET",
+			"data": [],
+			"dataMode": "params",
+			"version": 2,
+			"tests": "",
+			"time": 1408409796340,
+			"name": "oauth2-RefreshGetToken",
+			"description": "",
+			"collectionId": "c20fd77d-8778-d88d-4e32-bb531540017b",
+			"synced": false
+		},
+		{
+			"id": "ac7d205d-3e55-3a3b-7ebc-397831ce1114",
+			"headers": "Authorization: Basic dHJ1c3RlZF9pbnRlcm5hbF9jbGllbnRfd2l0aF91c2VyOnNvbWVzZWNyZXRfdGljd3U=\n",
+			"url": "http://localhost:9080/developer/oauth/authorize",
+			"preRequestScript": "",
+			"pathVariables": {},
+			"method": "GET",
+			"data": [],
+			"dataMode": "params",
+			"version": 2,
+			"tests": "",
+			"time": 1408473759634,
+			"name": "oauth2-authorize",
+			"description": "",
+			"collectionId": "c20fd77d-8778-d88d-4e32-bb531540017b",
+			"synced": false
+		},
+		{
+			"id": "ad89e36f-2671-273b-4513-7c23d1856901",
+			"headers": "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE0MDgzOTc5MDUsInVzZXJfbmFtZSI6IjJfbGVvbmFyZCIsImF1dGhvcml0aWVzIjpbIjFfQkJUIl0sImp0aSI6IjBiYTdiZjJjLWMwOTUtNDViMC1iZTVkLTM1NmY0YmJkYjMzNyIsImNsaWVudF9pZCI6InRydXN0ZWRfaW50ZXJuYWxfY2xpZW50X3dpdGhfdXNlciIsInNjb3BlIjpbInJlYWQiLCJ0cnVzdCIsIndyaXRlIl19.nUqAiidRMeBkKUK-9BvptWG1u6ABfHBVmHBunVCtzl4\n",
+			"url": "localhost:9080/developer/someplace.go",
+			"preRequestScript": "",
+			"pathVariables": {},
+			"method": "POST",
+			"data": [
+				{
+					"key": "id",
+					"value": "2Bundle",
+					"type": "text"
+				},
+				{
+					"key": "orgId",
+					"value": "1_BBT",
+					"type": "text"
+				}
+			],
+			"dataMode": "params",
+			"version": 2,
+			"tests": "",
+			"time": 1408397623600,
+			"name": "local-bogus",
+			"description": "",
+			"collectionId": "c20fd77d-8778-d88d-4e32-bb531540017b",
+			"responses": [],
+			"synced": false
+		},
+		{
+			"id": "c080b51c-9948-3ec7-2524-20257b606856",
+			"headers": "Authorization: Bearer eyJhbGciOiJSUzI1NiJ9.eyJleHAiOjE0MDg1NTc0MTEsInVzZXJfbmFtZSI6IjJfbGVvbmFyZCIsImF1dGhvcml0aWVzIjpbIjFfQkJUIl0sImp0aSI6IjI3MTExN2RiLWM5NzctNDJkOS04OWExLTMzMmVmMzI2MTk1YyIsImNsaWVudF9pZCI6InRydXN0ZWRfaW50ZXJuYWxfY2xpZW50X3dpdGhfdXNlciIsInNjb3BlIjpbInJlYWQiLCJ0cnVzdCIsIndyaXRlIl19.dssv2PVqyLWWkIGg-QWfRbr5IT2NnAvV_4cbQOPDnJlRAM2S04D8V0ogBlKUGkQafUPL9bk77VuQ_jpUcS1aRFUpekTPrvKHuQb6Sk5LjUZpWj1lfZpG1hE5AJ7AiBHC__BrFVYTG8wzqkvpi8E5cJendtnUiXmiX8Bi2kEbuZA3GfIMmaTNw0LBWCX7gWl9WBIZGwZsWdU03ootYzmlEaNAm_KQjTpuiT4e0hODWM08G3BcMC0BZzmVngKyO0HO_px-QxEIS1ytYls4ACZUP_tsITl2djLJ_0bFxuXzCjd5Byc1yzwtLBm64TZPpYDfUFFStgcpMlaRiK-ZKF3bSb64p9gquEqXNCuNq_hO3RPY2S9JY9oGtRnfxR2hDkIdCyKQUnGUTmWv6xRQl4wqwj5VeT9MLV4E_5WOpej_rVrkMy-lJEPdsz64tHf7bZNtEzJuSdGvY6Wx8562MIyFtCeqDcZTqVu1te9muhSkNlbGlbMrADUtM8EtDCv4_LXRAAClJ1uIbOuSpCuI_Pu6YX8FUhJ6CY5tLzwNaH9G4IVdjltXvKid_HlFFc70vwAarigGfS5C7V-8Pdubp8n_bQwhmc63xSIGrE9bx0vmOjG4flaqmvzs5I0W0xgbb7m99dKigh_bawoIiFcHYKz107PAV_R_dGU7UJRcPk0P3ps\n",
+			"url": "http://localhost:9080/developer/uauth/apiBundle/list",
+			"preRequestScript": "",
+			"pathVariables": {},
+			"method": "GET",
+			"data": [],
+			"dataMode": "params",
+			"version": 2,
+			"tests": "",
+			"time": 1408557151694,
+			"name": "oauth2-GetResource-ListBundles",
+			"description": "",
+			"collectionId": "c20fd77d-8778-d88d-4e32-bb531540017b",
+			"synced": false
+		}
+	]
+}
