@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.Properties;
 
 import javax.annotation.PreDestroy;
-import javax.inject.Inject;
 import javax.jms.ConnectionFactory;
 import javax.jms.Queue;
 import javax.naming.Context;
@@ -70,9 +69,10 @@ public class AppContext {
     private String[] beansToMonitorForPerformance;
 
     
-    @Inject
-    private EventLogConsumer eventLogConsumer;
-
+    @Bean
+    public EventLogConsumer eventLogConsumer() {
+    	return new EventLogConsumer();
+    }
     
     @Bean
     public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
@@ -204,7 +204,7 @@ public class AppContext {
         DefaultMessageListenerContainer messageListenerContainer = new DefaultMessageListenerContainer();
         messageListenerContainer.setConnectionFactory(pooledConnectionFactory());
         messageListenerContainer.setDestinationName(EVENT_QUEUE_DESTINATION);
-        MessageListenerAdapter messageListenerAdapter = new MessageListenerAdapter(eventLogConsumer);
+        MessageListenerAdapter messageListenerAdapter = new MessageListenerAdapter(eventLogConsumer());
         messageListenerContainer.setMessageListener(messageListenerAdapter);
         messageListenerContainer.setSessionTransacted(true);
         messageListenerContainer.setTransactionManager(txManager());

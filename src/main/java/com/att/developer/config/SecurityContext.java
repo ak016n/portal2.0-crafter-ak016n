@@ -258,6 +258,9 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                     .antMatchers("/views/home.html").permitAll()
                     .antMatchers("/resources/**").permitAll()
+                    
+  				.antMatchers("/i18n/**").permitAll()
+				.antMatchers("/resources/**").permitAll()
 
                     .antMatchers("/admin/**", "/views/adminConsole/**", "**/apiBundle/add/**").hasRole("SYS_ADMIN")
 //                                .antMatchers("/eventLog/**").access("#oauth2.hasScope('trust') and #oauth2.clientHasRole('ROLE_INTERNAL_CLIENT')")//no worky, client loses authorities for some reason.
