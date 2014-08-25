@@ -222,7 +222,8 @@ task jacocoIntegrationTestReport(type: JacocoReport) {
  * 
  */
 
-war.dependsOn ':client:grunt_build'
+build.dependsOn ':client:grunt_build'
+war.dependsOn ':client:grunt_war'
 
 /*eclipse {
 	classpath {

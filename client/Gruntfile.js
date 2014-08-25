@@ -37,7 +37,8 @@
 			
 		    html2js: {
 		    	options: {
-		    		base: 'src/js'
+		    		base: 'src/js',
+		    		useStrict: true
 		    	},
 				dist: {
 					src: [ 'src/**/*.tpl.html' ],
@@ -97,5 +98,9 @@
 		//grunt.registerTask('dev', [ 'bower', 'watch:dev' ]);
 		grunt.registerTask('test', [ 'bower', 'jshint', 'karma:continuous' ]);
 		//grunt.registerTask('minified', [ 'bower', 'connect:server', 'watch:min' ]);
-		grunt.registerTask('build', [ 'clean:build', 'bower', 'jshint', 'karma:build', 'html2js:dist', 'concat:dist', 'uglify:dist', 'copy', 'clean:temp' ]);
+		grunt.registerTask('package', [ 'clean:build', 'bower', 'jshint', 'html2js:dist', 'concat:dist', 'uglify:dist', 'karma:build', 'copy', 'clean:temp' ]);
+		
+		// Part of gradle tasks - Splitting to be part of appropriate gradle java build lifecycle
+		grunt.registerTask('build', [ 'jshint', 'karma:build' ]);
+		grunt.registerTask('war', [ 'clean:build', 'bower', 'html2js:dist', 'concat:dist', 'uglify:dist', 'copy', 'clean:temp' ]);
     };

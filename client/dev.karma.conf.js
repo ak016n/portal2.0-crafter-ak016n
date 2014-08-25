@@ -23,6 +23,7 @@ module.exports = function(config) {
       'client/bower_components/angular-mocks/angular-mocks.js',
       'client/bower_components/angular-bootstrap/*.js',
       'client/bower_components/google-diff-match-patch-js/*.js',
+      'client/bower_components/angular-ui-router/**/angular-ui-router.js',
       'client/test/mock/*.js',
       'client/src/app/app.js',
       'client/src/**/*.js',

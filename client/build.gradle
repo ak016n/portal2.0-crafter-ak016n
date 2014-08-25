@@ -18,3 +18,5 @@ node {
 	download = true
 	workDir = file("nodejs")
 }
+
+grunt_build.dependsOn 'npmInstall'
