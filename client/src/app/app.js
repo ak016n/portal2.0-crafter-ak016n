@@ -11,7 +11,7 @@ app.config(['$urlRouterProvider', '$stateProvider', function($urlRouterProvider,
 	$stateProvider.state('home', {
 		url: '/',
 		template: 'home'
-	})
+	});
 }]);
 
 angular.isUndefinedOrNull = function(val) {

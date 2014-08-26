@@ -1,6 +1,6 @@
 'use strict';
  
-describe('AdminCtrl', function(){
+describe('AdminController', function(){
     var scope, mockAdminService, mockAdminVersionService, mockGlobalHandleErrorService, mockForm, q, deferred, mockTranslateProvider, $httpBackend;//we'll use this scope in our tests
  
     //mock Application to allow us to inject our own dependencies
@@ -42,7 +42,7 @@ describe('AdminCtrl', function(){
     	mockGlobalHandleErrorService.clearAllErrors = jasmine.createSpy('globalHandleErrorService');
     	
         //declare the controller and inject our empty scope
-        $controller('AdminCtrl', {$scope: scope, adminService: mockAdminService, adminVersionService: mockAdminVersionService, globalHandleErrorService: mockGlobalHandleErrorService});
+        $controller('AdminController', {$scope: scope, adminService: mockAdminService, adminVersionService: mockAdminVersionService, globalHandleErrorService: mockGlobalHandleErrorService});
     }));
 
     it('should have been "empty"', function(){

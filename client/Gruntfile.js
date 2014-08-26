@@ -1,6 +1,6 @@
     module.exports = function(grunt) {
      
-      var baseDestination = '../src/main/webapp/resources'; 
+      var baseDestination = '../src/main/webapp'; 
     	 
       grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
@@ -9,7 +9,7 @@
 				install: {
 					options: {
 						install: true,
-						targetDir: baseDestination + '/script/vendor',
+						targetDir: baseDestination + '/resources/script/vendor',
 						cleanTargetDir: true
 					}
 				}
@@ -18,8 +18,9 @@
 			copy: {
 				main : {
 					files: [
-					        {expand: true, cwd: 'src/css', src: ['**'], dest: baseDestination + '/css/ext'},
-							{expand: true, cwd: 'dist', src: ['**'], dest: baseDestination + '/script/app/'}
+					        {expand: true, cwd: 'src/css', src: ['**'], dest: baseDestination + '/resources/css/ext'},
+							{expand: true, cwd: 'dist', src: ['**'], dest: baseDestination + '/resources/script/app/'},
+							{expand: true, cwd: 'src/app', src: ['index.html'], dest: baseDestination + '/views'}
 					]
 				}
 			},
@@ -37,7 +38,7 @@
 			
 		    html2js: {
 		    	options: {
-		    		base: 'src/js',
+		    		base: 'src',
 		    		useStrict: true
 		    	},
 				dist: {
@@ -63,7 +64,7 @@
 		    clean: {
 		    	options: { force: true }, // Needed to delete files outside of current directory
 				temp: [ 'tmp'],
-				build: [baseDestination + '/css/ext', baseDestination + '/script/app']
+				build: [baseDestination + '/css/ext', baseDestination + '/resources/script/app']
 			},
 			
 			karma: {
@@ -99,6 +100,7 @@
 		grunt.registerTask('test', [ 'bower', 'jshint', 'karma:continuous' ]);
 		//grunt.registerTask('minified', [ 'bower', 'connect:server', 'watch:min' ]);
 		grunt.registerTask('package', [ 'clean:build', 'bower', 'jshint', 'html2js:dist', 'concat:dist', 'uglify:dist', 'karma:build', 'copy', 'clean:temp' ]);
+		grunt.registerTask('debug', [ 'clean:build', 'bower', 'html2js:dist', 'concat:dist', 'copy', 'clean:temp' ]);
 		
 		// Part of gradle tasks - Splitting to be part of appropriate gradle java build lifecycle
 		grunt.registerTask('build', [ 'jshint', 'karma:build' ]);

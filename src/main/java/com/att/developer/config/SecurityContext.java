@@ -79,30 +79,20 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
         auth.userDetailsService(userDetailsService).passwordEncoder(new AttPasswordEncoder());
     }
 	
-    /*
-    @Override
+    
     protected void configure(HttpSecurity http) throws Exception {
         http
             .authorizeRequests()
-                .antMatchers("/views/home.html").permitAll()
+                .antMatchers("/views/**").permitAll()
                 .antMatchers("/resources/**").permitAll()
-                .antMatchers("/admin/**", "/views/adminConsole/**", "/apiBundle/add/**").hasRole("SYS_ADMIN")
+                .antMatchers("/i18n").permitAll()
+                //.antMatchers("/admin/**", "/views/adminConsole/**", "/apiBundle/add/**").hasRole("SYS_ADMIN")
                 .anyRequest().authenticated();
-//		.and()
-//		.formLogin()       
-//			.loginPage("/auth/login")
-//			.defaultSuccessUrl("/auth/loginsuccess")
-//			.permitAll();
-//			
-	http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);	
-//		        
-//		
-	http.csrf().disable();
-	
-//		
-//		
+
+        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);	
+
+        http.csrf().disable();
     }
-    */
     
 	
     @Override
@@ -256,13 +246,11 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
                 .requestMatchers().antMatchers("/admin/**", "/cauth/**", "/uauth/**", "/oauth/revoke/**")
             .and()
                 .authorizeRequests()
-                    .antMatchers("/views/home.html").permitAll()
+                    .antMatchers("/views/index.html").permitAll()
+                    .antMatchers("/i18n/**").permitAll()
                     .antMatchers("/resources/**").permitAll()
-                    
-  				.antMatchers("/i18n/**").permitAll()
-				.antMatchers("/resources/**").permitAll()
 
-                    .antMatchers("/admin/**", "/views/adminConsole/**", "**/apiBundle/add/**").hasRole("SYS_ADMIN")
+                    .antMatchers("/admin/**", "**/apiBundle/add/**").hasRole("SYS_ADMIN")
 //                                .antMatchers("/eventLog/**").access("#oauth2.hasScope('trust') and #oauth2.clientHasRole('ROLE_INTERNAL_CLIENT')")//no worky, client loses authorities for some reason.
                     .antMatchers("/cauth/**").access("#oauth2.isClient()")
                     .antMatchers("/uauth/**").access("#oauth2.isUser() and #oauth2.hasScope('trust')")
