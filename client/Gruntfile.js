@@ -20,7 +20,7 @@
 					files: [
 					        {expand: true, cwd: 'src/css', src: ['**'], dest: baseDestination + '/resources/css/ext'},
 							{expand: true, cwd: 'dist', src: ['**'], dest: baseDestination + '/resources/script/app/'},
-							{expand: true, cwd: 'src/app', src: ['index.html'], dest: baseDestination + '/views'}
+							{expand: true, cwd: 'src/app', src: ['index.html'], dest: baseDestination}
 					]
 				}
 			},
