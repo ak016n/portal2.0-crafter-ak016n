@@ -83,7 +83,7 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
             .authorizeRequests()
-                .antMatchers("/views/**").permitAll()
+                .antMatchers("/index.html/**").permitAll()
                 .antMatchers("/resources/**").permitAll()
                 .antMatchers("/i18n").permitAll()
                 //.antMatchers("/admin/**", "/views/adminConsole/**", "/apiBundle/add/**").hasRole("SYS_ADMIN")

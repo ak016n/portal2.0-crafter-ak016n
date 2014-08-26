@@ -1,4 +1,10 @@
-var app = angular.module('portalApp', ['adminCtrl.adminService', 'pascalprecht.translate', 'ui.bootstrap', 'templates-dist', 'ui.router']);
+var app = angular.module('portalApp',
+		[ 'admin', 
+		  'security', 
+		  'pascalprecht.translate', 
+		  'ui.bootstrap',
+		  'templates-dist', 
+		  'ui.router' ]);
 
 app.config(function($translateProvider) {
 	$translateProvider.useUrlLoader('/developer/i18N');
