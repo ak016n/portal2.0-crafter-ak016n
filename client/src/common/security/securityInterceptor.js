@@ -1,8 +1,8 @@
 /**
  * Http Interceptor for authentication request - 401
  */
-angular.module('security').config(['$httpProvider', function($httpProvider) {
-	$httpProvider.interceptors.push(['$q', '$rootScope', '$location', '$sessionStorage', function($q, $rootScope, $location, $sessionStorage) {
+angular.module('security').config(['$httpProvider', function($httpProvider, $stateProvider) {
+	$httpProvider.interceptors.push(['$q', '$rootScope', '$sessionStorage', '$location', function($q, $rootScope, $sessionStorage, $location) {
 		return {
 			'responseError' : function(rejection) {
 				var status = rejection.status;
@@ -11,6 +11,7 @@ angular.module('security').config(['$httpProvider', function($httpProvider) {
 				var url = config.url;
 
 				if (angular.isUndefined($sessionStorage.accessToken) && status === 401) {
+					$sessionStorage.destUrl = $location.path();
 					$location.path("/login");
 				} else {
 					$rootScope.error = method + " on " + url + " failed with status " + status;

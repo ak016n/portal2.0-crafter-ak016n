@@ -176,8 +176,8 @@ angular.module('portalApp').directive('attFieldErrors', ['$log', '$compile', fun
              });
         }
     };
-}]);;angular.module('security.login', ['ui.router']);;angular.module('security.login')
-	.controller('LoginController', ['$scope', 'loginService', 'globalHandleErrorService', function(sc, loginService, globalHandleErrorService) {
+}]);;angular.module('security.login', ['ui.router', 'ngResource']);;angular.module('security.login')
+	.controller('LoginController', ['$scope', 'loginService', 'globalHandleErrorService', '$sessionStorage', '$location', function(sc, loginService, globalHandleErrorService, $sessionStorage, $location) {
 		console.log("login controller");
 		
 		sc.login = function(form) {
@@ -187,7 +187,10 @@ angular.module('portalApp').directive('attFieldErrors', ['$log', '$compile', fun
 			  
 			  loginService.login($.param({username: sc.login.username, password: sc.login.password, grant_type: 'password', scope: 'read write trust'})).$promise.then(
 					  function(success) {
-						  console.log('success in attempted login');
+						  $sessionStorage.accessToken = success.access_token;
+						  $sessionStorage.refreshToken = success.refresh_token;
+						  $location.path($sessionStorage.destUrl);
+						  console.log('success in attempted login :' + success.access_token);
 					  }, 
 					  function(error) {
 						  handleError({error: error.data.errors, formName: 'loginForm'});
@@ -213,11 +216,11 @@ angular.module('portalApp').directive('attFieldErrors', ['$log', '$compile', fun
 		return $resource('/developer/oauth/token', {}, {
 			login: {method: 'POST', headers : {'Authorization' : 'Basic dHJ1c3RlZF9pbnRlcm5hbF9jbGllbnRfd2l0aF91c2VyOnNvbWVzZWNyZXRfdGljd3U=', 'Content-Type': 'application/x-www-form-urlencoded'}}
 	    });
-  }]);;angular.module('security', ['security.login']);;/**
+  }]);;angular.module('security', ['security.login', 'ngStorage']);;/**
  * Http Interceptor for authentication request - 401
  */
-angular.module('security').config(['$httpProvider', function($httpProvider) {
-	$httpProvider.interceptors.push(['$q', '$rootScope', '$location', function($q, $rootScope, $location) {
+angular.module('security').config(['$httpProvider', function($httpProvider, $stateProvider) {
+	$httpProvider.interceptors.push(['$q', '$rootScope', '$sessionStorage', '$location', function($q, $rootScope, $sessionStorage, $location) {
 		return {
 			'responseError' : function(rejection) {
 				var status = rejection.status;
@@ -225,13 +228,20 @@ angular.module('security').config(['$httpProvider', function($httpProvider) {
 				var method = config.method;
 				var url = config.url;
 
-				if (status === 401) {
+				if (angular.isUndefined($sessionStorage.accessToken) && status === 401) {
+					$sessionStorage.destUrl = $location.path();
 					$location.path("/login");
 				} else {
 					$rootScope.error = method + " on " + url + " failed with status " + status;
 				}
 
 				return $q.reject(rejection);
+			},
+			request : function(config) {
+				if(angular.isDefined($sessionStorage.accessToken)) {
+					config.headers = {'Authorization' : 'Bearer ' + $sessionStorage.accessToken};
+				}
+				return config;
 			}
 		};
 	}]);

@@ -1,5 +1,5 @@
 angular.module('security.login')
-	.controller('LoginController', ['$scope', 'loginService', 'globalHandleErrorService', '$sessionStorage', function(sc, loginService, globalHandleErrorService, $sessionStorage) {
+	.controller('LoginController', ['$scope', 'loginService', 'globalHandleErrorService', '$sessionStorage', '$location', function(sc, loginService, globalHandleErrorService, $sessionStorage, $location) {
 		console.log("login controller");
 		
 		sc.login = function(form) {
@@ -11,6 +11,7 @@ angular.module('security.login')
 					  function(success) {
 						  $sessionStorage.accessToken = success.access_token;
 						  $sessionStorage.refreshToken = success.refresh_token;
+						  $location.path($sessionStorage.destUrl);
 						  console.log('success in attempted login :' + success.access_token);
 					  }, 
 					  function(error) {
