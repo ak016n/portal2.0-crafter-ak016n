@@ -1,1 +1,1 @@
-angular.module('security', ['security.login']);
+angular.module('security', ['security.login', 'ngStorage']);

@@ -1,5 +1,5 @@
 angular.module('security.login')
-	.controller('LoginController', ['$scope', 'loginService', 'globalHandleErrorService', function(sc, loginService, globalHandleErrorService) {
+	.controller('LoginController', ['$scope', 'loginService', 'globalHandleErrorService', '$sessionStorage', function(sc, loginService, globalHandleErrorService, $sessionStorage) {
 		console.log("login controller");
 		
 		sc.login = function(form) {
@@ -9,7 +9,9 @@ angular.module('security.login')
 			  
 			  loginService.login($.param({username: sc.login.username, password: sc.login.password, grant_type: 'password', scope: 'read write trust'})).$promise.then(
 					  function(success) {
-						  console.log('success in attempted login');
+						  $sessionStorage.accessToken = success.access_token;
+						  $sessionStorage.refreshToken = success.refresh_token;
+						  console.log('success in attempted login :' + success.access_token);
 					  }, 
 					  function(error) {
 						  handleError({error: error.data.errors, formName: 'loginForm'});

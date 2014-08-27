@@ -1,1 +1,1 @@
-angular.module('security.login', ['ui.router']);
+angular.module('security.login', ['ui.router', 'ngResource']);

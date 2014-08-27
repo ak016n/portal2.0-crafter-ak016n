@@ -79,9 +79,8 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
         auth.userDetailsService(userDetailsService).passwordEncoder(new AttPasswordEncoder());
     }
 	
-    
     protected void configure(HttpSecurity http) throws Exception {
-        http
+    	http
             .authorizeRequests()
                 .antMatchers("/index.html/**").permitAll()
                 .antMatchers("/resources/**").permitAll()
@@ -93,7 +92,6 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
 
         http.csrf().disable();
     }
-    
 	
     @Override
     @Bean
@@ -246,10 +244,6 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
                 .requestMatchers().antMatchers("/admin/**", "/cauth/**", "/uauth/**", "/oauth/revoke/**")
             .and()
                 .authorizeRequests()
-                    .antMatchers("/views/index.html").permitAll()
-                    .antMatchers("/i18n/**").permitAll()
-                    .antMatchers("/resources/**").permitAll()
-
                     .antMatchers("/admin/**", "**/apiBundle/add/**").hasRole("SYS_ADMIN")
 //                                .antMatchers("/eventLog/**").access("#oauth2.hasScope('trust') and #oauth2.clientHasRole('ROLE_INTERNAL_CLIENT')")//no worky, client loses authorities for some reason.
                     .antMatchers("/cauth/**").access("#oauth2.isClient()")
