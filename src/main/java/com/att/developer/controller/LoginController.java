@@ -13,7 +13,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.att.developer.service.impl.LoginSecurityService;
+import com.att.developer.service.LoginSecurityService;
 import com.att.developer.util.Constants;
 import com.att.developer.util.CookieUtil;
 

@@ -9,7 +9,7 @@ import org.springframework.security.authentication.event.AuthenticationFailureLo
 import org.springframework.security.authentication.event.AuthenticationFailureServiceExceptionEvent;
 import org.springframework.stereotype.Component;
 
-import com.att.developer.service.impl.LoginSecurityService;
+import com.att.developer.service.LoginSecurityService;
 
 @Component
 public class LoginFailureEventListener implements ApplicationListener<AbstractAuthenticationFailureEvent>  {

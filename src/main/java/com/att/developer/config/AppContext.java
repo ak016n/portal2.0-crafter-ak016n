@@ -4,15 +4,11 @@ import java.util.Arrays;
 import java.util.Properties;
 
 import javax.annotation.PreDestroy;
-import javax.jms.ConnectionFactory;
-import javax.jms.Queue;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
-import org.apache.activemq.command.ActiveMQQueue;
-import org.apache.activemq.pool.PooledConnectionFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator;
@@ -25,9 +21,6 @@ import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
-import org.springframework.jms.core.JmsTemplate;
-import org.springframework.jms.listener.DefaultMessageListenerContainer;
-import org.springframework.jms.listener.adapter.MessageListenerAdapter;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
@@ -38,7 +31,6 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 import com.atomikos.icatch.config.UserTransactionService;
 import com.atomikos.icatch.config.UserTransactionServiceImp;
-import com.att.developer.jms.consumer.EventLogConsumer;
 import com.jamonapi.MonitorFactory;
 
 @Configuration
@@ -47,7 +39,6 @@ import com.jamonapi.MonitorFactory;
 @ComponentScan({"com.att.developer"})
 public class AppContext {
 
-    private static final String EVENT_QUEUE_DESTINATION = "event.queue";
     private final Logger logger = LogManager.getLogger();
 
     
@@ -70,11 +61,6 @@ public class AppContext {
 
     
     @Bean
-    public EventLogConsumer eventLogConsumer() {
-    	return new EventLogConsumer();
-    }
-    
-    @Bean
     public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
         return new PropertySourcesPlaceholderConfigurer();
     }
@@ -92,17 +78,6 @@ public class AppContext {
         return dataSource;
     }
 
-    private ConnectionFactory getJmsConnectionFactory() {
-        ConnectionFactory connectionFactory = null;
-        try {
-            Context ctx = new InitialContext();
-            connectionFactory = (ConnectionFactory) ctx.lookup("java:comp/env/jms/ConnectionFactory");
-        } catch (NamingException e) {
-            logger.error(e);
-            new RuntimeException(e);
-        }
-        return connectionFactory;
-    }
 
     @Bean
     public DataSource dataSource() {
@@ -115,11 +90,7 @@ public class AppContext {
         Properties properties = new Properties();
         properties.put("com.atomikos.icatch.serial_jta_transactions", "false");
         properties.put("com.atomikos.icatch.enable_logging", "false");
-        properties.put("com.atomikos.icatch.log_base_dir", "/tx"); // default,
-                                                                   // need to be
-                                                                   // configurable
-                                                                   // to SAN in
-                                                                   // prod
+        properties.put("com.atomikos.icatch.log_base_dir", "/tx"); // default, need to be configurable to SAN in prod
         userTransactionServiceImp.init(properties);
         return userTransactionServiceImp;
     }
@@ -169,46 +140,6 @@ public class AppContext {
     @Bean
     public AtomikosJtaPlatform atomikosJtaPlatform() {
         return new AtomikosJtaPlatform();
-    }
-
-    @Bean
-    public ConnectionFactory connectionFactory() {
-        return getJmsConnectionFactory();
-    }
-
-    @Bean
-    public Queue eventQueue() {
-        Queue eventQueue = new ActiveMQQueue(EVENT_QUEUE_DESTINATION);
-        return eventQueue;
-    }
-
-    @Bean(destroyMethod = "stop")
-    public ConnectionFactory pooledConnectionFactory() {
-        PooledConnectionFactory pooledConnectionFactory = new PooledConnectionFactory();
-        pooledConnectionFactory.setMaxConnections(10);
-        pooledConnectionFactory.setConnectionFactory(getJmsConnectionFactory());
-        return pooledConnectionFactory;
-    }
-
-    @Bean
-    @DependsOn({"pooledConnectionFactory"})
-    public JmsTemplate jmsTemplate() {
-        JmsTemplate jmsTemplate = new JmsTemplate();
-        jmsTemplate.setConnectionFactory(pooledConnectionFactory());
-        return jmsTemplate;
-    }
-
-    @Bean
-    @DependsOn({"txManager", "pooledConnectionFactory"})
-    public DefaultMessageListenerContainer eventLogMessageListenerContainer() throws Throwable {
-        DefaultMessageListenerContainer messageListenerContainer = new DefaultMessageListenerContainer();
-        messageListenerContainer.setConnectionFactory(pooledConnectionFactory());
-        messageListenerContainer.setDestinationName(EVENT_QUEUE_DESTINATION);
-        MessageListenerAdapter messageListenerAdapter = new MessageListenerAdapter(eventLogConsumer());
-        messageListenerContainer.setMessageListener(messageListenerAdapter);
-        messageListenerContainer.setSessionTransacted(true);
-        messageListenerContainer.setTransactionManager(txManager());
-        return messageListenerContainer;
     }
 
     @Bean

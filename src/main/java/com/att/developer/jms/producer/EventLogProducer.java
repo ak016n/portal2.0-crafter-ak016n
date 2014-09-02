@@ -9,7 +9,7 @@ import com.att.developer.bean.EventLog;
 @Component
 public class EventLogProducer {
 
-	private static final String EVENT_QUEUE_DESTINATION = "event.queue";
+	public static final String EVENT_QUEUE_DESTINATION = "event.queue";
 	
 	@Autowired
 	private JmsTemplate jmsTemplate;

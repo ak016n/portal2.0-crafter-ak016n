@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import com.att.developer.bean.LoginSecurityDetails;
 import com.att.developer.bean.User;
 import com.att.developer.service.EventTrackingService;
+import com.att.developer.service.LoginSecurityService;
 import com.att.developer.service.UserService;
 
 @Component

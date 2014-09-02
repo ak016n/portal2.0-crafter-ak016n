@@ -1,4 +1,4 @@
-package com.att.developer.service.impl;
+package com.att.developer.service;
 
 import com.att.developer.bean.LoginSecurityDetails;
 
