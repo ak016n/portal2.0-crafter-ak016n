@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.att.developer.bean.AttProperties;
+import com.att.developer.bean.Event;
 import com.att.developer.bean.ServerSideError;
 import com.att.developer.bean.ServerSideErrors;
 import com.att.developer.bean.SessionUser;
@@ -212,4 +213,8 @@ public class AdminController {
     	return user;
     }
     
+    @RequestMapping(value="/event", method = RequestMethod.POST)
+    public void event(@RequestBody @Valid Event event) {
+    	
+    }
 }

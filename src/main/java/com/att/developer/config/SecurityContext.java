@@ -80,7 +80,7 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
     }
 	
     protected void configure(HttpSecurity http) throws Exception {
-    	http
+   	http
             .authorizeRequests()
                 .antMatchers("/index.html/**").permitAll()
                 .antMatchers("/resources/**").permitAll()
@@ -301,7 +301,7 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
                         .secret("somesecret_ticwu")
                         .accessTokenValiditySeconds(300) //5 minutes
                         .refreshTokenValiditySeconds(60*60) //one hour
-                        
+                        .additionalInformation(new String[] {"Client:developer"})
                  .and()
                      //oauth2 spec recommends against refresh tokens for clients. NO REFRESH TOKEN here.
                      .withClient("trusted_internal_client")
@@ -309,8 +309,8 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
                          .authorities("ROLE_INTERNAL_CLIENT")
                          .scopes("read", "write", "trust")
                          .secret("somesecret_tic")   
-                         .accessTokenValiditySeconds(60*60); //one hour
-            
+                         .accessTokenValiditySeconds(60*60) //one hour
+            			 .additionalInformation(new String[] {"Client:EDO"});
         }
         
         @Bean

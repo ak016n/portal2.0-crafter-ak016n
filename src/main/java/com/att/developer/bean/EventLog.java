@@ -50,7 +50,7 @@ public class EventLog implements Serializable {
 	public EventLog() {
 		setId(java.util.UUID.randomUUID().toString());
 	}
-	
+
 	public EventLog(String actorId, String impactedUserId, String orgId,
 			EventType eventType, String info, ActorType actorType,
 			String transactionId) {
@@ -58,12 +58,14 @@ public class EventLog implements Serializable {
 		this.actorId = actorId;
 		this.impactedUserId = impactedUserId;
 		this.orgId = orgId;
-		if(eventType != null) this.eventType =  eventType.getId();
+		if (eventType != null)
+			this.eventType = eventType.getId();
 		this.info = info;
-		if(actorType != null) this.actorType = actorType.getId();
+		if (actorType != null)
+			this.actorType = actorType.getId();
 		this.transactionId = transactionId;
 	}
-	
+
 	public String getId() {
 		return id;
 	}
@@ -101,7 +103,8 @@ public class EventLog implements Serializable {
 	}
 
 	public void setEventType(EventType eventType) {
-		if(eventType != null) this.eventType =  eventType.getId();
+		if (eventType != null)
+			this.eventType = eventType.getId();
 	}
 
 	public String getInfo() {
@@ -117,7 +120,8 @@ public class EventLog implements Serializable {
 	}
 
 	public void setActorType(ActorType actorType) {
-		if(actorType != null) this.actorType = actorType.getId();
+		if (actorType != null)
+			this.actorType = actorType.getId();
 	}
 
 	public String getTransactionId() {
@@ -128,21 +132,17 @@ public class EventLog implements Serializable {
 		this.transactionId = transactionId;
 	}
 
-	
-    public Instant getCreatedOn() {
-        return createdOn != null ? createdOn.toInstant() : null;
-    }
+	public Instant getCreatedOn() {
+		return createdOn != null ? createdOn.toInstant() : null;
+	}
 
-    
-    public void setCreatedOn(Instant created) {
-        if(createdOn != null){
-            this.createdOn = Date.from(created);
-        }
-        else{
-            this.createdOn = null;
-        }
-    }
-
+	public void setCreatedOn(Instant created) {
+		if (createdOn != null) {
+			this.createdOn = Date.from(created);
+		} else {
+			this.createdOn = null;
+		}
+	}
 
 	public String toString() {
 		return new ToStringBuilder(this).append("orgId", this.orgId)
@@ -162,17 +162,17 @@ public class EventLog implements Serializable {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj){
+		if (this == obj) {
 			return true;
 		}
-		if (obj == null){
+		if (obj == null) {
 			return false;
 		}
-		if (getClass() != obj.getClass()){
+		if (getClass() != obj.getClass()) {
 			return false;
 		}
 		EventLog other = (EventLog) obj;
 		return Objects.equals(id, other.id);
 	}
-	
+
 }

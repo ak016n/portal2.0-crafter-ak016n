@@ -23,7 +23,7 @@ public class SessionUser extends org.springframework.security.core.userdetails.U
 	private static final long serialVersionUID = -992872897986116196L;
 
 	private User user;
-
+	
 	public SessionUser(String username, String password, boolean enabled, boolean accountNonExpired,
 			boolean credentialsNonExpired, boolean accountNonLocked,
 			Collection<? extends GrantedAuthority> authorities, User user) {
@@ -31,11 +31,10 @@ public class SessionUser extends org.springframework.security.core.userdetails.U
 		this.user = user;
 	}
 	
-	
 	public SessionUser(String username, String password, Collection<? extends GrantedAuthority> authorities, User user) {
 		this(username, password, true, true, true, true, authorities, user);
-		
 	}
+	
  
 	/**
 	 * builds a User using default rules
@@ -53,7 +52,6 @@ public class SessionUser extends org.springframework.security.core.userdetails.U
 		this(user.getId(), user.getEncryptedPassword(), Collections.<GrantedAuthority>emptySet(), user);
 	}
 	
-
 	public User getUser() {
 		return user;
 	}
@@ -103,5 +101,5 @@ public class SessionUser extends org.springframework.security.core.userdetails.U
 	        }
 		}
 	}
-	
+
 }
