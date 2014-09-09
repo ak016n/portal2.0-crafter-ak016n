@@ -14,12 +14,19 @@ import com.att.developer.bean.wrapper.SessionUserWrapper;
 @RequestMapping("/uauth/async")
 public class AsyncController {
 
-	@RequestMapping(value="/principal", method = RequestMethod.GET)
+	@RequestMapping(value = "/principal", method = RequestMethod.GET)
 	public DeferredResult<SessionUserWrapper> register(@ModelAttribute SessionUser sessionUser) {
-		DeferredResult<SessionUserWrapper> futureSessionUser = new DeferredResult<>();
-		AsyncUserPrincipalCache.add(sessionUser.getUsername(), futureSessionUser);
-		
-		return futureSessionUser;
+		DeferredResult<SessionUserWrapper> deferredResult = new DeferredResult<>();
+		AsyncUserPrincipalCache.add(sessionUser.getUsername(), deferredResult);
+
+		deferredResult.onTimeout(new Runnable() {
+			@Override
+			public void run() {
+				AsyncUserPrincipalCache.remove(sessionUser.getUsername());
+			}
+		});
+
+		return deferredResult;
 	}
-	
+
 }
