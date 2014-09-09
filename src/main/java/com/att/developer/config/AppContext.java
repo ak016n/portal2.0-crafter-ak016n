@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.Properties;
 
 import javax.annotation.PreDestroy;
-import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
@@ -69,7 +68,11 @@ public class AppContext {
     private DataSource getJNDIdataSource() {
         DataSource dataSource = null;
         try {
-            Context ctx = new InitialContext();
+            //Context ctx = new InitialContext();
+        	//ClassLoader origLoader = Thread.currentThread().getContextClassLoader();
+        	//Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
+        	InitialContext ctx = new InitialContext();
+            //JndiTemplate jndi = new JndiTemplate();
             dataSource = (DataSource) ctx.lookup("java:comp/env/jdbc/devcore");
         } catch (NamingException e) {
             logger.error(e);
@@ -77,7 +80,6 @@ public class AppContext {
         }
         return dataSource;
     }
-
 
     @Bean
     public DataSource dataSource() {

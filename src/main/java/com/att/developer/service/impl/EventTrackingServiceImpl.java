@@ -6,6 +6,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import com.att.developer.bean.EventLog;
+import com.att.developer.bean.SessionClient;
 import com.att.developer.bean.SessionUser;
 import com.att.developer.bean.User;
 import com.att.developer.jms.producer.EventLogProducer;
@@ -37,7 +38,11 @@ public class EventTrackingServiceImpl implements EventTrackingService {
 		userEventProducer.updateUser(user);
 	}
 	
-	private String fillActorAndType(EventLog eventLog) {
+	/**
+	 * TODO implement it in builder pattern
+	 * @param eventLog
+	 */
+	private void updateActorAndType(EventLog eventLog) {
 		String actor = StringUtils.EMPTY;
 		ActorType actorType = null;
 		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -45,14 +50,18 @@ public class EventTrackingServiceImpl implements EventTrackingService {
 		if (principal instanceof SessionUser) {
 			User user = ((SessionUser) principal).getUser();
 			actor = user.getId();
+			// User object should have 
 			//actorType = ActorType.
+		} else if (principal instanceof SessionClient) {
+			SessionClient sessionClient = (SessionClient) principal;
+			actor = sessionClient.getClientId();
+			// TODO try catch for exceptions
+			actorType = ActorType.valueOf(sessionClient.getClientName().toUpperCase());
 		} else {
-			// TODO expecting it to be string
-			// actor = (String) principal;
+			 actor = (String) principal;
 		}
 
 		eventLog.setActorId(actor);
 		eventLog.setActorType(actorType);
-		return actor;
 	}
 }

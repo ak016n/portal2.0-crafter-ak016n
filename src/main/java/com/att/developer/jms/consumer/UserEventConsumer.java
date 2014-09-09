@@ -1,31 +1,35 @@
 package com.att.developer.jms.consumer;
 
-import java.util.Map;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.web.context.request.async.DeferredResult;
 
-import com.att.developer.bean.AsyncUserPrincipal;
+import com.att.developer.bean.AsyncUserPrincipalCache;
 import com.att.developer.bean.SessionUser;
 import com.att.developer.bean.User;
+import com.att.developer.bean.wrapper.SessionUserWrapper;
+import com.att.developer.bean.wrapper.UserJMSWrapper;
+import com.att.developer.typelist.JMSEventType;
 
 public class UserEventConsumer {
 
     private final Logger logger = LogManager.getLogger();
 	
-	public void handleMessage(Map<String, User> userMap) {
-		for (String key : userMap.keySet()) {
-			processMessage(key, userMap.get(key));
-		}
+	public void handleMessage(UserJMSWrapper userJMSWrapper) {
+			processMessage(userJMSWrapper.getJmsEventType(), userJMSWrapper.getUser());
 	}
 
-	private void processMessage(String key, User user) {
-		switch (key.toUpperCase()) {
-			case "UPDATE":
+	private void processMessage(JMSEventType key, User user) {
+		switch (key) {
+			case UPDATE:
 				logger.info("Update for user {}", user.getLogin());
-				DeferredResult<SessionUser> deferredResult = AsyncUserPrincipal.get(user.getLogin());
-				deferredResult.setResult((SessionUser) SessionUser.buildSecurityUser(user));
+				DeferredResult<SessionUserWrapper> deferredResult = AsyncUserPrincipalCache.get(user.getId());
+				
+				if(deferredResult != null) {
+					SessionUserWrapper sessionUser = new SessionUserWrapper((SessionUser) SessionUser.buildSecurityUser(user));
+					deferredResult.setResult(sessionUser);
+				}
+				
 				break;
 			default:
 				break;

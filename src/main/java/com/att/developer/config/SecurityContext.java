@@ -68,6 +68,8 @@ import com.att.developer.security.Oauth2UserApprovalHandler;
 @EnableWebSecurity
 public class SecurityContext extends WebSecurityConfigurerAdapter {
 
+	public static final String CLIENT_NAME = "client_name";
+	
     @Inject
     private DataSource dataSource;
 
@@ -283,7 +285,7 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
     @EnableAuthorizationServer
     protected static class AuthorizationServerConfiguration extends AuthorizationServerConfigurerAdapter {
 
-        @Autowired
+		@Autowired
         private TokenStore tokenStore;
         
         @Autowired
@@ -299,9 +301,9 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
                         .authorities("ROLE_CLIENT", "ROLE_TRUSTED_CLIENT")
                         .scopes("read", "write", "trust")
                         .secret("somesecret_ticwu")
-                        .accessTokenValiditySeconds(300) //5 minutes
-                        .refreshTokenValiditySeconds(60*60) //one hour
-                        .additionalInformation(new String[] {"Client:developer"})
+                        .accessTokenValiditySeconds(60*60) //1 hour
+                        .refreshTokenValiditySeconds(4*60*60) //4 hours
+                        .additionalInformation(new String[] {CLIENT_NAME + ":developer"})
                  .and()
                      //oauth2 spec recommends against refresh tokens for clients. NO REFRESH TOKEN here.
                      .withClient("trusted_internal_client")
@@ -310,7 +312,7 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
                          .scopes("read", "write", "trust")
                          .secret("somesecret_tic")   
                          .accessTokenValiditySeconds(60*60) //one hour
-            			 .additionalInformation(new String[] {"Client:EDO"});
+            			 .additionalInformation(new String[] {CLIENT_NAME +":EDO"});
         }
         
         @Bean

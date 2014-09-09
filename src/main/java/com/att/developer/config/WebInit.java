@@ -2,6 +2,7 @@ package com.att.developer.config;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+import javax.servlet.ServletRegistration.Dynamic;
 
 import org.springframework.core.annotation.Order;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
@@ -9,25 +10,29 @@ import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatche
 @Order(1)
 public class WebInit extends AbstractAnnotationConfigDispatcherServletInitializer {
 
-    @Override
-    protected Class<?>[] getRootConfigClasses() {
-        return new Class[] {SecurityContext.class, AppContext.class, JMSContext.class};
-    }
+	@Override
+	protected Class<?>[] getRootConfigClasses() {
+		return new Class[] { SecurityContext.class, AppContext.class, JMSContext.class };
+	}
 
-    @Override
-    protected Class<?>[] getServletConfigClasses() {
-        return new Class[] {WebContext.class};
-    }
+	@Override
+	protected Class<?>[] getServletConfigClasses() {
+		return new Class[] { WebContext.class };
+	}
 
-    @Override
-    protected String[] getServletMappings() {
-        return new String[] {"/"};
-    }
+	@Override
+	protected String[] getServletMappings() {
+		return new String[] { "/" };
+	}
 
-    @Override
-    public void onStartup(ServletContext servletContext) throws ServletException {
-        super.onStartup(servletContext);
-        servletContext.addListener(DBConnectionCleaner.class);
-    }
+	@Override
+	public void onStartup(ServletContext servletContext) throws ServletException {
+		super.onStartup(servletContext);
+		servletContext.addListener(DBConnectionCleaner.class);
+	}
 
+	@Override
+	protected void customizeRegistration(Dynamic registration) {
+		registration.setAsyncSupported(true);
+	}
 }

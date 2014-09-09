@@ -10,12 +10,16 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.provider.ClientDetails;
+import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.att.developer.bean.SessionClient;
 import com.att.developer.bean.SessionUser;
 import com.att.developer.bean.User;
 import com.att.developer.service.UserCreator;
@@ -45,6 +49,9 @@ public class AuthenticationEnhancementFilter extends OncePerRequestFilter {
 
 	@Resource
 	private UserCreator userCreator;
+	
+	@Autowired
+	private ClientDetailsService clientDetailsService;
 
 	public void setUserCreator(UserCreator creator) {
 		this.userCreator = creator;
@@ -75,16 +82,15 @@ public class AuthenticationEnhancementFilter extends OncePerRequestFilter {
 
 		if (authentication instanceof OAuth2Authentication) {
 			OAuth2Authentication oauth = (OAuth2Authentication) authentication;
+			String userId = (String) oauth.getPrincipal();
 			if (!oauth.isClientOnly()) {
 				try {
-					String userId = (String) oauth.getPrincipal();
 					logger.debug("userId is {}", userId);
 					User u = new User();
 					u.setId(userId);
 					User retrievedUser = userService.getUser(u);
 
-					SessionUser sessionUser = userCreator
-							.buildSessionUserFromUserEntity(retrievedUser);
+					SessionUser sessionUser = userCreator.buildSessionUserFromUserEntity(retrievedUser);
 					// necessary to reset an OAuth2Authentication object with a
 					// Principal that is a sessionUser
 
@@ -98,6 +104,10 @@ public class AuthenticationEnhancementFilter extends OncePerRequestFilter {
 					return;
 				}
 			} else {
+				ClientDetails clientDetails = clientDetailsService.loadClientByClientId(userId);
+				SessionClient sessionClient = new SessionClient(clientDetails);
+				OAuth2Authentication revisedOauth = new OAuth2AuthSessionClient(oauth.getOAuth2Request(), sessionClient);
+				SecurityContextHolder.getContext().setAuthentication(revisedOauth);
 				logger.info("We only have a Client ID as the principal, we don't need a session user");
 				return;
 			}

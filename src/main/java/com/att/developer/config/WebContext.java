@@ -8,6 +8,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.web.servlet.LocaleResolver;
+import org.springframework.web.servlet.config.annotation.AsyncSupportConfigurer;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -22,6 +23,11 @@ import com.att.developer.service.impl.LocaleAwareResourceBundleMessageSource;
 @EnableWebMvc
 @ComponentScan({ "com.att.developer.controller" })
 public class WebContext extends WebMvcConfigurerAdapter {
+	
+	@Override
+	public void configureAsyncSupport(AsyncSupportConfigurer configurer) {
+		configurer.setDefaultTimeout(60*5000L);
+	}
 
 	@Bean
 	public InternalResourceViewResolver viewResolver() {

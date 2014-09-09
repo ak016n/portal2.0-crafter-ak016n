@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.att.developer.bean.AttProperties;
-import com.att.developer.bean.Event;
 import com.att.developer.bean.ServerSideError;
 import com.att.developer.bean.ServerSideErrors;
 import com.att.developer.bean.SessionUser;
@@ -30,7 +29,9 @@ import com.att.developer.exception.DAOException;
 import com.att.developer.exception.DuplicateDataException;
 import com.att.developer.exception.ServerSideException;
 import com.att.developer.exception.UnsupportedOperationException;
+import com.att.developer.service.EventTrackingService;
 import com.att.developer.service.GlobalScopedParamService;
+import com.att.developer.service.UserService;
 import com.att.developer.util.FaultUtils;
 
 @RestController
@@ -40,8 +41,22 @@ public class AdminController {
 	@Inject
 	private GlobalScopedParamService globalScopedParamService;
 	
+	@Inject
+	private UserService userService;
+	
+	@Inject
+	private EventTrackingService eventTrackingService;
+	
 	public void setGlobalScopedParamService(GlobalScopedParamService globalScopedParamService) {
 		this.globalScopedParamService = globalScopedParamService;
+	}
+	
+	public void setUserService(UserService userService) {
+		this.userService = userService;
+	}
+	
+	public void setEventTrackingService(EventTrackingService eventTrackingService) {
+		this.eventTrackingService = eventTrackingService;
 	}
 
 	@RequestMapping(value="/{itemKey}/{fieldKey}", method = RequestMethod.GET)
@@ -213,8 +228,15 @@ public class AdminController {
     	return user;
     }
     
-    @RequestMapping(value="/event", method = RequestMethod.POST)
-    public void event(@RequestBody @Valid Event event) {
-    	
+    @RequestMapping(value="/user/{login}/event", method = RequestMethod.GET)
+    public void userEvent(@RequestBody @PathVariable("login") String login,  @RequestParam(value="type") String type) {
+    	switch(StringUtils.upperCase(type)) {
+    		case "UPDATE":
+    			User user = userService.getUserByLogin(login);
+    			eventTrackingService.userUpdateEvent(user);
+    			break;
+    		default:
+    			break;
+    	}
     }
 }

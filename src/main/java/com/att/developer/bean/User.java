@@ -25,6 +25,8 @@ import javax.persistence.Transient;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import com.att.developer.typelist.UserStateType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name = "user")
@@ -36,10 +38,12 @@ public class User implements Serializable {
     private String id;
     private String login;
 
+    @JsonIgnore
     @Column(name = "password")
     private String encryptedPassword;
 
     @Transient
+    @JsonIgnore
     private String password;
 
     private String email;
@@ -50,6 +54,7 @@ public class User implements Serializable {
     // TODO: temporarily fetch eagerly. What do we want to do here?
     @OrderColumn(name = "sequence_number")
     @ManyToMany(cascade = CascadeType.MERGE, mappedBy = "users", fetch = FetchType.EAGER)
+    @JsonManagedReference("fromUser")
     private List<Organization> organizations;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
