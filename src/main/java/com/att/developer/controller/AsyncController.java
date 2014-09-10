@@ -11,22 +11,26 @@ import com.att.developer.bean.SessionUser;
 import com.att.developer.bean.wrapper.SessionUserWrapper;
 
 @RestController
-@RequestMapping("/uauth/async")
+@RequestMapping("/uauth/user")
 public class AsyncController {
 
-	@RequestMapping(value = "/principal", method = RequestMethod.GET)
-	public DeferredResult<SessionUserWrapper> register(@ModelAttribute SessionUser sessionUser) {
+	@RequestMapping(value = "/principal/async", method = RequestMethod.GET)
+	public DeferredResult<SessionUserWrapper> userPrincipalAsync(@ModelAttribute SessionUser sessionUser) {
 		DeferredResult<SessionUserWrapper> deferredResult = new DeferredResult<>();
 		AsyncUserPrincipalCache.add(sessionUser.getUsername(), deferredResult);
 
 		deferredResult.onTimeout(new Runnable() {
-			@Override
 			public void run() {
 				AsyncUserPrincipalCache.remove(sessionUser.getUsername());
 			}
 		});
 
 		return deferredResult;
+	}
+	
+	@RequestMapping(value = "/principal", method = RequestMethod.GET)
+	public SessionUserWrapper userPrincipal(@ModelAttribute SessionUser sessionUser) {
+		return new SessionUserWrapper(sessionUser);
 	}
 
 }
