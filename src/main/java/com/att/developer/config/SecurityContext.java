@@ -87,7 +87,6 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
                 .antMatchers("/index.html/**").permitAll()
                 .antMatchers("/resources/**").permitAll()
                 .antMatchers("/i18n").permitAll()
-                //.antMatchers("/admin/**", "/views/adminConsole/**", "/apiBundle/add/**").hasRole("SYS_ADMIN")
                 .anyRequest().authenticated();
 
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);	
@@ -100,35 +99,6 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
-	    
-	    //from sparklr
-//	    @Override
-//	    protected void configure(HttpSecurity http) throws Exception {
-//	        // @formatter:off
-//	                 http
-//	            .authorizeRequests().antMatchers("/login.jsp").permitAll().and()
-//	            .authorizeRequests()
-//	                .anyRequest().hasRole("USER")
-//	                .and()
-//	            .exceptionHandling()
-//	                .accessDeniedPage("/login.jsp?authorization_error=true")
-//	                .and()
-//	            // TODO: put CSRF protection back into this endpoint
-//	            .csrf()
-//	                .requireCsrfProtectionMatcher(new AntPathRequestMatcher("/oauth/authorize")).disable()
-//	            .logout()
-//	                .logoutSuccessUrl("/index.jsp")
-//	                .logoutUrl("/logout.do")
-//	                .and()
-//	            .formLogin()
-//	                    .usernameParameter("j_username")
-//	                    .passwordParameter("j_password")
-//	                    .failureUrl("/login.jsp?authentication_error=true")
-//	                    .loginPage("/auth/login")
-//	                    .permitAll();
-//	        // @formatter:on
-//	    }
-	
 	    
     @Bean
     public EhCacheBasedAclCache aclCache() {
@@ -197,7 +167,6 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
 
     @Bean
     public MethodSecurityExpressionHandler expressionHandler() {
-//        DefaultMethodSecurityExpressionHandler expressionHandler = new DefaultMethodSecurityExpressionHandler();
         OAuth2MethodSecurityExpressionHandler expressionHandler = new OAuth2MethodSecurityExpressionHandler();
         expressionHandler.setPermissionEvaluator(permissionEvaluator());
         expressionHandler.setPermissionCacheOptimizer(aclPermissionCacheOptimizer());
@@ -242,7 +211,6 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
         public void configure(HttpSecurity http) throws Exception {
             // @formatter:off
             http
-//                    .requestMatchers().antMatchers("/photos/**", "/oauth/users/**", "/oauth/clients/**","/me", "/admin/**", "/cauth/**", "/uauth/**")
                 .requestMatchers().antMatchers("/admin/**", "/cauth/**", "/uauth/**", "/oauth/revoke/**")
             .and()
                 .authorizeRequests()
@@ -254,18 +222,6 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
                     .antMatchers("/cauth/eventLog/**").access("#oauth2.hasScope('trust')")
                     .antMatchers("/oauth/revoke/**").access("#oauth2.isClient() and #oauth2.hasScope('trust')")
                     .anyRequest().authenticated()
-                    //below is taken from sample spring oauth    
-//                        .antMatchers("/me").access("#oauth2.hasScope('read')")
-//                        .antMatchers("/photos").access("#oauth2.hasScope('read')")
-//                        .antMatchers("/photos/trusted/**").access("#oauth2.hasScope('trust')")
-//                        .antMatchers("/photos/user/**").access("#oauth2.hasScope('trust')")
-//                        .antMatchers("/photos/**").access("#oauth2.hasScope('read')")
-//                        .regexMatchers(HttpMethod.DELETE, "/oauth/users/([^/].*?)/tokens/.*")
-//                                .access("#oauth2.clientHasRole('ROLE_CLIENT') and (hasRole('ROLE_USER') or #oauth2.isClient()) and #oauth2.hasScope('write')")
-//                        .regexMatchers(HttpMethod.GET, "/oauth/clients/([^/].*?)/users/.*")
-//                                .access("#oauth2.clientHasRole('ROLE_CLIENT') and (hasRole('ROLE_USER') or #oauth2.isClient()) and #oauth2.hasScope('read')")
-//                        .regexMatchers(HttpMethod.GET, "/oauth/clients/.*")
-//                                .access("#oauth2.clientHasRole('ROLE_CLIENT') and #oauth2.isClient() and #oauth2.hasScope('read')")
             .and()
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
@@ -320,6 +276,28 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
             return new JwtTokenStore(accessTokenConverter());
         }
         
+        @Bean
+        public JwtAccessTokenConverter accessTokenConverter() {
+            JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
+            converter.setSigningKey(RSA_PRIVATE_SIGNING_KEY);
+            converter.setVerifierKey(RSA_PUB_VERIFIER_KEY);
+            return converter;
+        }
+        
+        @Autowired
+        @Qualifier("authenticationManagerBean")
+        private AuthenticationManager authenticationManager;
+        
+        @Override
+        public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
+            endpoints
+                    .tokenStore(tokenStore)
+                    .userApprovalHandler(userApprovalHandler)
+                    .authenticationManager(authenticationManager)
+                    .accessTokenConverter(accessTokenConverter());
+            
+        }
+    
         private static final String RSA_PUB_VERIFIER_KEY = "-----BEGIN RSA PUBLIC KEY-----"
                 +"MIICCgKCAgEAtTeKhfS1qDKMdkzuOls+/dQKzzV8J+NSCx5+wIyDpUDjRQVYdPsx"
                 +"ONsr3C5E3JrJbuvHNZN5lL4kwadB4g+g5QN8gq0FW6HnYhWIoeqJRTl9UDbBvu9K"
@@ -385,39 +363,9 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
                 +"24akwLsw4U1nb7uUoEp0Dboyq5WfCbdEg8Gg0fWPf4FQP0R1FRsS9izhOcNB5x6o"
                 +"gKnDiCLnv3WL3otBJ1RplrbT6G1DS8bCc9/VUWEtvktOCWd1HCY+FKynjQA="
                 +"-----END RSA PRIVATE KEY-----";
-        
-        @Bean
-        public JwtAccessTokenConverter accessTokenConverter() {
-            JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
-            converter.setSigningKey(RSA_PRIVATE_SIGNING_KEY);
-            converter.setVerifierKey(RSA_PUB_VERIFIER_KEY);
-            return converter;
-        }
-        
-        @Autowired
-        @Qualifier("authenticationManagerBean")
-        private AuthenticationManager authenticationManager;
-        
-        @Override
-        public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
-            endpoints
-                    .tokenStore(tokenStore)
-                    .userApprovalHandler(userApprovalHandler)
-                    .authenticationManager(authenticationManager)
-                    .accessTokenConverter(accessTokenConverter());
-            
-        }
-    
-//        @Override
-//        public void configure(AuthorizationServerSecurityConfigurer oauthServer) throws Exception {
-////            oauthServer.tokenKeyAccess(tokenKeyAccess)
-////                oauthServer.realm("sparklr2/client");
-//        }
     }
     
-    
-    
-    
+
     protected static class Stuff {
 
         @Autowired
