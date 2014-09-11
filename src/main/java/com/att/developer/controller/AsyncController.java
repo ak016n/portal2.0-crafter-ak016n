@@ -8,15 +8,15 @@ import org.springframework.web.context.request.async.DeferredResult;
 
 import com.att.developer.bean.AsyncUserPrincipalCache;
 import com.att.developer.bean.SessionUser;
-import com.att.developer.bean.wrapper.SessionUserWrapper;
+import com.att.developer.bean.wrapper.Principal;
 
 @RestController
-@RequestMapping("/uauth/user")
+@RequestMapping("/uauth/user/principal")
 public class AsyncController {
 
-	@RequestMapping(value = "/principal/async", method = RequestMethod.GET)
-	public DeferredResult<SessionUserWrapper> userPrincipalAsync(@ModelAttribute SessionUser sessionUser) {
-		DeferredResult<SessionUserWrapper> deferredResult = new DeferredResult<>();
+	@RequestMapping(value = "/async", method = RequestMethod.GET)
+	public DeferredResult<Principal> userPrincipalAsync(@ModelAttribute SessionUser sessionUser) {
+		DeferredResult<Principal> deferredResult = new DeferredResult<>();
 		AsyncUserPrincipalCache.add(sessionUser.getUsername(), deferredResult);
 
 		deferredResult.onTimeout(new Runnable() {
@@ -28,9 +28,9 @@ public class AsyncController {
 		return deferredResult;
 	}
 	
-	@RequestMapping(value = "/principal", method = RequestMethod.GET)
-	public SessionUserWrapper userPrincipal(@ModelAttribute SessionUser sessionUser) {
-		return new SessionUserWrapper(sessionUser);
+	@RequestMapping(method = RequestMethod.GET)
+	public Principal userPrincipal(@ModelAttribute SessionUser sessionUser) {
+		return new Principal(sessionUser);
 	}
 
 }

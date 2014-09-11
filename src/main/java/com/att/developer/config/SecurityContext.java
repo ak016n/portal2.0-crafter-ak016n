@@ -1,5 +1,8 @@
 package com.att.developer.config;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.annotation.Resource;
 import javax.inject.Inject;
 import javax.sql.DataSource;
@@ -35,6 +38,8 @@ import org.springframework.security.config.annotation.web.servlet.configuration.
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
+import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
@@ -43,6 +48,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.R
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.approval.ApprovalStore;
 import org.springframework.security.oauth2.provider.approval.TokenApprovalStore;
 import org.springframework.security.oauth2.provider.approval.UserApprovalHandler;
@@ -54,6 +60,8 @@ import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 
 import com.att.developer.bean.Role;
+import com.att.developer.bean.SessionUser;
+import com.att.developer.bean.wrapper.Principal;
 import com.att.developer.security.AttPasswordEncoder;
 import com.att.developer.security.AuthenticationEnhancementFilter;
 import com.att.developer.security.CustomAclLookupStrategy;
@@ -278,7 +286,7 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
         
         @Bean
         public JwtAccessTokenConverter accessTokenConverter() {
-            JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
+            JwtAccessTokenConverter converter = new SessionInfoEnhancer();
             converter.setSigningKey(RSA_PRIVATE_SIGNING_KEY);
             converter.setVerifierKey(RSA_PUB_VERIFIER_KEY);
             return converter;
@@ -295,7 +303,18 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
                     .userApprovalHandler(userApprovalHandler)
                     .authenticationManager(authenticationManager)
                     .accessTokenConverter(accessTokenConverter());
-            
+        }
+        
+       private static class SessionInfoEnhancer extends JwtAccessTokenConverter {
+            @Override
+            public OAuth2AccessToken enhance(OAuth2AccessToken accessToken, OAuth2Authentication authentication) {
+                final Map<String, Object> additionalInfo = new HashMap<>();
+                if(authentication.getPrincipal() instanceof SessionUser) {
+                	additionalInfo.put("principal", new Principal((SessionUser) authentication.getPrincipal()));
+                }
+                ((DefaultOAuth2AccessToken) accessToken).setAdditionalInformation(additionalInfo);
+                return super.enhance(accessToken, authentication);
+            }
         }
     
         private static final String RSA_PUB_VERIFIER_KEY = "-----BEGIN RSA PUBLIC KEY-----"

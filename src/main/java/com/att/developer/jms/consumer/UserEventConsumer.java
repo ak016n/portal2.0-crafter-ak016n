@@ -7,7 +7,7 @@ import org.springframework.web.context.request.async.DeferredResult;
 import com.att.developer.bean.AsyncUserPrincipalCache;
 import com.att.developer.bean.SessionUser;
 import com.att.developer.bean.User;
-import com.att.developer.bean.wrapper.SessionUserWrapper;
+import com.att.developer.bean.wrapper.Principal;
 import com.att.developer.bean.wrapper.UserJMSWrapper;
 import com.att.developer.typelist.JMSEventType;
 
@@ -23,10 +23,10 @@ public class UserEventConsumer {
 		switch (key) {
 			case UPDATE:
 				logger.info("Update for user {}", user.getLogin());
-				DeferredResult<SessionUserWrapper> deferredResult = AsyncUserPrincipalCache.get(user.getId());
+				DeferredResult<Principal> deferredResult = AsyncUserPrincipalCache.get(user.getId());
 				
 				if(deferredResult != null) {
-					SessionUserWrapper sessionUser = new SessionUserWrapper((SessionUser) SessionUser.buildSecurityUser(user));
+					Principal sessionUser = new Principal((SessionUser) SessionUser.buildSecurityUser(user));
 					deferredResult.setResult(sessionUser);
 				}
 				

@@ -4,16 +4,16 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.web.context.request.async.DeferredResult;
 
-import com.att.developer.bean.wrapper.SessionUserWrapper;
+import com.att.developer.bean.wrapper.Principal;
 
 public class AsyncUserPrincipalCache {
-	private static ConcurrentHashMap<String, DeferredResult<SessionUserWrapper>> asynUserPrincipalColl = new ConcurrentHashMap<>();
+	private static ConcurrentHashMap<String, DeferredResult<Principal>> asynUserPrincipalColl = new ConcurrentHashMap<>();
 	
-	public static void add(String key, DeferredResult<SessionUserWrapper> sessionUser) {
+	public static void add(String key, DeferredResult<Principal> sessionUser) {
 		asynUserPrincipalColl.put(key, sessionUser);
 	}
 	
-	public static DeferredResult<SessionUserWrapper> get(String key) {
+	public static DeferredResult<Principal> get(String key) {
 		return asynUserPrincipalColl.get(key);
 	}
 	
