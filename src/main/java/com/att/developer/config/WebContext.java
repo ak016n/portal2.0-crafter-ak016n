@@ -17,6 +17,7 @@ import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
+import com.att.developer.exception.TimeoutDeferredResultProcessingInterceptor;
 import com.att.developer.service.impl.LocaleAwareResourceBundleMessageSource;
 
 @Configuration
@@ -26,9 +27,11 @@ public class WebContext extends WebMvcConfigurerAdapter {
 	
 	@Override
 	public void configureAsyncSupport(AsyncSupportConfigurer configurer) {
-		configurer.setDefaultTimeout(60*5000L);
+		//configurer.setDefaultTimeout(60*5000L);
+		configurer.setDefaultTimeout(60*10L);
+		configurer.registerDeferredResultInterceptors(new TimeoutDeferredResultProcessingInterceptor());
 	}
-
+	
 	@Bean
 	public InternalResourceViewResolver viewResolver() {
 		InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
