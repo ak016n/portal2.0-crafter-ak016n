@@ -16,7 +16,7 @@ public class TimeoutDeferredResultProcessingInterceptor extends DeferredResultPr
 		
 		if (servletRequest instanceof HttpServletRequest && !servletResponse.isCommitted()) {
 			servletRequest.getAsyncContext().complete();
-			servletResponse.sendError(HttpStatus.REQUEST_TIMEOUT.value());
+			servletResponse.sendError(HttpStatus.GATEWAY_TIMEOUT.value());
 		}
 		return false;
 	}

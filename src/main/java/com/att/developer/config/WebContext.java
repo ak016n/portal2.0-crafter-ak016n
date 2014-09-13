@@ -27,8 +27,7 @@ public class WebContext extends WebMvcConfigurerAdapter {
 	
 	@Override
 	public void configureAsyncSupport(AsyncSupportConfigurer configurer) {
-		//configurer.setDefaultTimeout(60*5000L);
-		configurer.setDefaultTimeout(60*10L);
+		configurer.setDefaultTimeout(60*5000L);
 		configurer.registerDeferredResultInterceptors(new TimeoutDeferredResultProcessingInterceptor());
 	}
 	
