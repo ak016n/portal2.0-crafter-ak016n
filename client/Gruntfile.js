@@ -1,6 +1,6 @@
     module.exports = function(grunt) {
      
-      var baseDestination = '../src/main/webapp'; 
+      var baseDestination = '../server/src/main/webapp'; 
     	 
       grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),

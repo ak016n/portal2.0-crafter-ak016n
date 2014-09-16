@@ -1,0 +1,282 @@
+loadEnvSpecificConfig()
+
+apply plugin: "war"
+apply plugin: "eclipse-wtp"
+apply plugin: "groovy"
+apply plugin: "tomcat"
+apply plugin: "java"
+apply plugin: "jacoco"
+
+ext {
+ 	springVersion = "4.0.6.RELEASE"
+ 	springSecurityVersion = "3.2.5.RELEASE"
+ 	tomcatVersion = "7.0.54"
+ 	hibernateVersion = "4.3.4.Final"
+ 	atomikosVersion = "3.9.3"
+ 	activeMqVersion = "5.10.0"
+ 	slf4jVersion="1.7.7"
+ 	log4jVersion="2.0.1"
+ 	mysqlVersion = mysqlVersion_ext // refer below buildScript block, to modify shared variable
+}
+
+jacoco {
+	toolVersion = "0.7.0.201403182114"
+}
+
+targetCompatibility = 1.8
+sourceCompatibility = 1.8
+
+configurations.all {
+	resolutionStrategy {
+		failOnVersionConflict()
+		force "org.springframework:spring-context:${springVersion}", "org.springframework:spring-beans:${springVersion}","org.springframework:spring-core:${springVersion}",
+		"org.springframework:spring-expression:${springVersion}","org.springframework:spring-aop:${springVersion}","org.springframework:spring-web:${springVersion}",
+		"javax.servlet:javax.servlet-api:3.1.0","xml-apis:xml-apis:1.3.03", "org.springframework:spring-jdbc:${springVersion}","org.springframework:spring-tx:${springVersion}", 
+		"commons-logging:commons-logging:1.1.3","org.springframework.security:spring-security-core:${springSecurityVersion}","org.springframework:spring-webmvc:${springVersion}",
+		"org.springframework.security:spring-security-config:${springSecurityVersion}","org.springframework.security:spring-security-web:${springSecurityVersion}",
+		"commons-codec:commons-codec:1.6"
+	}
+	
+}
+
+repositories {
+    mavenCentral()
+}
+
+sourceSets {
+	integration {
+		java {
+			compileClasspath += main.output
+			runtimeClasspath += main.output
+		}
+	}
+	main {
+		java {
+			output.classesDir="src/main/webapp/WEB-INF/classes"
+		}
+	}
+}
+
+configurations {
+	integrationCompile.extendsFrom testCompile
+	integrationRuntime.extendsFrom testRuntime
+}
+
+dependencies {
+	tomcat "org.apache.tomcat.embed:tomcat-embed-core:${tomcatVersion}",
+		   "org.apache.tomcat.embed:tomcat-embed-logging-juli:${tomcatVersion}",
+		   "org.apache.tomcat:tomcat-jdbc:${tomcatVersion}",
+		   "javax.transaction:javax.transaction-api:1.2",
+		   "com.atomikos:transactions:${atomikosVersion}",
+		   "com.atomikos:transactions-hibernate3:${atomikosVersion}",
+		   "org.apache.activemq:activemq-all:${activeMqVersion}",
+		   "commons-pool:commons-pool:1.6", "com.jamonapi:jamon:2.78"
+		   
+	tomcat("org.apache.tomcat.embed:tomcat-embed-jasper:${tomcatVersion}") {
+		exclude group: "org.eclipse.jdt.core.compiler", module: "ecj"
+	}
+	
+	compile group: "commons-io", name: "commons-io", version: "1.4"
+	compile "org.springframework:spring-context:${springVersion}"
+	compile "org.springframework:spring-orm:${springVersion}"
+	compile "org.springframework:spring-webmvc:${springVersion}"
+	compile "org.springframework:spring-jms:${springVersion}"
+	
+	compile "org.springframework:spring-context-support:${springVersion}"
+
+	compile "org.springframework.security:spring-security-config:${springSecurityVersion}"
+	compile "org.springframework.security:spring-security-web:${springSecurityVersion}"
+	compile "org.springframework.security:spring-security-acl:${springSecurityVersion}"
+	compile ("net.sf.ehcache:ehcache:2.8.3"){
+		exclude group: "org.slf4j"
+	}
+	
+	compile("org.hibernate:hibernate-entitymanager:${hibernateVersion}") {
+		exclude group: "org.jboss.spec.javax.transaction"
+	}
+	
+	providedCompile "javax.transaction:javax.transaction-api:1.2"
+	providedCompile "com.atomikos:transactions-hibernate3:${atomikosVersion}" 
+	providedCompile "org.slf4j:jcl-over-slf4j:${slf4jVersion}"
+	providedCompile "mysql:mysql-connector-java:${mysqlVersion}"
+	providedCompile "org.apache.activemq:activemq-all:${activeMqVersion}"
+	providedCompile "javax.servlet:javax.servlet-api:3.1.0", "javax.servlet:jsp-api:2.0"
+	providedCompile "commons-pool:commons-pool:1.6"
+	providedCompile "com.jamonapi:jamon:2.78"
+	
+	
+	compile "org.apache.commons:commons-lang3:3.3"
+	compile "org.slf4j:slf4j-api:${slf4jVersion}"
+	compile "org.slf4j:slf4j-log4j12:${slf4jVersion}"
+	compile "org.apache.logging.log4j:log4j-1.2-api:${log4jVersion}"
+	compile "org.apache.logging.log4j:log4j-slf4j-impl:${log4jVersion}"
+	
+	compile "org.hibernate:hibernate-validator:5.1.0.Final"
+	compile "javax.inject:javax.inject:1"
+	compile "com.fasterxml.jackson.core:jackson-databind:2.3.2"
+	compile "org.openid4java:openid4java:0.9.8"
+	compile "javax.ws.rs:jsr311-api:1.1.1"
+	compile "jstl:jstl:1.2"
+	compile "org.apache.commons:commons-collections4:4.0"
+	compile "org.springframework.security.oauth:spring-security-oauth2:2.0.1.RELEASE"
+	compile "org.springframework.security:spring-security-jwt:1.0.2.RELEASE"
+	
+	testCompile "junit:junit:4.11"
+	testCompile "org.mockito:mockito-all:1.9.5"
+	testCompile "org.springframework:spring-test:${springVersion}"
+	testCompile "mysql:mysql-connector-java:${mysqlVersion}"
+	
+	integrationCompile sourceSets.main.output
+	integrationCompile configurations.testCompile
+	integrationCompile sourceSets.test.output
+	integrationRuntime configurations.testRuntime
+}
+
+task integrationTest(type: Test, dependsOn: jar) {
+	testClassesDir = sourceSets.integration.output.classesDir
+	classpath = sourceSets.integration.runtimeClasspath
+	systemProperties["jar.path"] = jar.archivePath
+	
+	jacoco {
+		excludes = ["com.att.developer.**.*Test*", "com.att.developer.config.IntegrationContext*"]
+	}
+}
+
+test {
+	jacoco {
+		excludes = ["com.att.developer.**.*Test*", "com.att.developer.bean.builder.*", "com.att.developer.config.*"]
+	}
+}
+
+check.dependsOn integrationTest
+
+def loadEnvSpecificConfig() {
+	def environment = project.hasProperty("env") ? project.env : "local"
+	println "Environment is set to $environment"
+	def envSpecFile = file("config/env.json")
+	def slurper = new groovy.json.JsonSlurper();
+	def config = slurper.parseText(envSpecFile.text)
+	def prop = config[environment]
+	println "config $prop"
+	project.ext.set("env", prop)
+}
+
+/** Flyway settings */
+
+buildscript {
+
+	ext {
+ 		mysqlVersion_ext = "5.1.31"
+	}
+	
+	repositories {
+		mavenCentral()
+	}
+	dependencies {
+		// TODO - fix it after groovy support for 1.8 is available
+		// classpath "org.flywaydb:flyway-gradle-plugin:3.0"
+		classpath "com.googlecode.flyway:flyway-gradle-plugin:2.3"
+		classpath "mysql:mysql-connector-java:${mysqlVersion_ext}"
+	}
+}
+
+apply plugin: "flyway"
+
+println "flyway.url = $env.flyway.url"
+println "flyway.url = $env.flyway.schemas"
+
+flyway {
+	url = env.flyway.url
+	user = env.flyway.user
+	password = env.flyway.password
+	schemas = env.flyway.schemas
+	initVersion = env.flyway.version
+}
+
+/** Tomcat settings */
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath "org.gradle.api.plugins:gradle-tomcat-plugin:1.2.4"
+    }
+}
+
+tomcat {
+	httpPort = 9080
+	httpsPort = 9443
+	stopPort=9008
+	enableSSL = false
+}
+
+[tomcatRun, tomcatRunWar]*.contextPath = 'developer'
+
+/** Tomcat end of settings */
+
+task jacocoIntegrationTestReport(type: JacocoReport) {
+	sourceSets sourceSets.main
+	executionData integrationTest
+}
+
+/**
+ * Grunt Related Tasks
+ * 
+ */
+
+build.dependsOn ':client:grunt_build'
+war.dependsOn ':client:grunt_war'
+war.baseName = 'developer'
+
+/*
+eclipse {
+	project {
+		natures.add "org.springframework.ide.eclipse.core.springnature"
+		natures.add "org.springsource.ide.eclipse.gradle.core.nature"
+		natures.add "org.eclipse.jdt.core.javanature"
+		natures.add "org.eclipse.jdt.groovy.core.groovyNature"
+		natures.add "org.eclipse.wst.common.project.facet.core.nature"
+		natures.add "org.eclipse.wst.common.modulecore.ModuleCoreNature"
+		natures.add "org.eclipse.jem.workbench.JavaEMFNature"
+		
+		buildCommand "org.eclipse.jdt.core.javabuilder"
+		buildCommand "org.eclipse.wst.common.project.facet.core.builder"
+		buildCommand "org.eclipse.wst.validation.validationbuilder"
+		buildCommand "org.springframework.ide.eclipse.core.springbuilder"
+		
+		file {
+			withXml { xmlProvider -> 
+				Node project = xmlProvider.asNode()
+				Node filter = project.appendNode('filteredResources').appendNode('filter')
+                filter.appendNode('id', 1408990610016) 
+                filter.appendNode('name', '')
+                filter.appendNode('type', 26)
+                Node matcher = filter.appendNode('matcher')
+                matcher.appendNode('id', 'org.eclipse.ui.ide.multiFilter')
+                matcher.appendNode('arguments', '1.0-projectRelativePath-equals-true-false-client')
+			}
+		}
+	}
+	classpath {
+		file {
+			withXml {
+				Node node = it.asNode()
+				node.appendNode("classpathentry",[kind:"src",output:"bin",path:"src/integration/java"])
+				node.appendNode("classpathentry",[kind:"src",output:"bin",path:"src/integration/resources"])
+				node.appendNode("classpathentry",[kind:"src",path:"src/main/java"])
+				node.appendNode("classpathentry",[kind:"src",path:"src/main/resources"])
+				node.appendNode("classpathentry",[kind:"src",output:"bin",path:"src/test/java"])
+				node.appendNode("classpathentry",[kind:"src",output:"bin",path:"src/test/resources"])
+				node.appendNode("classpathentry",[exported:"true",kind:"con",path:"org.eclipse.jdt.launching.JRE_CONTAINER"])
+				node.appendNode("classpathentry",[exported:"true",kind:"con",path:"org.eclipse.jst.j2ee.internal.web.container"])
+				node.appendNode("classpathentry",[exported:"true",kind:"con",path:"org.springsource.ide.eclipse.gradle.classpathcontainer"]).appendNode('attributes').appendNode('attribute', [name:"org.eclipse.jst.component.dependency", value:"/WEB-INF/lib"])
+				
+				node.appendNode("classpathentry",[kind:"src",output:"bin",path:"src/main/webapp/WEB-INF/classes"])
+				
+			}
+		}
+	}
+}
+*/
