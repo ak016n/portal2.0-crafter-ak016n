@@ -3,6 +3,7 @@ package com.att.developer.security;
 import java.io.Serializable;
 import java.util.Collections;
 
+import javax.servlet.DispatcherType;
 import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -14,17 +15,19 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.mock.web.MockFilterChain;
-import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.OAuth2Request;
+import org.springframework.security.oauth2.provider.client.BaseClientDetails;
 
 import com.att.developer.bean.Role;
+import com.att.developer.bean.SessionClient;
 import com.att.developer.bean.SessionUser;
 import com.att.developer.bean.User;
 import com.att.developer.bean.builder.RoleBuilder;
@@ -39,12 +42,16 @@ public class AuthenticationEnhancementFilterTest {
     private User actor = null;
     
     private AuthenticationEnhancementFilter filter;
+    @Mock
     private HttpServletRequest request;
     private HttpServletResponse response;
     private FilterChain filterChain;
 
     @Mock
     private UserCreator mockUserCreator;
+    
+    @Mock
+    private ClientDetailsService mockClientDetailsService;
     
     @Mock
     private UserService mockUserService;
@@ -59,12 +66,15 @@ public class AuthenticationEnhancementFilterTest {
         actor = new UserBuilder().withRole(unprivilegedRole).withId(USER_NOT_PRIVILEGED_ID).build();
         
         filter = new AuthenticationEnhancementFilter();
-        request = new MockHttpServletRequest();
+        
+        Mockito.when(request.getDispatcherType()).thenReturn(DispatcherType.REQUEST); // MOCK - Set basic request
+        
         response = new MockHttpServletResponse();
         filterChain = new MockFilterChain();
         
         filter.setUserCreator(mockUserCreator);
         filter.setUserService(mockUserService);
+        filter.setClientDetailsService(mockClientDetailsService);
         
     }
 
@@ -117,11 +127,12 @@ public class AuthenticationEnhancementFilterTest {
         OAuth2Authentication authentication = new OAuth2Authentication(clientAuthentication, userAuthentication);
         SecurityContextHolder.getContext().setAuthentication(authentication);
         
+        Mockito.when(mockClientDetailsService.loadClientByClientId(Mockito.anyString())).thenReturn(new BaseClientDetails("X", "Y", "scope", "grant", "authorities"));
+        
         filter.doFilterInternal(request, response, filterChain);
         Authentication actualAuth = SecurityContextHolder.getContext().getAuthentication();
         Assert.assertNotNull("Actual Auth is null", actualAuth);
-        String clientId = (String)actualAuth.getPrincipal();
-        Assert.assertNotNull("ClientId is not null", clientId);
+        Assert.assertTrue(actualAuth.getPrincipal() instanceof SessionClient);
     }
     
     @Test 

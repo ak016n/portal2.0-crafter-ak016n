@@ -8,6 +8,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,6 +61,10 @@ public class AuthenticationEnhancementFilter extends OncePerRequestFilter {
 	public void setUserService(UserService svc) {
 		this.userService = svc;
 	}
+	
+	public void setClientDetailsService(ClientDetailsService svc) {
+		this.clientDetailsService = svc;
+	}
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request,
@@ -82,9 +87,17 @@ public class AuthenticationEnhancementFilter extends OncePerRequestFilter {
 
 		if (authentication instanceof OAuth2Authentication) {
 			OAuth2Authentication oauth = (OAuth2Authentication) authentication;
-			String userId = (String) oauth.getPrincipal();
+			String userId = StringUtils.EMPTY;
+			
+			try {
+				userId = (String) oauth.getPrincipal();
+			} catch (ClassCastException e) {
+					// hmmm, maybe it was already a SessionUser
+					logger.info("ClassCastException occurred, probably is already a SessionUser");
+					return;
+			}
+			
 			if (!oauth.isClientOnly()) {
-				try {
 					logger.debug("userId is {}", userId);
 					User u = new User();
 					u.setId(userId);
@@ -97,12 +110,6 @@ public class AuthenticationEnhancementFilter extends OncePerRequestFilter {
 					OAuth2Authentication revisedOauth = new OAuth2Authentication(oauth.getOAuth2Request(),	new UsernamePasswordAuthenticationToken(sessionUser, "N/A",sessionUser.getAuthorities()));
 					SecurityContextHolder.getContext().setAuthentication(revisedOauth);
 					return;
-
-				} catch (ClassCastException e) {
-					// hmmm, maybe it was already a SessionUser
-					logger.info("ClassCastException occurred, probably is already a SessionUser");
-					return;
-				}
 			} else {
 				ClientDetails clientDetails = clientDetailsService.loadClientByClientId(userId);
 				SessionClient sessionClient = new SessionClient(clientDetails);

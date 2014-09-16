@@ -1,5 +1,5 @@
 angular.module('security').factory('principal', ['$http', '$timeout', '$rootScope', function($http, $timeout, $rootScope) {
-	var principal = undefined;
+	var principal;
 	var times = 0;
 	authenticated = false;
 	
@@ -59,5 +59,5 @@ angular.module('security').factory('principal', ['$http', '$timeout', '$rootScop
 			}
 			return status;
 		}
-	}
-}])
+	};
+}]);

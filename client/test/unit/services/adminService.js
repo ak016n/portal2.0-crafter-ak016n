@@ -3,7 +3,7 @@
 describe('adminService', function() {
 	var scope, $httpBackend;//we'll use this scope in our tests
 	
-	 beforeEach(angular.mock.module('adminCtrl.adminService'));
+	 beforeEach(angular.mock.module('admin'));
 	 beforeEach(angular.mock.inject(function($rootScope, _$httpBackend_) {
 	    	$httpBackend = _$httpBackend_;
 	        scope = $rootScope.$new();
