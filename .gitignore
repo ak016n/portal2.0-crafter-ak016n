@@ -31,3 +31,4 @@ vendor
 /server/*.project
 /server/*.classpath
 /server/.settings
+/server/logs
