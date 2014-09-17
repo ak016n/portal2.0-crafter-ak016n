@@ -26,8 +26,8 @@ module.exports = function(config) {
       'client/bower_components/angular-ui-router/**/angular-ui-router.js',
       'client/bower_components/ngstorage/ngStorage.js',
       'client/test/mock/*.js',
+	  'client/src/**/*.js',
       'client/src/app/app.js',
-      'client/src/**/*.js',
       'client/test/unit/**/*.js'
     ],
 
