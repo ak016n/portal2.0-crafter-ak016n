@@ -3,11 +3,13 @@ Portal 2.0
 
 Dev Portal version 2.0
 
-Step 1: Install Java JDK 1.8 and above **
+Step 1: Install Java JDK 1.8 and above *
 
-    1a: Install the security policy jars into ${java.home}/jre/lib/security/. Those can be found on the shared server \\WABOTH9CDFILE05.itservices.sbc.com\DPGM_ONBOARD\Third Party App Installation Files\Java\jce_policy-8.zip
+    -Install the security policy jars into ${java.home}/jre/lib/security/. 
+    Those can be found on the shared server 
+    \\WABOTH9CDFILE05.itservices.sbc.com\DPGM_ONBOARD\Third Party App Installation Files\Java\jce_policy-8.zip
 
-Step 2: Install Mysql 5.6 and above **
+Step 2: Install Mysql 5.6 and above *
 
 Step 3: Install STS or Eclipse for IDE
 
@@ -21,15 +23,20 @@ follow github clone instructions
 
 Step 5: Set Proxy
 a) Set Windows environment variable for proxy
-```Key: HTTP_PROXY
-Value: http://one.proxy.att.com:8080```
+```
+Key: HTTP_PROXY
+Value: http://one.proxy.att.com:8080
+```
 
 b) Add Proxy to Git
-```git config --global http.proxy http://one.proxy.att.com:8080
-git config --global https.proxy http://one.proxy.att.com:8080```
+```
+git config --global http.proxy http://one.proxy.att.com:8080
+git config --global https.proxy http://one.proxy.att.com:8080
+```
 
 Step 6: Validate the project setup with
-```Command Prompt
+``` gradle
+Command Prompt
 cmd> gradlew flywayInit flywayMigrate npmInstall build
  
 Environment is set to local
@@ -58,10 +65,12 @@ flyway.url = [dev_core]
  
 BUILD SUCCESSFUL
  
-Total time: 15.232 secs```
+Total time: 15.232 secs
+```
 
 Step 7: Start embedded tomcat container using
-```Command Prompt
+``` gradle
+Command Prompt
 cmd> gradlew tomcatStop war tomcatRun
  
 Environment is set to local
@@ -80,8 +89,9 @@ transactions.properties not found - looking for jta.properties in classpath...
 Failed to open transactions properties file - using default values
 0    [localhost-startStop-1] DEBUG org.jboss.logging  - Logging Provider: org.jboss.logging.Log4jLoggerProvider
 Started Tomcat Server
-The Server is running at http://localhost:9080/developer```
+The Server is running at http://localhost:9080/developer
+```
 
 Step 8: Access Portal 2.0 and start developing http://localhost:9080/developer/views/adminConsole/admin.html
 
-** Many of the third party binaries (java, mysql) are located on this server :  \\WABOTH9CDFILE05.itservices.sbc.com\DPGM_ONBOARD\Third Party App Installation Files
+* Many of the third party binaries (java, mysql) are located on this server :  \\WABOTH9CDFILE05.itservices.sbc.com\DPGM_ONBOARD\Third Party App Installation Files
