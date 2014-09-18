@@ -137,7 +137,7 @@ public class AuthenticationEnhancementFilterTest {
     
     @Test 
     public void testDoFilter_nullAuthentication() throws Exception{
-        
+        SecurityContextHolder.getContext().setAuthentication(null);
         filter.doFilterInternal(request, response, filterChain);
         Authentication actualAuth = SecurityContextHolder.getContext().getAuthentication();
         
