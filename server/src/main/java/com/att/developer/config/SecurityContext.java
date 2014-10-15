@@ -95,6 +95,7 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
                 .antMatchers("/index.html/**").permitAll()
                 .antMatchers("/resources/**").permitAll()
                 .antMatchers("/i18n").permitAll()
+                .antMatchers("/cg/**").permitAll()
                 .anyRequest().authenticated();
 
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);	

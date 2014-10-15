@@ -7,7 +7,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 public class CookieUtilTest {
@@ -22,15 +21,6 @@ public class CookieUtilTest {
     @Before
     public void initialize() {
     	MockitoAnnotations.initMocks(this);
-    }
-    
-    @Test
-    public void testCreateSecureSessionCookie_happyPath() {
-        Mockito.when(mockCookie.getValue()).thenReturn(COOKIE_VALUE);
-        Cookie returnCookie = cookieUtil.createSecureSessionCookie(mockCookie);
-        Assert.assertTrue(returnCookie.getSecure());
-        Assert.assertEquals("/", returnCookie.getPath());
-        Assert.assertNotNull(returnCookie);
     }
     
     @Test
