@@ -1,5 +1,7 @@
 package com.att.developer.controller;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -8,10 +10,17 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import com.att.developer.bean.ServerSideError;
@@ -60,6 +69,25 @@ public class ContentGatewayController {
 		}
 		
 		Map<String,String> portalCookieMap = getPortalUserMapFrmCookie(request.getCookies());
+		HttpHeaders authHeaders = new HttpHeaders();
+		
+		MultiValueMap<String, String> body = new LinkedMultiValueMap<String, String>();     
+		body.add("key", "APIM");
+		body.add("secret", "password123");
+		
+		authHeaders.add("X-AUTH-VENDOR", "APIM");
+		authHeaders.add("Accept", "application/vnd.developer.att.com.v1+json");
+		
+		try {
+			ResponseEntity<String> response = restTemplate.exchange(new URI("https://localhost/developer/rest/user/system/token"), HttpMethod.POST, new HttpEntity<>(body, authHeaders), String.class);
+			System.out.println("Response : " + response);
+		} catch (RestClientException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		System.out.println(PORTAL_LOGIN + " = " + portalCookieMap.get(PORTAL_LOGIN));
 		// TODO decipher cookie

@@ -1,13 +1,34 @@
 package com.att.developer.config;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.security.KeyManagementException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.Properties;
 
 import javax.annotation.PreDestroy;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import javax.sql.DataSource;
 
+import org.apache.http.client.HttpClient;
+import org.apache.http.conn.ssl.AllowAllHostnameVerifier;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ssl.SSLContexts;
+import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator;
@@ -20,6 +41,8 @@ import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
+import org.springframework.http.client.ClientHttpRequestFactory;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
@@ -27,6 +50,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.jta.JtaTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.client.RestTemplate;
 
 import com.atomikos.icatch.config.UserTransactionService;
 import com.atomikos.icatch.config.UserTransactionServiceImp;
@@ -40,6 +64,10 @@ public class AppContext {
 
     private final Logger logger = LogManager.getLogger();
 
+    
+    private static final int DEFAULT_MAX_TOTAL_CONNECTIONS = 100;
+    private static final int DEFAULT_MAX_CONNECTIONS_PER_ROUTE = 5;
+    private static final int DEFAULT_READ_TIMEOUT_MILLISECONDS = (60 * 1000);
     
     /**
      * Defined to turn on or off the JAMON performance monitoring.
@@ -64,7 +92,6 @@ public class AppContext {
         return new PropertySourcesPlaceholderConfigurer();
     }
 
-    
     private DataSource getJNDIdataSource() {
         DataSource dataSource = null;
         try {
@@ -125,7 +152,7 @@ public class AppContext {
     public PersistenceExceptionTranslationPostProcessor exceptionTranslation() {
         return new PersistenceExceptionTranslationPostProcessor();
     }
-
+    
     Properties additionalProperties() {
         return new Properties() {
 
@@ -178,6 +205,60 @@ public class AppContext {
         return proxyCreator;
     }    
     
+	@Bean
+	public RestTemplate restTemplate() {
+		RestTemplate restTemplate = new RestTemplate(httpRequestFactory());
+/*		List<HttpMessageConverter<?>> converters = restTemplate.getMessageConverters();
+
+		for (HttpMessageConverter<?> converter : converters) {
+			if (converter instanceof MappingJackson2HttpMessageConverter) {
+				MappingJackson2HttpMessageConverter jsonConverter = (MappingJackson2HttpMessageConverter) converter;
+				jsonConverter.setObjectMapper(objectMapper);
+			}
+		}*/
+
+    return restTemplate;
+    }
+	
+	@Bean
+	public HttpClient httpClient() {
+		PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager();
+		CloseableHttpClient defaultHttpClient = HttpClients.custom().setSSLSocketFactory(getSSLSocketFactory()).setConnectionManager(connectionManager).build();
+
+		connectionManager.setMaxTotal(DEFAULT_MAX_TOTAL_CONNECTIONS);
+		connectionManager.setDefaultMaxPerRoute(DEFAULT_MAX_CONNECTIONS_PER_ROUTE);
+		
+		return defaultHttpClient;
+	}
+	
+    private SSLConnectionSocketFactory getSSLSocketFactory() {
+      try {
+            SSLContext ctx = SSLContext.getInstance("TLS");
+            X509TrustManager tm = new X509TrustManager() {
+
+                public void checkClientTrusted(X509Certificate[] xcs, String string) throws CertificateException {// NOPMD
+                }
+
+                public void checkServerTrusted(X509Certificate[] xcs, String string) throws CertificateException {// NOPMD
+                }
+
+                public X509Certificate[] getAcceptedIssuers() {
+                    return null;
+                }
+            };
+            ctx.init(null, new TrustManager[] {tm}, null);
+            SSLConnectionSocketFactory ssf = new SSLConnectionSocketFactory(ctx, new AllowAllHostnameVerifier());
+            return ssf;
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+	
+	@Bean
+	public 	ClientHttpRequestFactory httpRequestFactory() {
+		HttpComponentsClientHttpRequestFactory clientHttpRequestFactory = new HttpComponentsClientHttpRequestFactory(httpClient());
+		return clientHttpRequestFactory;
+	}
     
     @PreDestroy
     public void destroy(){
