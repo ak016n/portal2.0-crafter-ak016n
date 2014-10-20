@@ -1,11 +1,9 @@
 package com.att.developer.controller;
 
 import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.inject.Inject;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
@@ -25,10 +23,6 @@ import com.att.developer.util.CookieUtil;
 @RequestMapping("/cg")
 public class ContentGatewayController {
 	
-	private static final String PORTAL_USER = "PORTAL_USER";
-
-	private static final String PORTAL_LOGIN = "portal_login";
-
 	@Inject
 	private EventTrackingService eventTrackingService;
 	
@@ -52,8 +46,8 @@ public class ContentGatewayController {
 			throw new ServerSideException(errorColl.add(error));
 		}
 		
-		Map<String,String> portalCookieMap = getPortalUserMapFrmCookie(request.getCookies());
-		System.out.println(PORTAL_LOGIN + " = " + portalCookieMap.get(PORTAL_LOGIN));
+		Map<String,String> portalCookieMap = cookieUtil.getPortalUserMap(request.getCookies());
+		System.out.println("PORTAL_LOGIN  = " + portalCookieMap.get(cookieUtil.PORTAL_LOGIN));
 		
 		Map contentResponse = contentService.getContent("sample", "somas");
 		System.out.println("Content Response : " + contentResponse);
@@ -61,23 +55,6 @@ public class ContentGatewayController {
 		return null;
 	}
 	
-    private Map<String, String> getPortalUserMapFrmCookie(Cookie[] cookies) {
-        String cookieValue = this.cookieUtil.getDecryptedCookieValue(cookies, PORTAL_USER);
-        Map<String, String> portalUserMap = new HashMap<>();
-        if (cookieValue != null) {
-            String[] portalUserArr = cookieValue.split("::");
-            portalUserMap.put(PORTAL_USER, getValueByPosition(portalUserArr, 0));
-            portalUserMap.put(PORTAL_LOGIN, getValueByPosition(portalUserArr, 2));
-        }
-        return portalUserMap;
-    }
-    
-    private String getValueByPosition(String[] decryptedCookieArr, int position) {
-        String value = null;
-        if (decryptedCookieArr.length >= position + 1) {
-            value = decryptedCookieArr[position];
-        }
-        return value;
-    }
+
 
 }

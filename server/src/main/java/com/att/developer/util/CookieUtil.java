@@ -1,5 +1,8 @@
 package com.att.developer.util;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.servlet.http.Cookie;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +13,9 @@ import com.att.developer.security.DesCrypt;
 @Component
 public class CookieUtil {
 
+	public static final String PORTAL_USER = "PORTAL_USER";
+	public static final String PORTAL_LOGIN = "portal_login";
+	
     @Autowired
     private DesCrypt desCrypt;
 
@@ -55,5 +61,24 @@ public class CookieUtil {
         cookie.setMaxAge(age);
         cookie.setPath("/");
         return cookie;
+    }
+    
+    public Map<String, String> getPortalUserMap(Cookie[] cookies) {
+        String cookieValue = getDecryptedCookieValue(cookies, PORTAL_USER);
+        Map<String, String> portalUserMap = new HashMap<>();
+        if (cookieValue != null) {
+            String[] portalUserArr = cookieValue.split("::");
+            portalUserMap.put(PORTAL_USER, getValueByPosition(portalUserArr, 0));
+            portalUserMap.put(PORTAL_LOGIN, getValueByPosition(portalUserArr, 2));
+        }
+        return portalUserMap;
+    }
+    
+    private String getValueByPosition(String[] decryptedCookieArr, int position) {
+        String value = null;
+        if (decryptedCookieArr.length >= position + 1) {
+            value = decryptedCookieArr[position];
+        }
+        return value;
     }
 }
