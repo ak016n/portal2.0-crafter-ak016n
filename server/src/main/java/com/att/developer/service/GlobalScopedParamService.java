@@ -16,6 +16,14 @@ public interface GlobalScopedParamService {
 	 * @return
 	 */
 	public abstract String get(String key);
+	
+	/**
+	 * Same as get(String key) except, it takes an additional default value in case key is not found
+	 * @param key
+	 * @param defaultValue
+	 * @return
+	 */
+	public abstract String get(String key, String defaultValue);
 
 	public abstract Set<String> getSet(String itemKey, String fieldKey,
 			String key);

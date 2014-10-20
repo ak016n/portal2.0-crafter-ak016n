@@ -85,7 +85,7 @@ public class PermissionManagerImplTest {
                                                   mockGlobalScopedParamService);
 
         // make all checking Strict
-        Mockito.when(mockGlobalScopedParamService.get("aclStrictParameterChecking")).thenReturn("true");
+        Mockito.when(mockGlobalScopedParamService.get("aclStrictParameterChecking", "false")).thenReturn("true");
 
         Mockito.when(mockTransactionTemplate.execute(Mockito.<TransactionCallback<?>> any())).thenAnswer(new Answer<Object>() {
 

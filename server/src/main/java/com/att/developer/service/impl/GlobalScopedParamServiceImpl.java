@@ -182,7 +182,15 @@ public class GlobalScopedParamServiceImpl implements GlobalScopedParamService {
 			Map<String, Object> globalDefaultPropertiesMap = propertiesMap.get(buildKeyFromIKFK(GLOBAL_IK, DEFAULT_FK));
 			value = (String) globalDefaultPropertiesMap.get(key);
 		}
+		
 		return value;
+	}
+	
+	// Same as above get, additionally it uses defaultValue if primary value not found
+	@Override
+	public String get(String key, String defaultValue) {
+		String value = get(key);
+		return StringUtils.isBlank(value)? defaultValue : value;
 	}
 	
 	@Override

@@ -31,6 +31,7 @@ import com.att.developer.bean.ServerSideErrors;
 import com.att.developer.exception.ServerSideException;
 import com.att.developer.service.EventTrackingService;
 import com.att.developer.service.GlobalScopedParamService;
+import com.att.developer.service.portal.one.UserProfileService;
 import com.att.developer.util.CookieUtil;
 
 @RestController
@@ -52,6 +53,9 @@ public class ContentGatewayController {
     
     @Inject
     private RestTemplate restTemplate;
+    
+    @Inject
+    private UserProfileService userProfileService;
 	
 	public void setGlobalScopedParamService(GlobalScopedParamService globalScopedParamService) {
 		this.globalScopedParamService = globalScopedParamService;
@@ -72,27 +76,13 @@ public class ContentGatewayController {
 		}
 		
 		Map<String,String> portalCookieMap = getPortalUserMapFrmCookie(request.getCookies());
-		HttpHeaders authHeaders = new HttpHeaders();
-		
-		MultiValueMap<String, String> body = new LinkedMultiValueMap<String, String>();     
-		body.add("key", "APIM");
-		body.add("secret", "password123");
-		
-		authHeaders.add("X-AUTH-VENDOR", "APIM");
-		authHeaders.add("Accept", "application/vnd.developer.att.com.v1+json");
 		
 		try {
-			ResponseEntity<Map> authResponse = restTemplate.exchange(new URI("https://localhost/developer/rest/user/system/token"), HttpMethod.POST, new HttpEntity<>(body, authHeaders), Map.class);
-			System.out.println("Auth Response : " + authResponse);
-			
-			authHeaders.add("AUTHORIZATION", (String) authResponse.getBody().get("authorizationToken"));
-			
-			ResponseEntity<Map> principalResponse = restTemplate.exchange(new URI("https://localhost/developer/rest/user/principal/somas"), HttpMethod.GET, new HttpEntity<>(body, authHeaders), Map.class);
-			System.out.println("Principal Response : " + principalResponse);
+			List<String> permissions = userProfileService.getUserPermissions("somas");
 			
 			StringBuilder acl = new StringBuilder();
 			boolean isFirst = true;
-			for(String each : (List<String>) principalResponse.getBody().get("authorities")) {
+			for(String each : permissions) {
 				if(!isFirst) {
 					acl.append(",");
 				}
@@ -100,7 +90,7 @@ public class ContentGatewayController {
 				isFirst = false;
 			}
 			
-			ResponseEntity<Map> contentResponse = restTemplate.exchange(new URI("http://141.204.193.142:8080/api/att/content_store/page.json?url=/site/website/sample&contextId=064e97b116c0611a1b7c615ed7f6210a&acl=" + acl.toString()), HttpMethod.GET, new HttpEntity<>(body, authHeaders), Map.class);
+			ResponseEntity<Map> contentResponse = restTemplate.exchange(new URI("http://141.204.193.142:8080/api/att/content_store/page.json?url=/site/website/sample&contextId=064e97b116c0611a1b7c615ed7f6210a&acl=" + acl.toString()), HttpMethod.GET, new HttpEntity<>(null, null), Map.class);
 			System.out.println("Content Response : " + contentResponse);
 			
 			

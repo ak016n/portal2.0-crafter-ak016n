@@ -144,7 +144,7 @@ public class ApiBundleServiceImpl implements ApiBundleService {
     
     
     private boolean isStrictChecking(){
-        String aclStrictParameterChecking  = globalScopedParamService.get("aclStrictParameterChecking");
+        String aclStrictParameterChecking  = globalScopedParamService.get("aclStrictParameterChecking", "false");
         return Boolean.TRUE.equals(Boolean.valueOf(aclStrictParameterChecking));    
     }
 
