@@ -1,8 +1,11 @@
 package com.att.developer.controller;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -59,7 +62,7 @@ public class ContentGatewayController {
 	}
 
 	@RequestMapping(value="/{url}", method = RequestMethod.GET)
-	public String getProperty(@PathVariable("url") String url, HttpServletRequest request) {
+	public String getProperty(@PathVariable("url") String url, HttpServletRequest request) throws UnsupportedEncodingException {
 		
 		ServerSideErrors errorColl = new ServerSideErrors();
 		
@@ -79,8 +82,28 @@ public class ContentGatewayController {
 		authHeaders.add("Accept", "application/vnd.developer.att.com.v1+json");
 		
 		try {
-			ResponseEntity<String> response = restTemplate.exchange(new URI("https://localhost/developer/rest/user/system/token"), HttpMethod.POST, new HttpEntity<>(body, authHeaders), String.class);
-			System.out.println("Response : " + response);
+			ResponseEntity<Map> authResponse = restTemplate.exchange(new URI("https://localhost/developer/rest/user/system/token"), HttpMethod.POST, new HttpEntity<>(body, authHeaders), Map.class);
+			System.out.println("Auth Response : " + authResponse);
+			
+			authHeaders.add("AUTHORIZATION", (String) authResponse.getBody().get("authorizationToken"));
+			
+			ResponseEntity<Map> principalResponse = restTemplate.exchange(new URI("https://localhost/developer/rest/user/principal/somas"), HttpMethod.GET, new HttpEntity<>(body, authHeaders), Map.class);
+			System.out.println("Principal Response : " + principalResponse);
+			
+			StringBuilder acl = new StringBuilder();
+			boolean isFirst = true;
+			for(String each : (List<String>) principalResponse.getBody().get("authorities")) {
+				if(!isFirst) {
+					acl.append(",");
+				}
+				acl.append(URLEncoder.encode(each.trim(), "UTF-8"));
+				isFirst = false;
+			}
+			
+			ResponseEntity<Map> contentResponse = restTemplate.exchange(new URI("http://141.204.193.142:8080/api/att/content_store/page.json?url=/site/website/sample&contextId=064e97b116c0611a1b7c615ed7f6210a&acl=" + acl.toString()), HttpMethod.GET, new HttpEntity<>(body, authHeaders), Map.class);
+			System.out.println("Content Response : " + contentResponse);
+			
+			
 		} catch (RestClientException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
