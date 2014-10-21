@@ -36,8 +36,9 @@ public class ContentGatewayController {
 		this.eventTrackingService = eventTrackingService;
 	}
 
+	@SuppressWarnings("rawtypes")
 	@RequestMapping(value="/{url}", method = RequestMethod.GET)
-	public String getProperty(@PathVariable("url") String url, HttpServletRequest request) throws UnsupportedEncodingException {
+	public Map getProperty(@PathVariable("url") String url, HttpServletRequest request) throws UnsupportedEncodingException {
 		
 		ServerSideErrors errorColl = new ServerSideErrors();
 		
@@ -47,12 +48,12 @@ public class ContentGatewayController {
 		}
 		
 		Map<String,String> portalCookieMap = cookieUtil.getPortalUserMap(request.getCookies());
-		System.out.println("PORTAL_LOGIN  = " + portalCookieMap.get(cookieUtil.PORTAL_LOGIN));
+		System.out.println("PORTAL_LOGIN  = " + portalCookieMap.get(CookieUtil.PORTAL_LOGIN));
 		
-		Map contentResponse = contentService.getContent("sample", "somas");
+		Map contentResponse = contentService.getContent(url, portalCookieMap.get(CookieUtil.PORTAL_LOGIN));
 		System.out.println("Content Response : " + contentResponse);
 			
-		return null;
+		return contentResponse;
 	}
 	
 

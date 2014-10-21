@@ -8,6 +8,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -93,11 +94,13 @@ public class UserProfileServiceImpl implements UserProfileService {
 		
 		ResponseEntity<Map> principalResponse = null;
 		
-		try {
-			principalResponse = restTemplate.exchange(new URI("https://" + portalHost + "/developer/rest/user/principal/" + login), HttpMethod.GET, new HttpEntity<>(null, authHeaders), Map.class);
-		} catch (RestClientException | URISyntaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if(StringUtils.isNotBlank(login)) {
+			try {
+				principalResponse = restTemplate.exchange(new URI("https://" + portalHost + "/developer/rest/user/principal/" + login), HttpMethod.GET, new HttpEntity<>(null, authHeaders), Map.class);
+			} catch (RestClientException | URISyntaxException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 
 		List<String> principalColl = new ArrayList<String>();

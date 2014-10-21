@@ -1,11 +1,7 @@
 package com.att.developer.config;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.KeyManagementException;
-import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
@@ -17,15 +13,21 @@ import javax.annotation.PreDestroy;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
+import javax.net.ssl.SSLException;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.SSLSocket;
 import javax.sql.DataSource;
 
 import org.apache.http.client.HttpClient;
-import org.apache.http.conn.ssl.AllowAllHostnameVerifier;
+import org.apache.http.config.Registry;
+import org.apache.http.config.RegistryBuilder;
+import org.apache.http.conn.socket.ConnectionSocketFactory;
+import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ssl.SSLContextBuilder;
 import org.apache.http.conn.ssl.SSLContexts;
-import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
+import org.apache.http.conn.ssl.TrustStrategy;
+import org.apache.http.conn.ssl.X509HostnameVerifier;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
@@ -220,7 +222,7 @@ public class AppContext {
     return restTemplate;
     }
 	
-	@Bean
+/*	@Bean
 	public HttpClient httpClient() {
 		PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager();
 		CloseableHttpClient defaultHttpClient = HttpClients.custom().setSSLSocketFactory(getSSLSocketFactory()).setConnectionManager(connectionManager).build();
@@ -252,7 +254,60 @@ public class AppContext {
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
-    }
+    }*/
+    
+	@Bean
+	public HttpClient httpClient() {
+      SSLContextBuilder builder = SSLContexts.custom();
+		try {
+			builder.loadTrustMaterial(null, new TrustStrategy() {
+			    @Override
+			    public boolean isTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+			        return true;
+			    }
+			});
+		} catch (NoSuchAlgorithmException | KeyStoreException e) {
+			e.printStackTrace();
+		}
+
+		SSLContext sslContext = null;
+		try {
+			sslContext = builder.build();
+		} catch (KeyManagementException | NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sslContext, new X509HostnameVerifier() {
+            @Override
+            public void verify(String host, SSLSocket ssl) throws IOException {
+            }
+
+            @Override
+            public void verify(String host, X509Certificate cert) throws SSLException {
+            }
+
+            @Override
+            public void verify(String host, String[] cns, String[] subjectAlts) throws SSLException {
+            }
+
+            @Override
+            public boolean verify(String s, SSLSession sslSession) {
+                return true;
+            }
+        });
+
+		Registry<ConnectionSocketFactory> socketFactoryRegistry = RegistryBuilder.<ConnectionSocketFactory> create().register("https", sslsf).register("http", new PlainConnectionSocketFactory()).build();
+
+		PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager(socketFactoryRegistry);
+		
+		connectionManager.setMaxTotal(DEFAULT_MAX_TOTAL_CONNECTIONS);
+		connectionManager.setDefaultMaxPerRoute(DEFAULT_MAX_CONNECTIONS_PER_ROUTE);
+		
+		CloseableHttpClient httpClient = HttpClients.custom().setConnectionManager(connectionManager).build();
+		
+		return httpClient;
+	}
 	
 	@Bean
 	public 	ClientHttpRequestFactory httpRequestFactory() {
