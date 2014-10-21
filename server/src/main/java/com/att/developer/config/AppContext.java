@@ -66,10 +66,8 @@ public class AppContext {
 
     private final Logger logger = LogManager.getLogger();
 
-    
     private static final int DEFAULT_MAX_TOTAL_CONNECTIONS = 100;
     private static final int DEFAULT_MAX_CONNECTIONS_PER_ROUTE = 5;
-    private static final int DEFAULT_READ_TIMEOUT_MILLISECONDS = (60 * 1000);
     
     /**
      * Defined to turn on or off the JAMON performance monitoring.
@@ -210,52 +208,9 @@ public class AppContext {
 	@Bean
 	public RestTemplate restTemplate() {
 		RestTemplate restTemplate = new RestTemplate(httpRequestFactory());
-/*		List<HttpMessageConverter<?>> converters = restTemplate.getMessageConverters();
-
-		for (HttpMessageConverter<?> converter : converters) {
-			if (converter instanceof MappingJackson2HttpMessageConverter) {
-				MappingJackson2HttpMessageConverter jsonConverter = (MappingJackson2HttpMessageConverter) converter;
-				jsonConverter.setObjectMapper(objectMapper);
-			}
-		}*/
-
-    return restTemplate;
+		return restTemplate;
     }
 	
-/*	@Bean
-	public HttpClient httpClient() {
-		PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager();
-		CloseableHttpClient defaultHttpClient = HttpClients.custom().setSSLSocketFactory(getSSLSocketFactory()).setConnectionManager(connectionManager).build();
-
-		connectionManager.setMaxTotal(DEFAULT_MAX_TOTAL_CONNECTIONS);
-		connectionManager.setDefaultMaxPerRoute(DEFAULT_MAX_CONNECTIONS_PER_ROUTE);
-		
-		return defaultHttpClient;
-	}
-	
-    private SSLConnectionSocketFactory getSSLSocketFactory() {
-      try {
-            SSLContext ctx = SSLContext.getInstance("TLS");
-            X509TrustManager tm = new X509TrustManager() {
-
-                public void checkClientTrusted(X509Certificate[] xcs, String string) throws CertificateException {// NOPMD
-                }
-
-                public void checkServerTrusted(X509Certificate[] xcs, String string) throws CertificateException {// NOPMD
-                }
-
-                public X509Certificate[] getAcceptedIssuers() {
-                    return null;
-                }
-            };
-            ctx.init(null, new TrustManager[] {tm}, null);
-            SSLConnectionSocketFactory ssf = new SSLConnectionSocketFactory(ctx, new AllowAllHostnameVerifier());
-            return ssf;
-        } catch (Exception ex) {
-            throw new RuntimeException(ex);
-        }
-    }*/
-    
 	@Bean
 	public HttpClient httpClient() {
       SSLContextBuilder builder = SSLContexts.custom();
@@ -267,15 +222,14 @@ public class AppContext {
 			    }
 			});
 		} catch (NoSuchAlgorithmException | KeyStoreException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 
 		SSLContext sslContext = null;
 		try {
 			sslContext = builder.build();
 		} catch (KeyManagementException | NoSuchAlgorithmException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 		
 		SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sslContext, new X509HostnameVerifier() {
