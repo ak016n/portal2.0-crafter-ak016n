@@ -32,7 +32,19 @@ public class ContentServiceImpl implements ContentService {
     @Inject
     private UserProfileService userProfileService;
     
-    @SuppressWarnings("rawtypes")
+    public void setRestTemplate(RestTemplate restTemplate) {
+		this.restTemplate = restTemplate;
+	}
+
+	public void setGlobalScopedParamService(GlobalScopedParamService globalScopedParamService) {
+		this.globalScopedParamService = globalScopedParamService;
+	}
+
+	public void setUserProfileService(UserProfileService userProfileService) {
+		this.userProfileService = userProfileService;
+	}
+
+	@SuppressWarnings("rawtypes")
 	public Map getContent(String url, String login) {
     	String contextId = globalScopedParamService.get("crafter_context_id", "064e97b116c0611a1b7c615ed7f6210a");
     	String crafterHost = globalScopedParamService.get("crafter_host", "141.204.193.142:8080");
@@ -58,8 +70,7 @@ public class ContentServiceImpl implements ContentService {
 			}
 			
 		} catch (RestClientException | URISyntaxException | UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		} 
 		return contentResponse;
     }
