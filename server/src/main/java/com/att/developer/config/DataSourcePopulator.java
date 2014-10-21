@@ -7,8 +7,6 @@ import java.util.Set;
 import javax.sql.DataSource;
 import javax.transaction.Transactional;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.acls.domain.AclImpl;
@@ -36,7 +34,7 @@ import com.att.developer.bean.ApiBundle;
 
 public class DataSourcePopulator {
     
-	private final Logger logger = LogManager.getLogger();
+	//private final Logger logger = LogManager.getLogger();
 	
 	@Autowired
 	private DataSource dataSource;
@@ -235,11 +233,11 @@ public class DataSourcePopulator {
     }
 
 
-    private void grantPermissions(int bundleNumber, String recipientUsername, Permission permission) {
+/*    private void grantPermissions(int bundleNumber, String recipientUsername, Permission permission) {
         AclImpl acl = (AclImpl) mutableAclService.readAclById(new ObjectIdentityImpl(ApiBundle.class, new Long(bundleNumber)));
         acl.insertAce(acl.getEntries().size(), permission, new PrincipalSid(recipientUsername), true);
         updateAclInTransaction(acl);
-    }
+    }*/
     
     private void grantPermissions(String bundleNumber, String recipientUsername, Permission permission) {
         AclImpl acl = (AclImpl) mutableAclService.readAclById(new ObjectIdentityImpl(ApiBundle.class, bundleNumber));
@@ -248,13 +246,13 @@ public class DataSourcePopulator {
     }
 
 	
-    private void changeOwner(int bundleNumber, String newOwnerUsername) {
+/*    private void changeOwner(int bundleNumber, String newOwnerUsername) {
         AclImpl acl = (AclImpl) mutableAclService.readAclById(new ObjectIdentityImpl(ApiBundle.class, new Long(bundleNumber)));
         acl.setOwner(new PrincipalSid(newOwnerUsername));
         
         updateAclInTransaction(acl);
     }
-    
+    */
     
     private void changeOwner(String bundleNumber, String newOwnerUsername) {
         AclImpl acl = (AclImpl) mutableAclService.readAclById(new ObjectIdentityImpl(ApiBundle.class, bundleNumber));
@@ -279,10 +277,10 @@ public class DataSourcePopulator {
 //		this.deletePermissions("6BundleStringIdentifier");
 //	}
 
-	private void deletePermissions(String bundleNumber){
+/*	private void deletePermissions(String bundleNumber){
 		logger.warn("deleting this bundleNumber ********************* " + bundleNumber);
 		mutableAclService.deleteAcl(new ObjectIdentityImpl(ApiBundle.class, bundleNumber), false);
-	}
+	}*/
 	
     public void setDataSource(DataSource dataSource) {
         this.template = new JdbcTemplate(dataSource);
