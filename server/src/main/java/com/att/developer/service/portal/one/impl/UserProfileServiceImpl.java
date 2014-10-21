@@ -31,6 +31,14 @@ public class UserProfileServiceImpl implements UserProfileService {
     @Inject
     private GlobalScopedParamService globalScopedParamService;
 	
+	public void setRestTemplate(RestTemplate restTemplate) {
+		this.restTemplate = restTemplate;
+	}
+
+	public void setGlobalScopedParamService(GlobalScopedParamService globalScopedParamService) {
+		this.globalScopedParamService = globalScopedParamService;
+	}
+
 	@Override
 	public List<String> getUserPermissions(String login) {
 		
@@ -67,8 +75,7 @@ public class UserProfileServiceImpl implements UserProfileService {
 		try {
 			authResponse = restTemplate.exchange(new URI("https://" + portalHost + "/developer/rest/user/system/token"), HttpMethod.POST, new HttpEntity<>(body, authHeaders), Map.class);
 		} catch (RestClientException | URISyntaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new RuntimeException("Error fetching system token from portal : " , e);
 		}
 
 		String authorizationToken = null;
@@ -98,14 +105,13 @@ public class UserProfileServiceImpl implements UserProfileService {
 			try {
 				principalResponse = restTemplate.exchange(new URI("https://" + portalHost + "/developer/rest/user/principal/" + login), HttpMethod.GET, new HttpEntity<>(null, authHeaders), Map.class);
 			} catch (RestClientException | URISyntaxException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				throw new RuntimeException("Error fetching user principal details for User: " + login , e);
 			}
 		}
 
 		List<String> principalColl = new ArrayList<String>();
 		
-		if(principalResponse != null && principalResponse.getBody() != null) {
+		if(principalResponse != null && principalResponse.getBody() != null && principalResponse.getBody().get("authorities") != null) {
 			principalColl = (List<String>) principalResponse.getBody().get("authorities");
 		}
 		return principalColl;
