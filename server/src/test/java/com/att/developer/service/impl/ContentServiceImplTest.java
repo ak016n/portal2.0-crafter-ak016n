@@ -12,6 +12,7 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
@@ -50,6 +51,7 @@ public class ContentServiceImplTest {
 		
 		ResponseEntity response = Mockito.mock(ResponseEntity.class);
 		Mockito.when(response.getBody()).thenReturn(new HashMap());
+		Mockito.when(response.getStatusCode()).thenReturn(HttpStatus.OK);
 		
 		Mockito.when(mockRestTemplate.exchange(Mockito.any(URI.class), Mockito.any(HttpMethod.class), Mockito.any(HttpEntity.class), (Class<?>)Mockito.any(Class.class))).thenReturn(response);
 		

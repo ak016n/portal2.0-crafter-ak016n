@@ -7,7 +7,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+
+import com.att.developer.security.DesCrypt;
 
 public class CookieUtilTest {
 
@@ -16,6 +19,10 @@ public class CookieUtilTest {
 	
     @Mock
     private Cookie mockCookie;
+    
+    @Mock
+    private DesCrypt desCrypt;
+    
     private final static String COOKIE_VALUE = "testCookie";
     
     @Before
@@ -47,6 +54,10 @@ public class CookieUtilTest {
     
     @Test
     public void testGetDecryptedCookieValue() {
+        
+        Mockito.when(desCrypt.encrypt("secret")).thenReturn("gibbrish");
+        Mockito.when(desCrypt.decrypt("gibbrish")).thenReturn("secret");
+        
         Cookie encryptedCookie = cookieUtil.getEncryptedCookie("encrypted", "secret", 100);
         String ddpUserCookieValue = cookieUtil.getDecryptedCookieValue(new Cookie[]{encryptedCookie}, "encrypted");
         
@@ -56,8 +67,9 @@ public class CookieUtilTest {
     
     @Test
     public void testGetEncryptedCookie() {
+        Mockito.when(desCrypt.encrypt("secret")).thenReturn("gibbrish");
         Cookie encryptedCookie = cookieUtil.getEncryptedCookie("encrypted", "secret", 100);
-        Assert.assertFalse(encryptedCookie.getValue().equals("secret"));
+        Assert.assertTrue(encryptedCookie.getValue().equals("gibbrish"));
     }
 
 }

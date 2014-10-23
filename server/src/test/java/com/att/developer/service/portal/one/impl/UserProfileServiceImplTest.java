@@ -14,6 +14,7 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
@@ -49,6 +50,7 @@ public class UserProfileServiceImplTest {
 		
 		ResponseEntity response = Mockito.mock(ResponseEntity.class);
 		Mockito.when(response.getBody()).thenReturn(map);
+		Mockito.when(response.getStatusCode()).thenReturn(HttpStatus.OK);
 		
 		Mockito.when(mockRestTemplate.exchange(Mockito.any(URI.class), Mockito.any(HttpMethod.class), Mockito.any(HttpEntity.class), (Class<?>)Mockito.any(Class.class))).thenReturn(response);
 		List<String> principalColl = userProfileServiceImpl.getUserPermissions("somas");
@@ -68,6 +70,7 @@ public class UserProfileServiceImplTest {
 		
 		ResponseEntity response = Mockito.mock(ResponseEntity.class);
 		Mockito.when(response.getBody()).thenReturn(map);
+		Mockito.when(response.getStatusCode()).thenReturn(HttpStatus.OK);
 		
 		Mockito.when(mockRestTemplate.exchange(Mockito.any(URI.class), Mockito.any(HttpMethod.class), Mockito.any(HttpEntity.class), (Class<?>)Mockito.any(Class.class))).thenReturn(response);
 		List<String> principalColl = userProfileServiceImpl.getUserPermissions("somas");
@@ -84,6 +87,7 @@ public class UserProfileServiceImplTest {
 		
 		ResponseEntity response = Mockito.mock(ResponseEntity.class);
 		Mockito.when(response.getBody()).thenReturn(map);
+		Mockito.when(response.getStatusCode()).thenReturn(HttpStatus.OK);
 		
 		Mockito.when(mockRestTemplate.exchange(Mockito.any(URI.class), Mockito.any(HttpMethod.class), Mockito.any(HttpEntity.class), (Class<?>)Mockito.any(Class.class))).thenReturn(response);
 		String authToken = userProfileServiceImpl.getSystemAuthorizationToken("local", "key", "secret", "vendor");
@@ -114,6 +118,7 @@ public class UserProfileServiceImplTest {
 		
 		ResponseEntity response = Mockito.mock(ResponseEntity.class);
 		Mockito.when(response.getBody()).thenReturn(map);
+		Mockito.when(response.getStatusCode()).thenReturn(HttpStatus.OK);
 		
 		Mockito.when(mockRestTemplate.exchange(Mockito.any(URI.class), Mockito.any(HttpMethod.class), Mockito.any(HttpEntity.class), (Class<?>)Mockito.any(Class.class))).thenReturn(response);
 		List<String> principalColl = userProfileServiceImpl.fetchUserPermissions("local", "token", "vendor", "somas");
@@ -138,6 +143,7 @@ public class UserProfileServiceImplTest {
 		
 		ResponseEntity response = Mockito.mock(ResponseEntity.class);
 		Mockito.when(response.getBody()).thenReturn(map);
+		Mockito.when(response.getStatusCode()).thenReturn(HttpStatus.OK);
 		
 		Mockito.when(mockRestTemplate.exchange(Mockito.any(URI.class), Mockito.any(HttpMethod.class), Mockito.any(HttpEntity.class), (Class<?>)Mockito.any(Class.class))).thenReturn(response);
 		List<String> principalColl = userProfileServiceImpl.fetchUserPermissions("local", "token", "vendor", "somas");
