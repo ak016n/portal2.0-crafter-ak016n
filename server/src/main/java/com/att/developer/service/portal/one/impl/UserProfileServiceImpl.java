@@ -9,6 +9,8 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -25,12 +27,14 @@ import com.att.developer.service.portal.one.UserProfileService;
 @Component
 public class UserProfileServiceImpl implements UserProfileService {
 
+	private final Logger logger = LogManager.getLogger();
+	
     @Inject
     private RestTemplate restTemplate;
     
     @Inject
     private GlobalScopedParamService globalScopedParamService;
-	
+    
 	public void setRestTemplate(RestTemplate restTemplate) {
 		this.restTemplate = restTemplate;
 	}
@@ -104,6 +108,7 @@ public class UserProfileServiceImpl implements UserProfileService {
 		if(StringUtils.isNotBlank(login)) {
 			try {
 				principalResponse = restTemplate.exchange(new URI("https://" + portalHost + "/developer/rest/user/principal/" + login), HttpMethod.GET, new HttpEntity<>(null, authHeaders), Map.class);
+				logReturnStatus(principalResponse);
 			} catch (RestClientException | URISyntaxException e) {
 				throw new RuntimeException("Error fetching user principal details for User: " + login , e);
 			}
@@ -115,6 +120,13 @@ public class UserProfileServiceImpl implements UserProfileService {
 			principalColl = (List<String>) principalResponse.getBody().get("authorities");
 		}
 		return principalColl;
+	}
+
+	// In case of error, log the response with additional information for investigation
+	private void logReturnStatus(ResponseEntity<Map> response) {
+		if(response != null && !response.getStatusCode().is2xxSuccessful()) {
+			logger.error(response);
+		}
 	}
 
 }

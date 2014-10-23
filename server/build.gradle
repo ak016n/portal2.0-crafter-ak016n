@@ -228,10 +228,9 @@ task jacocoIntegrationTestReport(type: JacocoReport) {
  * Grunt Related Tasks
  * 
  */
-/*
+
 build.dependsOn ':client:grunt_build'
 war.dependsOn ':client:grunt_war'
-*/
 war.baseName = 'developer'
 
 /*

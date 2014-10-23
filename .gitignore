@@ -24,7 +24,6 @@ dist
 /client/.settings
 app
 vendor
-/server/src/main/webapp/index.html
 /server/bin
 /server/build
 /server/lib/tomcat
