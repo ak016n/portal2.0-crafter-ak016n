@@ -9,6 +9,8 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +25,8 @@ import com.att.developer.service.portal.one.UserProfileService;
 @Component
 public class ContentServiceImpl implements ContentService {
 
+	private final Logger logger = LogManager.getLogger();
+	
     @Inject
     private RestTemplate restTemplate;
     
@@ -63,7 +67,9 @@ public class ContentServiceImpl implements ContentService {
 				isFirst = false;
 			}
 			
-			ResponseEntity<Map> contentResponseEntity = restTemplate.exchange(new URI("http://" + crafterHost + "/api/att/content_store/page.json?url=/site/website/" + url + "&contextId=" + contextId + "&acl=" + acl.toString()), HttpMethod.GET, new HttpEntity<>(null, null), Map.class);
+			String uri = "http://" + crafterHost + "/api/att/content_store/page.json?url=/site/website/" + url + "&contextId=" + contextId + "&acl=" + acl.toString();
+			ResponseEntity<Map> contentResponseEntity = restTemplate.exchange(new URI(uri), HttpMethod.GET, new HttpEntity<>(null, null), Map.class);
+			logReturnStatus(contentResponseEntity, "uri : " + uri);
 			
 			if(contentResponseEntity != null && contentResponseEntity.getBody() != null) {
 				contentResponse = contentResponseEntity.getBody();
@@ -74,5 +80,13 @@ public class ContentServiceImpl implements ContentService {
 		} 
 		return contentResponse;
     }
+	
+	// In case of error, log the response with additional information for investigation
+	@SuppressWarnings({ "rawtypes" })
+	private void logReturnStatus(ResponseEntity<Map> response, String comments) {
+		if(response != null && !response.getStatusCode().is2xxSuccessful()) {
+			logger.error(comments, response);
+		}
+	}
 	
 }

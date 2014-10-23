@@ -77,7 +77,9 @@ public class UserProfileServiceImpl implements UserProfileService {
 		ResponseEntity<Map> authResponse = null;
 		
 		try {
-			authResponse = restTemplate.exchange(new URI("https://" + portalHost + "/developer/rest/user/system/token"), HttpMethod.POST, new HttpEntity<>(body, authHeaders), Map.class);
+			String uri = "https://" + portalHost + "/developer/rest/user/system/token";
+			authResponse = restTemplate.exchange(new URI(uri), HttpMethod.POST, new HttpEntity<>(body, authHeaders), Map.class);
+			logReturnStatus(authResponse, "uri : " + uri);
 		} catch (RestClientException | URISyntaxException e) {
 			throw new RuntimeException("Error fetching system token from portal : " , e);
 		}
@@ -107,8 +109,9 @@ public class UserProfileServiceImpl implements UserProfileService {
 		
 		if(StringUtils.isNotBlank(login)) {
 			try {
-				principalResponse = restTemplate.exchange(new URI("https://" + portalHost + "/developer/rest/user/principal/" + login), HttpMethod.GET, new HttpEntity<>(null, authHeaders), Map.class);
-				logReturnStatus(principalResponse);
+				String uri = "https://" + portalHost + "/developer/rest/user/principal/" + login;
+				principalResponse = restTemplate.exchange(new URI(uri), HttpMethod.GET, new HttpEntity<>(null, authHeaders), Map.class);
+				logReturnStatus(principalResponse, "uri : " + uri);
 			} catch (RestClientException | URISyntaxException e) {
 				throw new RuntimeException("Error fetching user principal details for User: " + login , e);
 			}
@@ -123,9 +126,10 @@ public class UserProfileServiceImpl implements UserProfileService {
 	}
 
 	// In case of error, log the response with additional information for investigation
-	private void logReturnStatus(ResponseEntity<Map> response) {
+	@SuppressWarnings({ "rawtypes" })
+	private void logReturnStatus(ResponseEntity<Map> response, String comments) {
 		if(response != null && !response.getStatusCode().is2xxSuccessful()) {
-			logger.error(response);
+			logger.error(comments, response);
 		}
 	}
 
