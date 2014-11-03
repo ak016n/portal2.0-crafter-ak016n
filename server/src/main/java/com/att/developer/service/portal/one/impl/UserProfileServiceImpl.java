@@ -1,7 +1,6 @@
 package com.att.developer.service.portal.one.impl;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -18,11 +17,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import com.att.developer.bean.ServerSideError;
+import com.att.developer.exception.ServerSideException;
 import com.att.developer.service.GlobalScopedParamService;
 import com.att.developer.service.portal.one.UserProfileService;
+import com.att.developer.util.Constants;
 
 @Component
 public class UserProfileServiceImpl implements UserProfileService {
@@ -48,10 +49,6 @@ public class UserProfileServiceImpl implements UserProfileService {
 		
 		String portalHost = globalScopedParamService.get("portal_one_host", "localhost");
 		
-		MultiValueMap<String, String> body = new LinkedMultiValueMap<String, String>();     
-		body.add("key", "APIM");
-		body.add("secret", "password123");
-		
 		String key = globalScopedParamService.get("portal_one_key", "DEVPORTAL");
 		String secret = globalScopedParamService.get("portal_one_secret", "devPortalPassword");
 		String vendor = globalScopedParamService.get("portal_one_vendor", "DEVPORTAL");
@@ -69,19 +66,21 @@ public class UserProfileServiceImpl implements UserProfileService {
 	@SuppressWarnings({ "rawtypes"})
 	public String getSystemAuthorizationToken(String portalHost, String key, String secret, String vendor) {
 		MultiValueMap<String, String> body = new LinkedMultiValueMap<String, String>();     
-		body.add("key", key);
-		body.add("secret", secret);
+		body.add(Constants.KEY, key);
+		body.add(Constants.SECRET, secret);
 		
 		HttpHeaders authHeaders = getBasicAuthHeaders(vendor);
 		
 		ResponseEntity<Map> authResponse = null;
 		
 		try {
-			String uri = "https://" + portalHost + "/developer/rest/user/system/token";
+			String uri = Constants.HTTPS_URL + portalHost + "/developer/rest/user/system/token";
 			authResponse = restTemplate.exchange(new URI(uri), HttpMethod.POST, new HttpEntity<>(body, authHeaders), Map.class);
 			logReturnStatus(authResponse, "uri : " + uri);
-		} catch (RestClientException | URISyntaxException e) {
-			throw new RuntimeException("Error fetching system token from portal : " , e);
+		} catch (Exception e) {
+			logger.error(e);
+			ServerSideError error = new ServerSideError.Builder().id(Constants.SS_GENERAL_ERROR_ID).message("Error fetching system token from portal").build();
+			throw new ServerSideException(e, error);
 		}
 
 		String authorizationToken = null;
@@ -94,8 +93,8 @@ public class UserProfileServiceImpl implements UserProfileService {
 
 	private HttpHeaders getBasicAuthHeaders(String vendor) {
 		HttpHeaders authHeaders = new HttpHeaders();
-		authHeaders.add("X-AUTH-VENDOR", vendor);
-		authHeaders.add("Accept", "application/vnd.developer.att.com.v1+json");
+		authHeaders.add(Constants.X_AUTH_VENDOR_HEADER, vendor);
+		authHeaders.add(Constants.ACCEPT_HEADER, Constants.VERSION_1);
 		return authHeaders;
 	}
 	
@@ -103,31 +102,32 @@ public class UserProfileServiceImpl implements UserProfileService {
 	public List<String> fetchUserPermissions(String portalHost, String authorizationToken, String vendor, String login) {
 		
 		HttpHeaders authHeaders = getBasicAuthHeaders(vendor);
-		authHeaders.add("AUTHORIZATION", authorizationToken);
+		authHeaders.add(Constants.AUTHORIZATION_TOKEN, authorizationToken);
 		
-		ResponseEntity<Map> principalResponse = null;
+		ResponseEntity<List> principalResponse = null;
 		
 		if(StringUtils.isNotBlank(login)) {
 			try {
-				String uri = "https://" + portalHost + "/developer/rest/user/principal/" + login;
-				principalResponse = restTemplate.exchange(new URI(uri), HttpMethod.GET, new HttpEntity<>(null, authHeaders), Map.class);
+				String uri = Constants.HTTPS_URL + portalHost + "/developer/rest/user/principal/" + login;
+				principalResponse = restTemplate.exchange(new URI(uri), HttpMethod.GET, new HttpEntity<>(null, authHeaders), List.class);
 				logReturnStatus(principalResponse, "uri : " + uri);
-			} catch (RestClientException | URISyntaxException e) {
-				throw new RuntimeException("Error fetching user principal details for User: " + login , e);
+			} catch (Exception e) {
+				logger.error(e);
+				ServerSideError error = new ServerSideError.Builder().id(Constants.SS_GENERAL_ERROR_ID).message("Error fetching user principal details for User: " + login).build();
+				throw new ServerSideException(e, error);
 			}
 		}
 
 		List<String> principalColl = new ArrayList<String>();
 		
-		if(principalResponse != null && principalResponse.getBody() != null && principalResponse.getBody().get("authorities") != null) {
-			principalColl = (List<String>) principalResponse.getBody().get("authorities");
+		if(principalResponse != null && principalResponse.getBody() != null && principalResponse.getBody() != null) {
+			principalColl = (List<String>) principalResponse.getBody();
 		}
 		return principalColl;
 	}
 
 	// In case of error, log the response with additional information for investigation
-	@SuppressWarnings({ "rawtypes" })
-	private void logReturnStatus(ResponseEntity<Map> response, String comments) {
+	private void logReturnStatus(ResponseEntity<? extends Object> response, String comments) {
 		if(response != null && !response.getStatusCode().is2xxSuccessful()) {
 			logger.error(comments, response);
 		}

@@ -1,8 +1,6 @@
 package com.att.developer.service.impl;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
@@ -15,12 +13,14 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import com.att.developer.bean.ServerSideError;
+import com.att.developer.exception.ServerSideException;
 import com.att.developer.service.ContentService;
 import com.att.developer.service.GlobalScopedParamService;
 import com.att.developer.service.portal.one.UserProfileService;
+import com.att.developer.util.Constants;
 
 @Component
 public class ContentServiceImpl implements ContentService {
@@ -52,8 +52,9 @@ public class ContentServiceImpl implements ContentService {
 	public Map getContent(String url, String login) {
     	String contextId = globalScopedParamService.get("crafter_context_id", "064e97b116c0611a1b7c615ed7f6210a");
     	String crafterHost = globalScopedParamService.get("crafter_host", "141.204.193.142:8080");
-    	
+    	String uri = null;
     	Map contentResponse = null;
+    	
 		try {
 			List<String> permissions = userProfileService.getUserPermissions(login);
 			
@@ -67,7 +68,7 @@ public class ContentServiceImpl implements ContentService {
 				isFirst = false;
 			}
 			
-			String uri = "http://" + crafterHost + "/api/att/content_store/page.json?url=/site/website/" + url + "&contextId=" + contextId + "&acl=" + acl.toString();
+			uri = "http://" + crafterHost + "/api/att/content_store/page.json?url=/site/website/" + url + "&contextId=" + contextId + "&acl=" + acl.toString();
 			ResponseEntity<Map> contentResponseEntity = restTemplate.exchange(new URI(uri), HttpMethod.GET, new HttpEntity<>(null, null), Map.class);
 			logReturnStatus(contentResponseEntity, "uri : " + uri);
 			
@@ -75,8 +76,10 @@ public class ContentServiceImpl implements ContentService {
 				contentResponse = contentResponseEntity.getBody();
 			}
 			
-		} catch (RestClientException | URISyntaxException | UnsupportedEncodingException e) {
-			throw new RuntimeException(e);
+		} catch (Exception e) {
+			logger.error(e);
+			ServerSideError error = new ServerSideError.Builder().id(Constants.SS_GENERAL_ERROR_ID).message("Error fetching content for URI : " + uri).build();
+			throw new ServerSideException(e, error);
 		} 
 		return contentResponse;
     }

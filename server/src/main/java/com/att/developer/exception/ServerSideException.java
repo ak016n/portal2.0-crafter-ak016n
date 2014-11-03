@@ -1,5 +1,6 @@
 package com.att.developer.exception;
 
+import com.att.developer.bean.ServerSideError;
 import com.att.developer.bean.ServerSideErrors;
 
 public class ServerSideException extends RuntimeException {
@@ -33,6 +34,13 @@ public class ServerSideException extends RuntimeException {
     public ServerSideException(String msg, Throwable e, ServerSideErrors serverSideErrors) {
         super(msg, e);
         this.setServerSideErrors(serverSideErrors);
+    }
+    
+	public ServerSideException(Throwable e, ServerSideError serverSideError) {
+        super(e);
+        ServerSideErrors errorColl = new ServerSideErrors();
+        errorColl.add(serverSideError);
+        this.setServerSideErrors(errorColl);
     }
 
 }
