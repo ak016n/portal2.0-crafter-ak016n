@@ -1,6 +1,7 @@
 package com.att.developer.service.portal.one.impl;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -16,6 +17,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import com.att.developer.service.GlobalScopedParamService;
@@ -41,18 +43,22 @@ public class UserProfileServiceImplTest {
     }
     
 	@Test
-	public void testGetUserPermissions_success() {
+	public void testGetUserPermissions_success() throws RestClientException, URISyntaxException {
 		Mockito.when(mockGlobalScopedParamService.get(Mockito.anyString(), Mockito.anyString())).thenReturn("junk");
 		
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("authorizationToken", "token");
-		map.put("authorities", Arrays.asList(new String[] {"admin"}));
 		
 		ResponseEntity response = Mockito.mock(ResponseEntity.class);
 		Mockito.when(response.getBody()).thenReturn(map);
 		Mockito.when(response.getStatusCode()).thenReturn(HttpStatus.OK);
 		
-		Mockito.when(mockRestTemplate.exchange(Mockito.any(URI.class), Mockito.any(HttpMethod.class), Mockito.any(HttpEntity.class), (Class<?>)Mockito.any(Class.class))).thenReturn(response);
+		ResponseEntity response2 = Mockito.mock(ResponseEntity.class);
+		Mockito.when(response2.getBody()).thenReturn(Arrays.asList(new String[] {"admin"}));
+		Mockito.when(response2.getStatusCode()).thenReturn(HttpStatus.OK);
+		
+		Mockito.when(mockRestTemplate.exchange(Mockito.eq(new URI("https://junk/developer/rest/user/system/token")), Mockito.any(HttpMethod.class), Mockito.any(HttpEntity.class), (Class<?>)Mockito.any(Class.class))).thenReturn(response);
+		Mockito.when(mockRestTemplate.exchange(Mockito.eq(new URI("https://junk/developer/rest/user/principal/somas")), Mockito.any(HttpMethod.class), Mockito.any(HttpEntity.class), (Class<?>)Mockito.any(Class.class))).thenReturn(response2);
 		List<String> principalColl = userProfileServiceImpl.getUserPermissions("somas");
 		
 		Assert.assertNotNull(principalColl);
@@ -117,7 +123,7 @@ public class UserProfileServiceImplTest {
 		map.put("authorities", Arrays.asList(new String[] {"admin"}));
 		
 		ResponseEntity response = Mockito.mock(ResponseEntity.class);
-		Mockito.when(response.getBody()).thenReturn(map);
+		Mockito.when(response.getBody()).thenReturn(map.get("authorities"));
 		Mockito.when(response.getStatusCode()).thenReturn(HttpStatus.OK);
 		
 		Mockito.when(mockRestTemplate.exchange(Mockito.any(URI.class), Mockito.any(HttpMethod.class), Mockito.any(HttpEntity.class), (Class<?>)Mockito.any(Class.class))).thenReturn(response);
@@ -142,7 +148,7 @@ public class UserProfileServiceImplTest {
 		map.put("authorities", null);
 		
 		ResponseEntity response = Mockito.mock(ResponseEntity.class);
-		Mockito.when(response.getBody()).thenReturn(map);
+		Mockito.when(response.getBody()).thenReturn(map.get("authorities"));
 		Mockito.when(response.getStatusCode()).thenReturn(HttpStatus.OK);
 		
 		Mockito.when(mockRestTemplate.exchange(Mockito.any(URI.class), Mockito.any(HttpMethod.class), Mockito.any(HttpEntity.class), (Class<?>)Mockito.any(Class.class))).thenReturn(response);
