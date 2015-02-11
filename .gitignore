@@ -19,10 +19,8 @@ bower_components
 /src/main/webapp/resources/script
 /src/main/webapp/resources/views
 script
-css
 dist
 /client/.settings
-app
 vendor
 /server/bin
 /server/build
