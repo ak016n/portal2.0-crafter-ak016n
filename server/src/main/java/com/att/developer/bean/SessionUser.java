@@ -15,8 +15,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
  * will not break the underlying Spring security ACL mappings as those mappings
  * will be using
  * 
- * @author som
- *
  */
 public class SessionUser extends org.springframework.security.core.userdetails.User {
 

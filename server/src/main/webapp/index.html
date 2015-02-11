@@ -1,13 +1,35 @@
 <html>
 
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!--<link href="assets/css/bootstrap-responsive.css" rel="stylesheet">-->
 <link type="text/css" rel="stylesheet" href="/developer/resources/css/ext/bootstrap/bootstrap.min.css?@@TIMESTAMP@@"/>
+<link type="text/css" rel="stylesheet" href="/developer/resources/css/int/custom.css?@@TIMESTAMP@@"/>
 <link type="text/css" rel="stylesheet" href="/developer/resources/css/ext/bootstrap/bootstrap-theme.min.css?@@TIMESTAMP@@"/>
+<link type="text/css" rel="stylesheet" href="/developer/resources/css/ext/bootstrap/bootstrap-responsive.min.css?@@TIMESTAMP@@"/>
 </head>
 
 <body ng-app="portalApp">
-	<div ui-view></div>
+    <div class="container">
+
+      <div class="masthead">
+        <h3 class="text-muted">AT&amp;T</h3>
+        <nav ng-controller="NavigationCtrl">
+          <ul class="nav nav-justified">
+            <li ng-class="{ active: isActive('/')}"><a href="#">Home</a></li>
+            <li ng-class="{active: isActive('/faq')}"><a href="#faq">FAQ</a></li>
+            <li ng-class="{active: isActive('/login') || isActive('/admin')}"><a href="#admin">Admin</a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <div ui-view></div>
+
+      <div class="footer">
+        <p>&copy; Company 2015</p>
+      </div>
+
+    </div> <!-- /container -->
 	<!-- Best practice to load scripts at the end of body tag -->
 	<script type="text/javascript" src="/developer/resources/script/vendor/jquery/jquery.js?@@TIMESTAMP@@"></script>
 	<script type="text/javascript" src="/developer/resources/script/vendor/angular/angular.js"></script>

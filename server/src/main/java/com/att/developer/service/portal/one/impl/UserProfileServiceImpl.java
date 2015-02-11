@@ -20,6 +20,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import com.att.developer.bean.ServerSideError;
+import com.att.developer.bean.User;
 import com.att.developer.exception.ServerSideException;
 import com.att.developer.service.GlobalScopedParamService;
 import com.att.developer.service.portal.one.UserProfileService;
@@ -131,6 +132,45 @@ public class UserProfileServiceImpl implements UserProfileService {
 		if(response != null && !response.getStatusCode().is2xxSuccessful()) {
 			logger.error(comments, response);
 		}
+	}
+
+	@Override
+	public User getUser(String login) {
+		String portalHost = globalScopedParamService.get("portal_one_host", "localhost");
+		String key = globalScopedParamService.get("portal_one_key", "DEVPORTAL");
+		String secret = globalScopedParamService.get("portal_one_secret", "devPortalPassword");
+		String vendor = globalScopedParamService.get("portal_one_vendor", "DEVPORTAL");
+		
+		String authorizationToken = getSystemAuthorizationToken(portalHost, key, secret, vendor);
+		
+		User user = null;
+		if(authorizationToken != null) {
+			user = fetchUser(portalHost, authorizationToken, vendor, login);
+		}
+		
+		return user;
+	}
+	
+	private User fetchUser(String portalHost, String authorizationToken, String vendor, String login) {
+		
+		HttpHeaders authHeaders = getBasicAuthHeaders(vendor);
+		authHeaders.add(Constants.AUTHORIZATION_TOKEN, authorizationToken);
+		
+		ResponseEntity<User> userResponse = null;
+		
+		if(StringUtils.isNotBlank(login)) {
+			try {
+				String uri = Constants.HTTPS_URL + portalHost + "/developer/rest/user/" + login;
+				userResponse = restTemplate.exchange(new URI(uri), HttpMethod.GET, new HttpEntity<>(null, authHeaders), User.class);
+				logReturnStatus(userResponse, "uri : " + uri);
+			} catch (Exception e) {
+				logger.error(e);
+				ServerSideError error = new ServerSideError.Builder().id(Constants.SS_GENERAL_ERROR_ID).message("Error fetching user details for User: " + login).build();
+				throw new ServerSideException(e, error);
+			}
+		}
+
+		return userResponse.getBody();
 	}
 
 }

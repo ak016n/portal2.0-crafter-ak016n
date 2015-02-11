@@ -25,11 +25,16 @@ import javax.persistence.Transient;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import com.att.developer.typelist.UserStateType;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
 @Table(name = "user")
+@JsonIgnoreProperties(ignoreUnknown = true)
+//@JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class)
 public class User implements Serializable {
 
     private static final long serialVersionUID = -4130170797253136478L;
@@ -42,19 +47,27 @@ public class User implements Serializable {
     @Column(name = "password")
     private String encryptedPassword;
 
-    @Transient
+	@Transient
     @JsonIgnore
     private String password;
 
     private String email;
+    
+    // Marking as transient as DB doesn't have the column yet, but we need it on the REST service
+    @Transient
+    private String firstName;
 
+    // Marking as transient as DB doesn't have the column yet, but we need it on the REST service
+    @Transient
+    private String lastName;
+
+    
     @Column(name = "last_updated")
     private Date lastUpdated;
 
     // TODO: temporarily fetch eagerly. What do we want to do here?
     @OrderColumn(name = "sequence_number")
     @ManyToMany(cascade = CascadeType.MERGE, mappedBy = "users", fetch = FetchType.EAGER)
-    @JsonManagedReference("fromUser")
     private List<Organization> organizations;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
@@ -109,6 +122,22 @@ public class User implements Serializable {
         this.encryptedPassword = encryptedPassword;
     }
 
+    public String getFirstName() {
+		return firstName;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+    
     public Date getLastUpdated() {
         return lastUpdated;
     }

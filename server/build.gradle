@@ -8,6 +8,7 @@ apply plugin: "java"
 apply plugin: "jacoco"
 
 ext {
+ 	//springVersion = "4.1.4.RELEASE"
  	springVersion = "4.0.6.RELEASE"
  	springSecurityVersion = "3.2.5.RELEASE"
  	tomcatVersion = "7.0.54"

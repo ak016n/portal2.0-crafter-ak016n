@@ -30,3 +30,4 @@ vendor
 /server/.settings
 /server/logs
 /client/dist/app.js
+/server/src/main/java/org

@@ -25,9 +25,12 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import com.att.developer.typelist.OrgRelationshipType;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
 @Table(name="organization", uniqueConstraints= @UniqueConstraint(columnNames = {"name"}))
+//@JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class)
 public class Organization implements Serializable {
 	
     private static final long serialVersionUID = 2117541682366680664L;
@@ -56,7 +59,6 @@ public class Organization implements Serializable {
     @OrderColumn(name = "sequence_number")
     @ManyToMany(cascade = CascadeType.MERGE)
     @JoinTable(name = "user_org_membership", joinColumns = {@JoinColumn(name = "org_id", referencedColumnName = "id")}, inverseJoinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")})
-    @JsonBackReference("fromUser")
     private Set<User> users;
 
     public Organization() {
