@@ -82,6 +82,16 @@
 					singleRun: true,
 					browsers: ['PhantomJS']
 				}
+			},
+			
+			watch: {
+				  scripts: {
+				    files: ['**/*.js','**/*.html'],
+				    tasks: ['debug'],
+				    options: {
+				      spawn: false,
+				    },
+				  },
 			}
       });
 
