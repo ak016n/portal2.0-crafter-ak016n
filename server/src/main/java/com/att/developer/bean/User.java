@@ -25,11 +25,8 @@ import javax.persistence.Transient;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import com.att.developer.typelist.UserStateType;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
 @Table(name = "user")
@@ -42,7 +39,6 @@ public class User implements Serializable {
     @Id
     private String id;
     private String login;
-
     @JsonIgnore
     @Column(name = "password")
     private String encryptedPassword;
