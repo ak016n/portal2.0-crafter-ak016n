@@ -67,6 +67,12 @@ public class BlogServiceImpl implements BlogService {
 		return blogAdminPermission;
 	}
 	
+	public HttpHeaders getDefaultHttpHeaders() {
+		HttpHeaders defaultHttpHeaders = new HttpHeaders();
+		defaultHttpHeaders.add("Authorization", "Basic " + getBlogAdminPermission());
+		return defaultHttpHeaders;
+	}
+	
 	@PostConstruct
 	public void init() {
     	blogHost = globalScopedParamService.get("blog_host", "http://141.204.193.91/wp-json/");
@@ -84,6 +90,23 @@ public class BlogServiceImpl implements BlogService {
     	}
     }
 	
+	public void proxyCreateComment(String postId, String comment, String login) {
+		String uri = getBlogHost() + "users/" + login;
+		restTemplate.exchange(getURI(uri), HttpMethod.POST, new HttpEntity<>(null, getDefaultHttpHeaders()), Map.class);
+	
+	}
+
+	private URI getURI(String uri) {
+		URI tempUri = null;
+		try {
+			tempUri = new URI(uri);
+		} catch (URISyntaxException e) {
+			logger.error(e);
+			throw new RuntimeException("Unable to convert url into URI : " + uri, e);
+		}
+		return tempUri;
+	}
+	
 	private boolean doesUserExistOnBlogSite(String login) {
 		boolean status = false;
 		String uri = getBlogHost() + "users/" + login;
@@ -91,16 +114,13 @@ public class BlogServiceImpl implements BlogService {
 		@SuppressWarnings("rawtypes")
 		ResponseEntity<Map> responseEntity = null;
 		
-		HttpHeaders headers = new HttpHeaders();
-		headers.add("Authorization", "Basic " + getBlogAdminPermission());
-
 		try {
-			responseEntity = restTemplate.exchange(new URI(uri), HttpMethod.GET, new HttpEntity<>(null, headers), Map.class);
+			responseEntity = restTemplate.exchange(getURI(uri), HttpMethod.GET, new HttpEntity<>(null, getDefaultHttpHeaders()), Map.class);
 			
 			if(responseEntity.getStatusCode().is2xxSuccessful()) {
 				status = true;
 			}
-		} catch (RestClientException | URISyntaxException e) {
+		} catch (RestClientException e) {
 			
 			if(e instanceof HttpClientErrorException && StringUtils.contains(((HttpClientErrorException)e).getResponseBodyAsString(), "json_user_invalid_username")) {
 				// returns status as false
@@ -128,11 +148,11 @@ public class BlogServiceImpl implements BlogService {
 		
 		try {
 			@SuppressWarnings("rawtypes")
-			ResponseEntity<Map> responseEntity = restTemplate.exchange(new URI(uri), HttpMethod.POST, new HttpEntity<>(blogUser, headers), Map.class);
+			ResponseEntity<Map> responseEntity = restTemplate.exchange(getURI(uri), HttpMethod.POST, new HttpEntity<>(blogUser, headers), Map.class);
 			if(responseEntity.getStatusCode().is2xxSuccessful()){
 				creationStatus = true;
 			}
-		} catch (RestClientException | URISyntaxException e) {
+		} catch (RestClientException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

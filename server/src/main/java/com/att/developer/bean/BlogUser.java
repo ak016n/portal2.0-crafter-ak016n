@@ -1,5 +1,7 @@
 package com.att.developer.bean;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class BlogUser {
 	private User user;
 
@@ -15,10 +17,12 @@ public class BlogUser {
 		return user.getLogin();
 	}
 
+	@JsonProperty("first_name")
 	public String getFirstName() {
 		return user.getFirstName();
 	}
 
+	@JsonProperty("last_name")
 	public String getLastName() {
 		return user.getLastName();
 	}
