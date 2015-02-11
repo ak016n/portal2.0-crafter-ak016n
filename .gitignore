@@ -29,3 +29,4 @@ vendor
 /server/*.classpath
 /server/.settings
 /server/logs
+/client/dist/app.js
