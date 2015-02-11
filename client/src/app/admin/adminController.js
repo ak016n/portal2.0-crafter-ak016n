@@ -1,4 +1,4 @@
-angular.module('admin').controller('AdminController', ['$scope', 'adminService', 'adminVersionService', 'globalHandleErrorService', '$sce', '$q', '$http', function(sc, adminService, adminVersionService, globalHandleErrorService, sce, $q, $http) {
+angular.module('admin').controller('AdminCtrl', ['$scope', 'adminService', 'adminVersionService', 'globalHandleErrorService', '$sce', '$q', '$http', function(sc, adminService, adminVersionService, globalHandleErrorService, sce, $q, $http) {
   sc.adminProp = {
 		  description: 'empty'
   };

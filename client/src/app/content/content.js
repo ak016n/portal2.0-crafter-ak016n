@@ -1,0 +1,1 @@
+angular.module('content', ['ngResource', 'ui.router']);

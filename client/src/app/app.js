@@ -1,5 +1,6 @@
 var app = angular.module('portalApp',
-		[ 'admin', 
+		[ 'admin',
+		  'content',
 		  'security', 
 		  'pascalprecht.translate', 
 		  'ui.bootstrap',
@@ -16,7 +17,7 @@ app.config(['$urlRouterProvider', '$stateProvider', function($urlRouterProvider,
 	
 	$stateProvider.state('home', {
 		url: '/',
-		template: 'home'
+		templateUrl: 'app/content/content.tpl.html',
 	});
 }]);
 
@@ -41,6 +42,3 @@ app.run(['$rootScope', '$stateParams', 'principal', '$sessionStorage', '$state',
 angular.isUndefinedOrNull = function(val) {
     return angular.isUndefined(val) || val === null ;
 };
-
-
-
