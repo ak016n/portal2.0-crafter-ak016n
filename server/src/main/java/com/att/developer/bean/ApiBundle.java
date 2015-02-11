@@ -21,8 +21,6 @@ import org.springframework.security.acls.model.AccessControlEntry;
  * Internally the Dates are still the old java.util.Date class.  We will not change this until JPA 
  * starts supporting the new java.time.Instant type.
  * 
- * @author so1234
- *
  */
 @Entity
 @Table(name = "api_bundle")

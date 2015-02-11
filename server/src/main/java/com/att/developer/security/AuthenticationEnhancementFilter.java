@@ -38,8 +38,6 @@ import com.att.developer.service.UserService;
  * User from some sort of Cache.
  * 
  * 
- * @author so1234
- *
  */
 public class AuthenticationEnhancementFilter extends OncePerRequestFilter {
 

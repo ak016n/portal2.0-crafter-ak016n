@@ -25,8 +25,6 @@ import com.att.developer.typelist.EventType;
  *
  * We will *always* log, even if ACL Entry says not to.
  * 
- * @author so1234
- *
  */
 public class EventLogAuditLogger implements AuditLogger {
 
