@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -67,12 +68,6 @@ public class BlogServiceImpl implements BlogService {
 		return blogAdminPermission;
 	}
 	
-	public HttpHeaders getDefaultHttpHeaders() {
-		HttpHeaders defaultHttpHeaders = new HttpHeaders();
-		defaultHttpHeaders.add("Authorization", "Basic " + getBlogAdminPermission());
-		return defaultHttpHeaders;
-	}
-	
 	@PostConstruct
 	public void init() {
     	blogHost = globalScopedParamService.get("blog_host", "http://141.204.193.91/wp-json/");
@@ -80,20 +75,44 @@ public class BlogServiceImpl implements BlogService {
     	blogAdminPermission = globalScopedParamService.get("blog_admin_permission", "YWRtaW46cGFzc3dvcmQxMjM=");
 	}
 
-	/* (non-Javadoc)
-	 * @see com.att.developer.service.impl.BlogService#createComment(java.lang.String, java.lang.String, java.lang.String)
-	 */
 	@Override
 	public void createComment(String postId, String comment, String login) {
     	if(! doesUserExistOnBlogSite(login)) {
     		createUser(login);
     	}
+    	proxyCreateComment(postId, comment, login);
     }
 	
-	public void proxyCreateComment(String postId, String comment, String login) {
-		String uri = getBlogHost() + "users/" + login;
-		restTemplate.exchange(getURI(uri), HttpMethod.POST, new HttpEntity<>(null, getDefaultHttpHeaders()), Map.class);
+	public boolean proxyCreateComment(String postId, String data, String login) {
+		boolean status = false;
+		
+		String uri = getBlogHost() + "posts/" + postId + "/comments";
+		
+		@SuppressWarnings("rawtypes")
+		ResponseEntity<Map> responseEntity = null;
+		
+		try {
+			responseEntity = restTemplate.exchange(getURI(uri), HttpMethod.POST, new HttpEntity<>(data, getUserAuthHttpHeaders(login)), Map.class);
+			
+			if(responseEntity.getStatusCode().is2xxSuccessful()) {
+				status = true;
+			}
+			
+		} catch (RestClientException e) {
+		}
+		return status;
+	}
+
+	private HttpHeaders getDefaultHttpHeaders() {
+		HttpHeaders defaultHttpHeaders = new HttpHeaders();
+		defaultHttpHeaders.add("Authorization", "Basic " + getBlogAdminPermission());
+		return defaultHttpHeaders;
+	}
 	
+	private HttpHeaders getUserAuthHttpHeaders(String login) {
+		HttpHeaders userAuthHeaders = new HttpHeaders();
+		userAuthHeaders.add("Authorization", "Basic " + Base64.encodeBase64String((login + ":password123").getBytes()));
+		return userAuthHeaders;
 	}
 
 	private URI getURI(String uri) {
@@ -149,7 +168,7 @@ public class BlogServiceImpl implements BlogService {
 		try {
 			@SuppressWarnings("rawtypes")
 			ResponseEntity<Map> responseEntity = restTemplate.exchange(getURI(uri), HttpMethod.POST, new HttpEntity<>(blogUser, headers), Map.class);
-			if(responseEntity.getStatusCode().is2xxSuccessful()){
+			if(responseEntity.getStatusCode().is2xxSuccessful()) {
 				creationStatus = true;
 			}
 		} catch (RestClientException e) {

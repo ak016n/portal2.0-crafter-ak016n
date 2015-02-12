@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -44,7 +45,7 @@ public class CommunityGatewayController {
 	}
 
 	@RequestMapping(value="/posts/{postId}/comments", method = RequestMethod.POST)
-	public void postComment(@PathVariable("postId") String postId, HttpServletRequest request) throws UnsupportedEncodingException {
+	public void postComment(@PathVariable("postId") String postId, HttpServletRequest request, @RequestBody String comment) throws UnsupportedEncodingException {
 		
 		ServerSideErrors errorColl = new ServerSideErrors();
 		
@@ -55,8 +56,6 @@ public class CommunityGatewayController {
 		
 		Map<String,String> portalCookieMap = cookieUtil.getPortalUserMap(request.getCookies());
 		logger.debug("PORTAL_LOGIN  = " + portalCookieMap.get(CookieUtil.PORTAL_LOGIN));
-		
-		String comment = "";
 		
 		blogService.createComment(postId, comment, portalCookieMap.get(CookieUtil.PORTAL_LOGIN));
 		//logger.debug("Content Response : " + contentResponse);
