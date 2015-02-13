@@ -20,8 +20,9 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
-import com.att.developer.bean.BlogUser;
 import com.att.developer.bean.User;
+import com.att.developer.bean.blog.BlogComment;
+import com.att.developer.bean.blog.BlogUser;
 import com.att.developer.service.BlogService;
 import com.att.developer.service.GlobalScopedParamService;
 import com.att.developer.service.portal.one.UserProfileService;
@@ -76,11 +77,11 @@ public class BlogServiceImpl implements BlogService {
 	}
 
 	@Override
-	public void createComment(String postId, String comment, String login) {
+	public BlogComment createComment(String postId, String comment, String login) {
     	if(! doesUserExistOnBlogSite(login)) {
     		createUser(login);
     	}
-    	proxyCreateComment(postId, comment, login);
+    	return proxyCreateComment(postId, comment, login);
     }
 	
 	private boolean doesUserExistOnBlogSite(String login) {
@@ -125,31 +126,25 @@ public class BlogServiceImpl implements BlogService {
 				creationStatus = true;
 			}
 		} catch (RestClientException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(e);
+			throw new RuntimeException(e);
 		}
 		
 		return creationStatus;
 	}
 	
-	public boolean proxyCreateComment(String postId, String data, String login) {
-		boolean status = false;
-		
+	public BlogComment proxyCreateComment(String postId, String data, String login) {
 		String uri = getBlogHost() + "posts/" + postId + "/comments";
 		
-		@SuppressWarnings("rawtypes")
-		ResponseEntity<Map> responseEntity = null;
+		ResponseEntity<BlogComment> responseEntity = null;
 		
 		try {
-			responseEntity = restTemplate.exchange(getURI(uri), HttpMethod.POST, new HttpEntity<>(data, getUserAuthHttpHeaders(login)), Map.class);
-			
-			if(responseEntity.getStatusCode().is2xxSuccessful()) {
-				status = true;
-			}
-			
+			responseEntity = restTemplate.exchange(getURI(uri), HttpMethod.POST, new HttpEntity<>(data, getUserAuthHttpHeaders(login)), BlogComment.class);
 		} catch (RestClientException e) {
+			logger.error(e);
+			throw new RuntimeException(e);
 		}
-		return status;
+		return responseEntity.getBody();
 	}
 
 	private HttpHeaders getDefaultHttpHeaders() {

@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.att.developer.bean.ServerSideError;
+import com.att.developer.bean.blog.BlogComment;
 import com.att.developer.exception.ServerSideException;
 import com.att.developer.service.BlogService;
 import com.att.developer.util.CookieUtil;
@@ -45,7 +45,7 @@ public class CommunityGatewayController {
 	}
 
 	@RequestMapping(value="/posts/{postId}/comments", method = RequestMethod.POST)
-	public @ResponseBody String postComment(@PathVariable("postId") String postId, HttpServletRequest request, @RequestBody String comment) throws UnsupportedEncodingException {
+	public BlogComment postComment(@PathVariable("postId") String postId, HttpServletRequest request, @RequestBody String comment) throws UnsupportedEncodingException {
 		
 		if(StringUtils.isBlank(postId) || StringUtils.isBlank(comment)) {
 			ServerSideError error = new ServerSideError.Builder().id("ssGeneralError").message("Missing required data post id or comments.").build();
@@ -62,9 +62,9 @@ public class CommunityGatewayController {
 		
 		logger.debug("PORTAL_LOGIN  = " + login);
 		
-		blogService.createComment(postId, comment, login);
+		BlogComment postCreateComment = blogService.createComment(postId, comment, login);
 
-		return null;
+		return postCreateComment;
 	}
 	
 

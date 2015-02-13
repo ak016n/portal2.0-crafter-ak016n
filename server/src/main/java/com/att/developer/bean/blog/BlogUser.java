@@ -1,5 +1,6 @@
-package com.att.developer.bean;
+package com.att.developer.bean.blog;
 
+import com.att.developer.bean.User;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class BlogUser {
