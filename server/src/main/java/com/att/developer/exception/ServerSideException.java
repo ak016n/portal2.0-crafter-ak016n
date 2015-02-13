@@ -43,4 +43,10 @@ public class ServerSideException extends RuntimeException {
         this.setServerSideErrors(errorColl);
     }
 
+	public ServerSideException(ServerSideError error) {
+        ServerSideErrors errorColl = new ServerSideErrors();
+        errorColl.add(error);
+        this.setServerSideErrors(errorColl);
+	}
+
 }

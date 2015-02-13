@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.att.developer.bean.ServerSideError;
-import com.att.developer.bean.ServerSideErrors;
 import com.att.developer.exception.ServerSideException;
 import com.att.developer.service.BlogService;
 import com.att.developer.util.CookieUtil;
@@ -45,22 +45,26 @@ public class CommunityGatewayController {
 	}
 
 	@RequestMapping(value="/posts/{postId}/comments", method = RequestMethod.POST)
-	public void postComment(@PathVariable("postId") String postId, HttpServletRequest request, @RequestBody String comment) throws UnsupportedEncodingException {
+	public @ResponseBody String postComment(@PathVariable("postId") String postId, HttpServletRequest request, @RequestBody String comment) throws UnsupportedEncodingException {
 		
-		ServerSideErrors errorColl = new ServerSideErrors();
-		
-		if(StringUtils.isBlank(postId)) {
-			ServerSideError error = new ServerSideError.Builder().id("ssGeneralError").message("Missing required POST Id.").build();
-			throw new ServerSideException(errorColl.add(error));
+		if(StringUtils.isBlank(postId) || StringUtils.isBlank(comment)) {
+			ServerSideError error = new ServerSideError.Builder().id("ssGeneralError").message("Missing required data post id or comments.").build();
+			throw new ServerSideException(error);
 		}
 		
 		Map<String,String> portalCookieMap = cookieUtil.getPortalUserMap(request.getCookies());
-		logger.debug("PORTAL_LOGIN  = " + portalCookieMap.get(CookieUtil.PORTAL_LOGIN));
+		String login = portalCookieMap.get(CookieUtil.PORTAL_LOGIN);
 		
-		blogService.createComment(postId, comment, portalCookieMap.get(CookieUtil.PORTAL_LOGIN));
-		//logger.debug("Content Response : " + contentResponse);
-			
-		//return contentResponse;
+		if(StringUtils.isBlank(login)) {
+			ServerSideError error = new ServerSideError.Builder().id("ssGeneralError").message("Missing authentication").build();
+			throw new ServerSideException(error);			
+		}
+		
+		logger.debug("PORTAL_LOGIN  = " + login);
+		
+		blogService.createComment(postId, comment, login);
+
+		return null;
 	}
 	
 

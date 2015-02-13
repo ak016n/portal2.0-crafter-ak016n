@@ -83,6 +83,55 @@ public class BlogServiceImpl implements BlogService {
     	proxyCreateComment(postId, comment, login);
     }
 	
+	private boolean doesUserExistOnBlogSite(String login) {
+		boolean status = false;
+		String uri = getBlogHost() + "users/" + login;
+		
+		@SuppressWarnings("rawtypes")
+		ResponseEntity<Map> responseEntity = null;
+		
+		try {
+			responseEntity = restTemplate.exchange(getURI(uri), HttpMethod.GET, new HttpEntity<>(null, getDefaultHttpHeaders()), Map.class);
+			
+			if(responseEntity.getStatusCode().is2xxSuccessful()) {
+				status = true;
+			}
+		} catch (RestClientException e) {
+			if(e instanceof HttpClientErrorException && StringUtils.contains(((HttpClientErrorException)e).getResponseBodyAsString(), "json_user_invalid_username")) {
+				// OK to swallow exception - we want it to return status as false in this scenario
+			} else {
+				logger.error(e);
+				throw new RuntimeException(e);
+			}
+		}
+		return status;
+	}
+
+	@Override
+	public boolean createUser(String login) {
+		boolean creationStatus = false;
+		
+		User user = userProfileService.getUser(login);
+		BlogUser blogUser = new BlogUser(user);
+		
+		String uri = getBlogHost() + "users";
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("Authorization", "Basic " + getBlogAdminPermission());
+		
+		try {
+			@SuppressWarnings("rawtypes")
+			ResponseEntity<Map> responseEntity = restTemplate.exchange(getURI(uri), HttpMethod.POST, new HttpEntity<>(blogUser, headers), Map.class);
+			if(responseEntity.getStatusCode().is2xxSuccessful()) {
+				creationStatus = true;
+			}
+		} catch (RestClientException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return creationStatus;
+	}
+	
 	public boolean proxyCreateComment(String postId, String data, String login) {
 		boolean status = false;
 		
@@ -125,59 +174,4 @@ public class BlogServiceImpl implements BlogService {
 		}
 		return tempUri;
 	}
-	
-	private boolean doesUserExistOnBlogSite(String login) {
-		boolean status = false;
-		String uri = getBlogHost() + "users/" + login;
-		
-		@SuppressWarnings("rawtypes")
-		ResponseEntity<Map> responseEntity = null;
-		
-		try {
-			responseEntity = restTemplate.exchange(getURI(uri), HttpMethod.GET, new HttpEntity<>(null, getDefaultHttpHeaders()), Map.class);
-			
-			if(responseEntity.getStatusCode().is2xxSuccessful()) {
-				status = true;
-			}
-		} catch (RestClientException e) {
-			
-			if(e instanceof HttpClientErrorException && StringUtils.contains(((HttpClientErrorException)e).getResponseBodyAsString(), "json_user_invalid_username")) {
-				// returns status as false
-			} else {
-				logger.error(e);
-				throw new RuntimeException(e);
-			}
-		}
-		return status;
-	}
-
-	/* (non-Javadoc)
-	 * @see com.att.developer.service.impl.BlogService#createUser(java.lang.String)
-	 */
-	@Override
-	public boolean createUser(String login) {
-		boolean creationStatus = false;
-		
-		User user = userProfileService.getUser(login);
-		BlogUser blogUser = new BlogUser(user);
-		
-		String uri = getBlogHost() + "users";
-		HttpHeaders headers = new HttpHeaders();
-		headers.add("Authorization", "Basic " + getBlogAdminPermission());
-		
-		try {
-			@SuppressWarnings("rawtypes")
-			ResponseEntity<Map> responseEntity = restTemplate.exchange(getURI(uri), HttpMethod.POST, new HttpEntity<>(blogUser, headers), Map.class);
-			if(responseEntity.getStatusCode().is2xxSuccessful()) {
-				creationStatus = true;
-			}
-		} catch (RestClientException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		return creationStatus;
-	}
-	
-	
 }
