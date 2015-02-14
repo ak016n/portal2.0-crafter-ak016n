@@ -1,5 +1,7 @@
 package com.att.developer.advice;
 
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -11,6 +13,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @ControllerAdvice
+@Order(Ordered.HIGHEST_PRECEDENCE)
 public class ServerSideExceptionHandler {
 
 	@ExceptionHandler(ServerSideException.class)
@@ -26,5 +29,4 @@ public class ServerSideExceptionHandler {
 		ObjectMapper jsonMapper = new ObjectMapper();
 		return new ResponseEntity<String>(jsonMapper.writeValueAsString(errors), errors.getHttpStatus());
 	}
-	
 }

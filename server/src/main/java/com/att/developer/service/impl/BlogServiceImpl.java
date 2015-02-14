@@ -17,15 +17,21 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import com.att.developer.bean.ServerSideError;
 import com.att.developer.bean.User;
 import com.att.developer.bean.blog.BlogComment;
+import com.att.developer.bean.blog.BlogError;
 import com.att.developer.bean.blog.BlogUser;
+import com.att.developer.exception.ServerSideException;
 import com.att.developer.service.BlogService;
 import com.att.developer.service.GlobalScopedParamService;
 import com.att.developer.service.portal.one.UserProfileService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Component
 public class BlogServiceImpl implements BlogService {
@@ -125,7 +131,9 @@ public class BlogServiceImpl implements BlogService {
 			if(responseEntity.getStatusCode().is2xxSuccessful()) {
 				creationStatus = true;
 			}
-		} catch (RestClientException e) {
+		}  catch (HttpClientErrorException | HttpServerErrorException e) {
+			extractErrorInfoAndThrowEx(e);
+		}  catch (RestClientException e) {
 			logger.error(e);
 			throw new RuntimeException(e);
 		}
@@ -140,11 +148,42 @@ public class BlogServiceImpl implements BlogService {
 		
 		try {
 			responseEntity = restTemplate.exchange(getURI(uri), HttpMethod.POST, new HttpEntity<>(data, getUserAuthHttpHeaders(login)), BlogComment.class);
+		} catch (HttpClientErrorException | HttpServerErrorException e) {
+			extractErrorInfoAndThrowEx(e);
 		} catch (RestClientException e) {
 			logger.error(e);
 			throw new RuntimeException(e);
 		}
 		return responseEntity.getBody();
+	}
+
+	private void extractErrorInfoAndThrowEx(HttpStatusCodeException e) {
+		String errorResponse = e.getResponseBodyAsString();
+		
+		if(StringUtils.isBlank(errorResponse)) {
+			throw new RuntimeException(e);
+		} else {
+				BlogError blogError = getBlogError(errorResponse, e.getResponseBodyAsByteArray());
+				ServerSideError error = new ServerSideError.Builder().id(blogError.getCode()).message(blogError.getMessage()).build();
+				throw new ServerSideException(error);
+		}
+	}
+
+	private BlogError getBlogError(String errorResponse, byte[] bs) {
+		BlogError blogError = null;
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			if (StringUtils.contains(errorResponse, "[") && StringUtils.contains(errorResponse, "]")) {
+				BlogError[] blogErrorArr;
+				blogErrorArr = mapper.readValue(bs, BlogError[].class);
+				blogError = blogErrorArr[0];
+			} else {
+				blogError = mapper.readValue(bs, BlogError.class);
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		return blogError;
 	}
 
 	private HttpHeaders getDefaultHttpHeaders() {

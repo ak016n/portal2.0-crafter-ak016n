@@ -1,5 +1,7 @@
 package com.att.developer.advice;
 
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -12,6 +14,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @ControllerAdvice
+@Order(Ordered.LOWEST_PRECEDENCE)
 public class RuntimeExceptionHandler {
 
 	@ExceptionHandler(RuntimeException.class)
