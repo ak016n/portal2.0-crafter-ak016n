@@ -21,7 +21,8 @@ public class RuntimeExceptionHandler {
 	@ResponseBody
 	public ResponseEntity<String> handleRuntimeException(RuntimeException e) throws JsonProcessingException {
 		ServerSideErrors errors = new ServerSideErrors();
-		ServerSideError error = new ServerSideError.Builder().id("Unexpected").message(e.getMessage()).build();
+		String errorMessage = (e.getCause() == null) ? e.getMessage() : e.getCause().getMessage();
+		ServerSideError error = new ServerSideError.Builder().id("Unexpected").message(errorMessage).build();
 		errors.add(error);
 		
 		ObjectMapper jsonMapper = new ObjectMapper();

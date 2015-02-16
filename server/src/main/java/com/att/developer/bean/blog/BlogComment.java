@@ -2,10 +2,13 @@ package com.att.developer.bean.blog;
 
 import java.sql.Date;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class BlogComment {
 
+	@JsonProperty("ID")
 	private String id;
 	
 	private String content;
