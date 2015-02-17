@@ -25,8 +25,6 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import com.att.developer.typelist.OrgRelationshipType;
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
 @Table(name="organization", uniqueConstraints= @UniqueConstraint(columnNames = {"name"}))
