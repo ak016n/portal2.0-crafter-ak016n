@@ -1,7 +1,8 @@
 package com.att.developer.bean.blog.builder;
 
 
-import java.time.Instant;
+import java.util.Date;
+
 import com.att.developer.bean.blog.BlogComment;
 
 public class BlogCommentBuilder {
@@ -13,7 +14,7 @@ public class BlogCommentBuilder {
         blogComment.setPostId("1");
         blogComment.setParentId("0");
         blogComment.setContent("hello world comment");
-        blogComment.setDateCreated(Instant.now());
+        blogComment.setDateCreated(new Date());
     }
     
     public BlogComment build(){
