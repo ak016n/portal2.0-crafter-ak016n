@@ -1,5 +1,6 @@
 package com.att.developer.controller;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.att.developer.bean.ServerSideError;
@@ -66,6 +68,16 @@ public class CommunityGatewayController {
 		return postCreateComment;
 	}
 	
-
+	
+	@RequestMapping(value="/posts/{postId}/comments", method = RequestMethod.GET)
+	public @ResponseBody String getComments(@PathVariable("postId") String postId) {
+		
+		if(StringUtils.isBlank(postId)) {
+			ServerSideError error = new ServerSideError.Builder().id("ssGeneralError").message("Missing required data post id.").build();
+			throw new ServerSideException(error);
+		}
+		
+		return blogService.getComments(postId);
+	}
 
 }

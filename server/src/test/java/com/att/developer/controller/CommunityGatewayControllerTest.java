@@ -1,6 +1,8 @@
 package com.att.developer.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.Cookie;
@@ -70,5 +72,20 @@ public class CommunityGatewayControllerTest {
     	
     	Assert.assertNotNull(blogComment);
     	Assert.assertEquals("hello world comment", blogComment.getContent());
+    }
+    
+    @Test (expected = ServerSideException.class)
+    public void getComments_missingPostId() {
+    	communityGatewayController.getComments(null);
+    }
+    
+    @Test
+    public void getComments_happyPath() {
+    	Mockito.when(mockBlogService.getComments("1")).thenReturn("{\"id\":\"1\"}");
+    	
+    	String blogComments = communityGatewayController.getComments("1");
+    	
+    	Assert.assertNotNull(blogComments);
+    	Assert.assertTrue(blogComments.contains("1"));
     }
 }

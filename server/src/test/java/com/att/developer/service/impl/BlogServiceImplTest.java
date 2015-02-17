@@ -1,5 +1,7 @@
 package com.att.developer.service.impl;
 
+import java.util.List;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,6 +15,7 @@ import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.test.web.client.match.MockRestRequestMatchers;
 import org.springframework.test.web.client.response.MockRestResponseCreators;
 import org.springframework.web.client.RestTemplate;
+
 import com.att.developer.bean.blog.BlogComment;
 import com.att.developer.bean.builder.UserBuilder;
 import com.att.developer.exception.ServerSideException;
@@ -151,6 +154,38 @@ public class BlogServiceImplTest {
     		Assert.fail();
     	} catch (ServerSideException e) {
     		Assert.assertEquals("json_missing_callback_param", e.getServerSideErrors().getErrorColl().get(0).getId());
+    	}
+    	
+    	mockServer.verify();
+    }
+    
+    @Test
+    public void getComment_happyPath() {
+    	
+       	mockServer.expect(MockRestRequestMatchers.requestTo("http://dummyHost/posts/1/comments"))
+		.andExpect(MockRestRequestMatchers.method(HttpMethod.GET))
+		.andRespond(MockRestResponseCreators.withSuccess("[{\"ID\":35,\"post\":1,\"content\":\"<p>comment1</p>\",\"status\":\"approved\",\"type\":\"comment\",\"parent\":0,\"author\":{\"ID\":7,\"username\":\"regular\"},\"date\":\"2015-02-17T01:00:04+00:00\",\"date_tz\":\"UTC\",\"date_gmt\":\"2015-02-17T01:00:04+00:00\"},"
+				+ "{\"ID\":36,\"post\":1,\"content\":\"<p>comment2</p>\",\"status\":\"approved\",\"type\":\"comment\",\"parent\":0,\"author\":{\"ID\":7,\"username\":\"regular\"},\"date\":\"2015-02-17T01:00:04+00:00\",\"date_tz\":\"UTC\",\"date_gmt\":\"2015-02-17T01:00:04+00:00\"}]", MediaType.APPLICATION_JSON));
+
+       	String listOfComments = blogService.getComments("1");
+
+       	Assert.assertNotNull(listOfComments);
+       	Assert.assertTrue(listOfComments.contains("<p>comment1</p>"));
+       	Assert.assertTrue(listOfComments.contains("<p>comment2</p>"));
+    	mockServer.verify();
+    }
+    
+    @Test
+    public void getComment_errorHandling() {
+    	mockServer.expect(MockRestRequestMatchers.requestTo("http://dummyHost/posts/1/comments"))
+    				.andExpect(MockRestRequestMatchers.method(HttpMethod.GET))
+    				.andRespond(MockRestResponseCreators.withBadRequest());
+
+    	try {
+    		blogService.getComments("1");
+    		Assert.fail();
+    	} catch (RuntimeException e) {
+    		Assert.assertEquals("org.springframework.web.client.HttpClientErrorException: 400 Bad Request", e.getMessage());
     	}
     	
     	mockServer.verify();

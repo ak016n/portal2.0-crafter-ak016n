@@ -4,8 +4,11 @@ import com.att.developer.bean.blog.BlogComment;
 
 public interface BlogService {
 
-	public abstract BlogComment createComment(String postId, String comment, String login);
+	BlogComment createComment(String postId, String comment, String login);
 
-	public abstract boolean createUser(String login);
+	boolean createUser(String login);
+
+	//Its string instead of list of blog posts because we are using this a proxy
+	String getComments(String postId);
 
 }
