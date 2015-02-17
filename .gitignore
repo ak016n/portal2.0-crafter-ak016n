@@ -31,3 +31,4 @@ vendor
 /server/logs
 /client/dist/app.js
 /server/src/main/java/org
+/server/src/main/webapp/WEB-INF/web.xml

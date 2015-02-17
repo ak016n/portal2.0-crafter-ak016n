@@ -1,6 +1,5 @@
 package com.att.developer.controller;
 
-import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -45,7 +44,7 @@ public class CommunityGatewayController {
 	}
 
 	@RequestMapping(value="/posts/{postId}/comments", method = RequestMethod.POST)
-	public BlogComment postComment(@PathVariable("postId") String postId, HttpServletRequest request, @RequestBody String comment) throws UnsupportedEncodingException {
+	public BlogComment postComment(@PathVariable("postId") String postId, HttpServletRequest request, @RequestBody String comment) {
 		
 		if(StringUtils.isBlank(postId) || StringUtils.isBlank(comment)) {
 			ServerSideError error = new ServerSideError.Builder().id("ssGeneralError").message("Missing required data post id or comments.").build();

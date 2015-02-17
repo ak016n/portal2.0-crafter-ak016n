@@ -1,6 +1,7 @@
 package com.att.developer.bean.blog;
 
-import java.sql.Date;
+import java.time.Instant;
+import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -58,8 +59,10 @@ public class BlogComment {
 		return dateCreated;
 	}
 
-	public void setDateCreated(Date dateCreated) {
-		this.dateCreated = dateCreated;
+	public void setDateCreated(Instant createdDate) {
+		if(createdDate != null ){
+			this.dateCreated = Date.from(createdDate);	
+		}
 	}
 
 	@Override
