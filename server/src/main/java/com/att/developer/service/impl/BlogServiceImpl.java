@@ -212,7 +212,7 @@ public class BlogServiceImpl implements BlogService {
 		return tempUri;
 	}
 	
-	//Its string instead of list of blog posts because we are using this a proxy
+	@Override
 	public List<BlogComment> getComments(String postId) {
 		String uri = getBlogHost() + "posts/" + postId + "/comments";
 		ParameterizedTypeReference<List<BlogComment>> typeRef = new ParameterizedTypeReference<List<BlogComment>>() {};
@@ -229,7 +229,7 @@ public class BlogServiceImpl implements BlogService {
 		return responseEntity.getBody();
     }
 
-	//Its string instead of list of blog posts because we are using this a proxy
+	@Override
 	public BlogPost getBlog(String postId) {
 		String uri = getBlogHost() + "posts/" + postId;
 		
