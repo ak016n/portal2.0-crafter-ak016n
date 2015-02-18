@@ -8,7 +8,8 @@ public interface BlogService {
 
 	boolean createUser(String login);
 
-	//Its string instead of list of blog posts because we are using this a proxy
 	String getComments(String postId);
+
+	String getBlog(String postId);
 
 }

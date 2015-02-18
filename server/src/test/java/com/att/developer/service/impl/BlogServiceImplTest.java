@@ -1,7 +1,5 @@
 package com.att.developer.service.impl;
 
-import java.util.List;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -183,6 +181,36 @@ public class BlogServiceImplTest {
 
     	try {
     		blogService.getComments("1");
+    		Assert.fail();
+    	} catch (RuntimeException e) {
+    		Assert.assertEquals("org.springframework.web.client.HttpClientErrorException: 400 Bad Request", e.getMessage());
+    	}
+    	
+    	mockServer.verify();
+    }
+    
+    @Test
+    public void getBlog_happyPath() {
+    	
+       	mockServer.expect(MockRestRequestMatchers.requestTo("http://dummyHost/posts/1"))
+		.andExpect(MockRestRequestMatchers.method(HttpMethod.GET))
+		.andRespond(MockRestResponseCreators.withSuccess("{\"title\":\"Post 2\",\"status\":\"publish\",\"type\":\"post\",\"content\":\"<p>First post using rest api</p>\\n\",\"parent\":0,\"comment_status\":\"open\"}", MediaType.APPLICATION_JSON));
+
+       	String blog = blogService.getBlog("1");
+
+       	Assert.assertNotNull(blog);
+       	Assert.assertTrue(blog.contains("Post 2"));
+    	mockServer.verify();
+    }
+    
+    @Test
+    public void getBlog_errorHandling() {
+    	mockServer.expect(MockRestRequestMatchers.requestTo("http://dummyHost/posts/1"))
+    				.andExpect(MockRestRequestMatchers.method(HttpMethod.GET))
+    				.andRespond(MockRestResponseCreators.withBadRequest());
+
+    	try {
+    		blogService.getBlog("1");
     		Assert.fail();
     	} catch (RuntimeException e) {
     		Assert.assertEquals("org.springframework.web.client.HttpClientErrorException: 400 Bad Request", e.getMessage());

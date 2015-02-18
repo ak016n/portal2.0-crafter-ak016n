@@ -2,7 +2,6 @@ package com.att.developer.service.impl;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
@@ -12,7 +11,6 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -211,7 +209,7 @@ public class BlogServiceImpl implements BlogService {
 		return tempUri;
 	}
 	
-	@Override
+	//Its string instead of list of blog posts because we are using this a proxy
 	public String getComments(String postId) {
 		String uri = getBlogHost() + "posts/" + postId + "/comments";
 		
@@ -227,4 +225,20 @@ public class BlogServiceImpl implements BlogService {
 		return responseEntity.getBody();
     }
 
+	//Its string instead of list of blog posts because we are using this a proxy
+	public String getBlog(String postId) {
+		String uri = getBlogHost() + "posts/" + postId;
+		
+		ResponseEntity<String> responseEntity = null;
+		try {
+			responseEntity = restTemplate.exchange(getURI(uri), HttpMethod.GET, null, String.class);
+		} catch (HttpClientErrorException | HttpServerErrorException e) {
+			extractErrorInfoAndThrowEx(e);
+		} catch (RestClientException e) {
+			logger.error(e);
+			throw new RuntimeException(e);
+		}
+		return responseEntity.getBody();
+    }
+	
 }

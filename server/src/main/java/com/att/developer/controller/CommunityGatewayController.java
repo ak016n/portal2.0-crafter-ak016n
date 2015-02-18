@@ -1,6 +1,5 @@
 package com.att.developer.controller;
 
-import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -78,6 +77,17 @@ public class CommunityGatewayController {
 		}
 		
 		return blogService.getComments(postId);
+	}
+
+	@RequestMapping(value="/posts/{postId}", method = RequestMethod.GET)
+	public @ResponseBody String getBlog(@PathVariable("postId") String postId) {
+		
+		if(StringUtils.isBlank(postId)) {
+			ServerSideError error = new ServerSideError.Builder().id("ssGeneralError").message("Missing required data post id.").build();
+			throw new ServerSideException(error);
+		}
+		
+		return blogService.getBlog(postId);
 	}
 
 }
