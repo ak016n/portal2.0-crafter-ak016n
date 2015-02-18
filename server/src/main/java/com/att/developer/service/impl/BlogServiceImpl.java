@@ -222,7 +222,7 @@ public class BlogServiceImpl implements BlogService {
 			logger.error(e);
 			throw new RuntimeException(e);
 		}
-		return responseEntity.getBody();
+		return cleanJson(responseEntity.getBody());
     }
 
 	//Its string instead of list of blog posts because we are using this a proxy
@@ -238,7 +238,16 @@ public class BlogServiceImpl implements BlogService {
 			logger.error(e);
 			throw new RuntimeException(e);
 		}
-		return responseEntity.getBody();
+		
+		return cleanJson(responseEntity.getBody());
     }
+
+	private String cleanJson(String body) {
+		String output = StringUtils.EMPTY;
+		if(StringUtils.isNotBlank(body)) {
+			output = body.replaceFirst("\uFEFF", "");
+		}
+		return output;
+	}
 	
 }
