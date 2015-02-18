@@ -17,6 +17,7 @@ import org.springframework.test.web.client.response.MockRestResponseCreators;
 import org.springframework.web.client.RestTemplate;
 
 import com.att.developer.bean.blog.BlogComment;
+import com.att.developer.bean.blog.BlogPost;
 import com.att.developer.bean.builder.UserBuilder;
 import com.att.developer.exception.ServerSideException;
 import com.att.developer.service.GlobalScopedParamService;
@@ -197,10 +198,10 @@ public class BlogServiceImplTest {
 		.andExpect(MockRestRequestMatchers.method(HttpMethod.GET))
 		.andRespond(MockRestResponseCreators.withSuccess("{\"title\":\"Post 2\",\"status\":\"publish\",\"type\":\"post\",\"content\":\"<p>First post using rest api</p>\\n\",\"parent\":0,\"comment_status\":\"open\"}", MediaType.APPLICATION_JSON));
 
-       	String blog = blogService.getBlog("1");
+       	BlogPost blog = blogService.getBlog("1");
 
        	Assert.assertNotNull(blog);
-       	Assert.assertTrue(blog.contains("Post 2"));
+       	Assert.assertEquals("Post 2", blog.getTitle());
     	mockServer.verify();
     }
     

@@ -14,11 +14,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.att.developer.bean.ServerSideError;
 import com.att.developer.bean.blog.BlogComment;
+import com.att.developer.bean.blog.BlogPost;
 import com.att.developer.exception.ServerSideException;
 import com.att.developer.service.BlogService;
 import com.att.developer.util.CookieUtil;
@@ -82,7 +82,7 @@ public class CommunityGatewayController {
 	}
 
 	@RequestMapping(value="/posts/{postId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public @ResponseBody String getBlog(@PathVariable("postId") String postId) {
+	public BlogPost getBlog(@PathVariable("postId") String postId) {
 		
 		if(StringUtils.isBlank(postId)) {
 			ServerSideError error = new ServerSideError.Builder().id("ssGeneralError").message("Missing required data post id.").build();

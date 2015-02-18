@@ -16,7 +16,9 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import com.att.developer.bean.blog.BlogComment;
+import com.att.developer.bean.blog.BlogPost;
 import com.att.developer.bean.blog.builder.BlogCommentBuilder;
+import com.att.developer.bean.blog.builder.BlogPostBuilder;
 import com.att.developer.exception.ServerSideException;
 import com.att.developer.service.BlogService;
 import com.att.developer.util.CookieUtil;
@@ -99,11 +101,11 @@ public class CommunityGatewayControllerTest {
     
     @Test
     public void getBlog_happyPath() {
-    	Mockito.when(mockBlogService.getBlog("1")).thenReturn("{\"id\":\"1\"}");
+    	Mockito.when(mockBlogService.getBlog("1")).thenReturn(new BlogPostBuilder().build());
     	
-    	String blogPost = communityGatewayController.getBlog("1");
+    	BlogPost blogPost = communityGatewayController.getBlog("1");
     	
     	Assert.assertNotNull(blogPost);
-    	Assert.assertTrue(blogPost.contains("1"));
+    	Assert.assertEquals(BlogPostBuilder.HELLO_WORLD_POST, blogPost.getContent());
     }
 }

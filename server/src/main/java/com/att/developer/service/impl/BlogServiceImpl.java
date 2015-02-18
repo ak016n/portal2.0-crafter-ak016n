@@ -27,8 +27,9 @@ import org.springframework.web.client.RestTemplate;
 import com.att.developer.bean.ServerSideError;
 import com.att.developer.bean.User;
 import com.att.developer.bean.blog.BlogComment;
-import com.att.developer.bean.blog.BlogError;
 import com.att.developer.bean.blog.BlogCreateUser;
+import com.att.developer.bean.blog.BlogError;
+import com.att.developer.bean.blog.BlogPost;
 import com.att.developer.exception.ServerSideException;
 import com.att.developer.service.BlogService;
 import com.att.developer.service.GlobalScopedParamService;
@@ -229,12 +230,12 @@ public class BlogServiceImpl implements BlogService {
     }
 
 	//Its string instead of list of blog posts because we are using this a proxy
-	public String getBlog(String postId) {
+	public BlogPost getBlog(String postId) {
 		String uri = getBlogHost() + "posts/" + postId;
 		
-		ResponseEntity<String> responseEntity = null;
+		ResponseEntity<BlogPost> responseEntity = null;
 		try {
-			responseEntity = restTemplate.exchange(getURI(uri), HttpMethod.GET, null, String.class);
+			responseEntity = restTemplate.exchange(getURI(uri), HttpMethod.GET, null, BlogPost.class);
 		} catch (HttpClientErrorException | HttpServerErrorException e) {
 			extractErrorInfoAndThrowEx(e);
 		} catch (RestClientException e) {
@@ -242,15 +243,8 @@ public class BlogServiceImpl implements BlogService {
 			throw new RuntimeException(e);
 		}
 		
-		return cleanJson(responseEntity.getBody());
+		return responseEntity.getBody();
     }
 
-	private String cleanJson(String body) {
-		String output = StringUtils.EMPTY;
-		if(StringUtils.isNotBlank(body)) {
-			output = body.replaceFirst("\uFEFF", "");
-		}
-		return output;
-	}
-	
+
 }

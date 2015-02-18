@@ -3,6 +3,7 @@ package com.att.developer.service;
 import java.util.List;
 
 import com.att.developer.bean.blog.BlogComment;
+import com.att.developer.bean.blog.BlogPost;
 
 public interface BlogService {
 
@@ -12,6 +13,6 @@ public interface BlogService {
 
 	List<BlogComment> getComments(String postId);
 
-	String getBlog(String postId);
+	BlogPost getBlog(String postId);
 
 }
