@@ -2,6 +2,7 @@ package com.att.developer.service.impl;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
@@ -11,6 +12,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -26,7 +28,7 @@ import com.att.developer.bean.ServerSideError;
 import com.att.developer.bean.User;
 import com.att.developer.bean.blog.BlogComment;
 import com.att.developer.bean.blog.BlogError;
-import com.att.developer.bean.blog.BlogUser;
+import com.att.developer.bean.blog.BlogCreateUser;
 import com.att.developer.exception.ServerSideException;
 import com.att.developer.service.BlogService;
 import com.att.developer.service.GlobalScopedParamService;
@@ -119,7 +121,7 @@ public class BlogServiceImpl implements BlogService {
 		boolean creationStatus = false;
 		
 		User user = userProfileService.getUser(login);
-		BlogUser blogUser = new BlogUser(user);
+		BlogCreateUser blogUser = new BlogCreateUser(user);
 		
 		String uri = getBlogHost() + "users";
 		HttpHeaders headers = new HttpHeaders();
@@ -210,19 +212,20 @@ public class BlogServiceImpl implements BlogService {
 	}
 	
 	//Its string instead of list of blog posts because we are using this a proxy
-	public String getComments(String postId) {
+	public List<BlogComment> getComments(String postId) {
 		String uri = getBlogHost() + "posts/" + postId + "/comments";
+		ParameterizedTypeReference<List<BlogComment>> typeRef = new ParameterizedTypeReference<List<BlogComment>>() {};
 		
-		ResponseEntity<String> responseEntity = null;
+		ResponseEntity<List<BlogComment>> responseEntity = null;
 		try {
-			responseEntity = restTemplate.exchange(getURI(uri), HttpMethod.GET, null, String.class);
+			responseEntity = restTemplate.exchange(getURI(uri), HttpMethod.GET, null, typeRef);
 		} catch (HttpClientErrorException | HttpServerErrorException e) {
 			extractErrorInfoAndThrowEx(e);
 		} catch (RestClientException e) {
 			logger.error(e);
 			throw new RuntimeException(e);
 		}
-		return cleanJson(responseEntity.getBody());
+		return responseEntity.getBody();
     }
 
 	//Its string instead of list of blog posts because we are using this a proxy

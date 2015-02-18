@@ -2,23 +2,23 @@ package com.att.developer.bean.blog.builder;
 
 
 import com.att.developer.bean.User;
-import com.att.developer.bean.blog.BlogUser;
+import com.att.developer.bean.blog.BlogCreateUser;
 import com.att.developer.bean.builder.UserBuilder;
 
 public class BlogUserBuilder {
 
-    private BlogUser blogUser;
+    private BlogCreateUser blogUser;
     
     public BlogUserBuilder() {
-    	blogUser = new BlogUser(new UserBuilder().build());
+    	blogUser = new BlogCreateUser(new UserBuilder().build());
     }
     
     public BlogUserBuilder withUser(User user) {
-    	blogUser = new BlogUser(user);
+    	blogUser = new BlogCreateUser(user);
     	return this;
     }
     
-    public BlogUser build() {
+    public BlogCreateUser build() {
         return blogUser;
     }
     

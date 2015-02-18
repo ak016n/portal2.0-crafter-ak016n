@@ -22,6 +22,8 @@ public class BlogComment {
 	@JsonProperty("date")
 	private Date dateCreated;
 
+	private BlogGetUser author;
+	
 	public String getId() {
 		return id;
 	}
@@ -61,12 +63,20 @@ public class BlogComment {
 	public void setDateCreated(Date dateCreated) {
 		this.dateCreated = dateCreated;
 	}
+	
+	public BlogGetUser getAuthor() {
+		return author;
+	}
+
+	public void setAuthor(BlogGetUser author) {
+		this.author = author;
+	}
 
 	@Override
 	public String toString() {
 		return "BlogComment [id=" + id + ", content=" + content + ", postId="
 				+ postId + ", parentId=" + parentId + ", dateCreated="
-				+ dateCreated + "]";
+				+ dateCreated + ", author=" + author + "]";
 	}
 
 }

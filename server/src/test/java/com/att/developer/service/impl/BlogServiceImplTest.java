@@ -1,5 +1,7 @@
 package com.att.developer.service.impl;
 
+import java.util.List;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -165,11 +167,10 @@ public class BlogServiceImplTest {
 		.andRespond(MockRestResponseCreators.withSuccess("[{\"ID\":35,\"post\":1,\"content\":\"<p>comment1</p>\",\"status\":\"approved\",\"type\":\"comment\",\"parent\":0,\"author\":{\"ID\":7,\"username\":\"regular\"},\"date\":\"2015-02-17T01:00:04+00:00\",\"date_tz\":\"UTC\",\"date_gmt\":\"2015-02-17T01:00:04+00:00\"},"
 				+ "{\"ID\":36,\"post\":1,\"content\":\"<p>comment2</p>\",\"status\":\"approved\",\"type\":\"comment\",\"parent\":0,\"author\":{\"ID\":7,\"username\":\"regular\"},\"date\":\"2015-02-17T01:00:04+00:00\",\"date_tz\":\"UTC\",\"date_gmt\":\"2015-02-17T01:00:04+00:00\"}]", MediaType.APPLICATION_JSON));
 
-       	String listOfComments = blogService.getComments("1");
+       	List<BlogComment> listOfComments = blogService.getComments("1");
 
        	Assert.assertNotNull(listOfComments);
-       	Assert.assertTrue(listOfComments.contains("<p>comment1</p>"));
-       	Assert.assertTrue(listOfComments.contains("<p>comment2</p>"));
+       	Assert.assertTrue(listOfComments.size() == 2);
     	mockServer.verify();
     }
     

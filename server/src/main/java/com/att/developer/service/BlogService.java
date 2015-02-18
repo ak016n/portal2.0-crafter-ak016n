@@ -1,5 +1,7 @@
 package com.att.developer.service;
 
+import java.util.List;
+
 import com.att.developer.bean.blog.BlogComment;
 
 public interface BlogService {
@@ -8,7 +10,7 @@ public interface BlogService {
 
 	boolean createUser(String login);
 
-	String getComments(String postId);
+	List<BlogComment> getComments(String postId);
 
 	String getBlog(String postId);
 

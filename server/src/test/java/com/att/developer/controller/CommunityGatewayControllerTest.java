@@ -1,6 +1,8 @@
 package com.att.developer.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.Cookie;
@@ -79,12 +81,15 @@ public class CommunityGatewayControllerTest {
     
     @Test
     public void getComments_happyPath() {
-    	Mockito.when(mockBlogService.getComments("1")).thenReturn("{\"id\":\"1\"}");
+    	List<BlogComment> listOfComments = new ArrayList<>();
+    	listOfComments.add(new BlogCommentBuilder().build());
     	
-    	String blogComments = communityGatewayController.getComments("1");
+    	Mockito.when(mockBlogService.getComments("1")).thenReturn(listOfComments);
+    	
+    	List<BlogComment> blogComments = communityGatewayController.getComments("1");
     	
     	Assert.assertNotNull(blogComments);
-    	Assert.assertTrue(blogComments.contains("1"));
+    	Assert.assertTrue(blogComments.size() == 1);
     }
     
     @Test (expected = ServerSideException.class)

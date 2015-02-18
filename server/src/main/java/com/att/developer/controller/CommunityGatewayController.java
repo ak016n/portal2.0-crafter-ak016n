@@ -1,5 +1,6 @@
 package com.att.developer.controller;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -70,7 +71,7 @@ public class CommunityGatewayController {
 	
 	
 	@RequestMapping(value="/posts/{postId}/comments", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public @ResponseBody String getComments(@PathVariable("postId") String postId) {
+	public List<BlogComment> getComments(@PathVariable("postId") String postId) {
 		
 		if(StringUtils.isBlank(postId)) {
 			ServerSideError error = new ServerSideError.Builder().id("ssGeneralError").message("Missing required data post id.").build();

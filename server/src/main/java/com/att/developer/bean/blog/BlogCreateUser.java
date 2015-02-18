@@ -3,10 +3,10 @@ package com.att.developer.bean.blog;
 import com.att.developer.bean.User;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class BlogUser {
+public class BlogCreateUser {
 	private User user;
 
-	public BlogUser(User user) {
+	public BlogCreateUser(User user) {
 		this.user = user;
 	}
 
