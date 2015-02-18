@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -68,7 +69,7 @@ public class CommunityGatewayController {
 	}
 	
 	
-	@RequestMapping(value="/posts/{postId}/comments", method = RequestMethod.GET)
+	@RequestMapping(value="/posts/{postId}/comments", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody String getComments(@PathVariable("postId") String postId) {
 		
 		if(StringUtils.isBlank(postId)) {
@@ -79,7 +80,7 @@ public class CommunityGatewayController {
 		return blogService.getComments(postId);
 	}
 
-	@RequestMapping(value="/posts/{postId}", method = RequestMethod.GET)
+	@RequestMapping(value="/posts/{postId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody String getBlog(@PathVariable("postId") String postId) {
 		
 		if(StringUtils.isBlank(postId)) {
