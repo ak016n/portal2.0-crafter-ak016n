@@ -15,8 +15,8 @@ public class BlogPostBuilder {
         blogPost.setParentId("0");
         blogPost.setAuthor(new BlogGetUserBuilder().build());
         blogPost.setContent(HELLO_WORLD_POST);
-        blogPost.setDateCreated(new Date());
-        blogPost.setDateModified(new Date());
+        blogPost.setDate(new Date());
+        blogPost.setModified(new Date());
     }
     
     public BlogPost build(){

@@ -2,6 +2,7 @@ package com.att.developer.bean.blog;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -18,10 +19,16 @@ public class BlogPost {
 	@JsonProperty("parent")
 	private String parentId;
 	
-	@JsonProperty("date")
+	private Date date;
+	
+	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+	@JsonProperty("date_created")
 	private Date dateCreated;
 
-	@JsonProperty("modified")
+	private Date modified;
+	
+	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+	@JsonProperty("date_modified")
 	private Date dateModified;
 	
 	private String slug;
@@ -61,19 +68,19 @@ public class BlogPost {
 	}
 
 	public Date getDateCreated() {
-		return dateCreated;
+		return date;
 	}
 
-	public void setDateCreated(Date dateCreated) {
-		this.dateCreated = dateCreated;
+	public void setDate(Date dateCreated) {
+		this.date = dateCreated;
 	}
 
 	public Date getDateModified() {
-		return dateModified;
+		return modified;
 	}
 
-	public void setDateModified(Date dateModified) {
-		this.dateModified = dateModified;
+	public void setModified(Date dateModified) {
+		this.modified = dateModified;
 	}
 
 	public String getSlug() {

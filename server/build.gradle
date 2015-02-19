@@ -8,8 +8,7 @@ apply plugin: "java"
 apply plugin: "jacoco"
 
 ext {
- 	//springVersion = "4.1.4.RELEASE"
- 	springVersion = "4.0.6.RELEASE"
+ 	springVersion = "4.1.4.RELEASE"
  	springSecurityVersion = "3.2.5.RELEASE"
  	tomcatVersion = "7.0.54"
  	hibernateVersion = "4.3.4.Final"
@@ -117,7 +116,7 @@ dependencies {
 	
 	compile "org.hibernate:hibernate-validator:5.1.0.Final"
 	compile "javax.inject:javax.inject:1"
-	compile "com.fasterxml.jackson.core:jackson-databind:2.3.2"
+	compile "com.fasterxml.jackson.core:jackson-databind:2.4.5"
 	compile "org.openid4java:openid4java:0.9.8"
 	compile "javax.ws.rs:jsr311-api:1.1.1"
 	compile "jstl:jstl:1.2"
