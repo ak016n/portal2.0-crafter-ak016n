@@ -67,7 +67,7 @@ public class CommunityGatewayControllerTest {
     	Map<String, String> cookieMap = new HashMap<>();
     	cookieMap.put(CookieUtil.PORTAL_LOGIN, "raj_test");
     	
-    	Mockito.when(mockBlogService.createComment("1", "comment", "raj_test")).thenReturn(new BlogCommentBuilder().build());
+    	Mockito.when(mockBlogService.createComment("1", "comment", "raj_test", java.util.UUID.randomUUID().toString())).thenReturn(new BlogCommentBuilder().build());
     	Mockito.when(mockCookieUtil.getPortalUserMap(Mockito.any(Cookie[].class))).thenReturn(cookieMap);
     	
     	BlogComment blogComment = communityGatewayController.postComment("1", mockRequest, "comment");
