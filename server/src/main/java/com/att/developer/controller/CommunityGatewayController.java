@@ -7,8 +7,6 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,6 +19,7 @@ import com.att.developer.bean.blog.BlogComment;
 import com.att.developer.bean.blog.BlogPost;
 import com.att.developer.exception.ServerSideException;
 import com.att.developer.service.BlogService;
+import com.att.developer.util.Constants;
 import com.att.developer.util.CookieUtil;
 
 /**
@@ -29,8 +28,6 @@ import com.att.developer.util.CookieUtil;
 @RestController
 @RequestMapping("/comgw")
 public class CommunityGatewayController {
-	
-	private final Logger logger = LogManager.getLogger();
 	
     @Inject
     private CookieUtil cookieUtil;
@@ -50,7 +47,7 @@ public class CommunityGatewayController {
 	public BlogComment postComment(@PathVariable("postId") String postId, HttpServletRequest request, @RequestBody String comment) {
 		
 		if(StringUtils.isBlank(postId) || StringUtils.isBlank(comment)) {
-			ServerSideError error = new ServerSideError.Builder().id("ssGeneralError").message("Missing required data post id or comments.").build();
+			ServerSideError error = new ServerSideError.Builder().id(Constants.SS_GENERAL_ERROR_ID).message("Missing required data post id or comments.").build();
 			throw new ServerSideException(error);
 		}
 		
@@ -58,11 +55,9 @@ public class CommunityGatewayController {
 		String login = portalCookieMap.get(CookieUtil.PORTAL_LOGIN);
 		
 		if(StringUtils.isBlank(login)) {
-			ServerSideError error = new ServerSideError.Builder().id("ssGeneralError").message("Missing authentication").build();
+			ServerSideError error = new ServerSideError.Builder().id(Constants.SS_GENERAL_ERROR_ID).message("Missing authentication").build();
 			throw new ServerSideException(error);			
 		}
-		
-		logger.debug("PORTAL_LOGIN  = " + login);
 		
 		BlogComment postCreateComment = blogService.createComment(postId, comment, login);
 
@@ -74,7 +69,7 @@ public class CommunityGatewayController {
 	public List<BlogComment> getComments(@PathVariable("postId") String postId) {
 		
 		if(StringUtils.isBlank(postId)) {
-			ServerSideError error = new ServerSideError.Builder().id("ssGeneralError").message("Missing required data post id.").build();
+			ServerSideError error = new ServerSideError.Builder().id(Constants.SS_GENERAL_ERROR_ID).message("Missing required data post id.").build();
 			throw new ServerSideException(error);
 		}
 		
@@ -85,7 +80,7 @@ public class CommunityGatewayController {
 	public BlogPost getBlog(@PathVariable("postId") String postId) {
 		
 		if(StringUtils.isBlank(postId)) {
-			ServerSideError error = new ServerSideError.Builder().id("ssGeneralError").message("Missing required data post id.").build();
+			ServerSideError error = new ServerSideError.Builder().id(Constants.SS_GENERAL_ERROR_ID).message("Missing required data post id.").build();
 			throw new ServerSideException(error);
 		}
 		
