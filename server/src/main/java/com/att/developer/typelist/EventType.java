@@ -16,6 +16,9 @@ public enum EventType {
 		 */
 		GLOBAL_SCOPED_PARAM_CHANGE(1, false),
 		
+		BLOG_COMMENT_POST(50, false),
+		BLOG_USER_CREATED(51, false),
+		
 		API_BUNDLE_PERMISSION_UPDATED(269, false),
 		
 		ACL_ACCESS_ALLOWED(500, false),

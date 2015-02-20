@@ -59,7 +59,8 @@ public class CommunityGatewayController {
 			throw new ServerSideException(error);			
 		}
 		
-		BlogComment postCreateComment = blogService.createComment(postId, comment, login);
+		String transactionId = java.util.UUID.randomUUID().toString();
+		BlogComment postCreateComment = blogService.createComment(postId, comment, login, transactionId);
 
 		return postCreateComment;
 	}

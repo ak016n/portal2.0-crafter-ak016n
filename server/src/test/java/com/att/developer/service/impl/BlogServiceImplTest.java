@@ -16,10 +16,12 @@ import org.springframework.test.web.client.match.MockRestRequestMatchers;
 import org.springframework.test.web.client.response.MockRestResponseCreators;
 import org.springframework.web.client.RestTemplate;
 
+import com.att.developer.bean.EventLog;
 import com.att.developer.bean.blog.BlogComment;
 import com.att.developer.bean.blog.BlogPost;
 import com.att.developer.bean.builder.UserBuilder;
 import com.att.developer.exception.ServerSideException;
+import com.att.developer.service.EventTrackingService;
 import com.att.developer.service.GlobalScopedParamService;
 import com.att.developer.service.portal.one.UserProfileService;
 
@@ -33,6 +35,9 @@ public class BlogServiceImplTest {
     @Mock
     private UserProfileService mockUserProfileService;
     
+    @Mock
+    private EventTrackingService mockEventTrackingService;
+    
     MockRestServiceServer mockServer;
     
     @Before
@@ -43,10 +48,9 @@ public class BlogServiceImplTest {
     	
     	blogService.setGlobalScopedParamService(mockGlobalScopedParamService);
     	blogService.setUserProfileService(mockUserProfileService);
+    	blogService.setEventTrackingService(mockEventTrackingService);
     	
-    	Mockito.when(mockGlobalScopedParamService.get("blog_host", "http://141.204.193.91/wp-json/")).thenReturn("http://dummyHost/");
-    	Mockito.when(mockGlobalScopedParamService.get("blog_comment_status", "approved")).thenReturn("approved");
-    	Mockito.when(mockGlobalScopedParamService.get("blog_admin_permission", "YWRtaW46cGFzc3dvcmQxMjM=")).thenReturn("xyz");
+    	Mockito.when(mockGlobalScopedParamService.get(BlogServiceImpl.BLOG_HOST_KEY, BlogServiceImpl.DEFAULT_BLOG_HOST)).thenReturn("http://dummyHost/");
     	
    	 	RestTemplate restTemplate = new RestTemplate();
    	 	mockServer = MockRestServiceServer.createServer(restTemplate);
@@ -64,9 +68,9 @@ public class BlogServiceImplTest {
     				.andExpect(MockRestRequestMatchers.method(HttpMethod.POST))
     				.andRespond(MockRestResponseCreators.withSuccess("{\"ID\":35,\"post\":1,\"content\":\"<p>rebuilding postman<\\/p>\",\"status\":\"approved\",\"type\":\"comment\",\"parent\":0,\"author\":{\"ID\":7,\"username\":\"regular\"},\"date\":\"2015-02-17T01:00:04+00:00\",\"date_tz\":\"UTC\",\"date_gmt\":\"2015-02-17T01:00:04+00:00\"}", MediaType.APPLICATION_JSON));
 
+    	BlogComment blogComment = blogService.createComment("1", "comment", "raj_test", java.util.UUID.randomUUID().toString());
     	
-    	BlogComment blogComment = blogService.createComment("1", "comment", "raj_test");
-    	
+    	Mockito.verify(mockEventTrackingService, Mockito.atLeastOnce()).writeEvent(Mockito.any(EventLog.class));
     	Assert.assertNotNull(blogComment);
     	Assert.assertEquals("35", blogComment.getId());
     	mockServer.verify();
@@ -81,7 +85,7 @@ public class BlogServiceImplTest {
     				.andExpect(MockRestRequestMatchers.method(HttpMethod.GET))
     				.andRespond(MockRestResponseCreators.withStatus(HttpStatus.BAD_REQUEST).body("[{\"code\":\"json_user_invalid_username\",\"message\":\"Invalid user name.\"}]"));
 
-    	mockServer.expect(MockRestRequestMatchers.requestTo("http://dummyHost/users"))
+    	mockServer.expect(MockRestRequestMatchers.requestTo("http://dummyHost/users/"))
 					.andExpect(MockRestRequestMatchers.method(HttpMethod.POST))
 					.andRespond(MockRestResponseCreators.withSuccess("{\"ID\":7,\"username\":\"regular\"}", MediaType.APPLICATION_JSON));
     	
@@ -89,8 +93,9 @@ public class BlogServiceImplTest {
     				.andExpect(MockRestRequestMatchers.method(HttpMethod.POST))
     				.andRespond(MockRestResponseCreators.withSuccess("{\"ID\":35,\"post\":1,\"content\":\"<p>rebuilding postman<\\/p>\",\"status\":\"approved\",\"type\":\"comment\",\"parent\":0,\"author\":{\"ID\":7,\"username\":\"regular\"},\"date\":\"2015-02-17T01:00:04+00:00\",\"date_tz\":\"UTC\",\"date_gmt\":\"2015-02-17T01:00:04+00:00\"}", MediaType.APPLICATION_JSON));
 
-    	BlogComment blogComment = blogService.createComment("1", "comment", "raj_test");
+    	BlogComment blogComment = blogService.createComment("1", "comment", "raj_test", java.util.UUID.randomUUID().toString());
     	
+    	Mockito.verify(mockEventTrackingService, Mockito.times(2)).writeEvent(Mockito.any(EventLog.class));
     	Assert.assertNotNull(blogComment);
     	Assert.assertEquals("35", blogComment.getId());
     	mockServer.verify();
@@ -105,12 +110,12 @@ public class BlogServiceImplTest {
     				.andExpect(MockRestRequestMatchers.method(HttpMethod.GET))
     				.andRespond(MockRestResponseCreators.withStatus(HttpStatus.BAD_REQUEST).body("[{\"code\":\"json_user_invalid_username\",\"message\":\"Invalid user name.\"}]"));
 
-    	mockServer.expect(MockRestRequestMatchers.requestTo("http://dummyHost/users"))
+    	mockServer.expect(MockRestRequestMatchers.requestTo("http://dummyHost/users/"))
 					.andExpect(MockRestRequestMatchers.method(HttpMethod.POST))
 					.andRespond(MockRestResponseCreators.withStatus(HttpStatus.BAD_REQUEST).body("[{\"code\":\"json_user_email_already_exists\",\"message\":\"Email Taken.\"}]"));
     	
     	try {
-    		blogService.createComment("1", "comment", "raj_test");
+    		blogService.createComment("1", "comment", "raj_test", java.util.UUID.randomUUID().toString());
     		Assert.fail();
     	} catch (ServerSideException e) {
     		Assert.assertEquals("json_user_email_already_exists", e.getServerSideErrors().getErrorColl().get(0).getId());
@@ -129,7 +134,7 @@ public class BlogServiceImplTest {
     				.andRespond(MockRestResponseCreators.withBadRequest());
 
     	try {
-    		blogService.createComment("1", "comment", "raj_test");
+    		blogService.createComment("1", "comment", "raj_test", java.util.UUID.randomUUID().toString());
     		Assert.fail();
     	} catch (RuntimeException e) {
     		Assert.assertEquals("org.springframework.web.client.HttpClientErrorException: 400 Bad Request", e.getMessage());
@@ -150,7 +155,7 @@ public class BlogServiceImplTest {
 				.andRespond(MockRestResponseCreators.withStatus(HttpStatus.BAD_REQUEST).body("[{\"code\":\"json_missing_callback_param\",\"message\":\"Missing parameter data\"}]"));
 
     	try {
-    		blogService.createComment("1", "comment", "raj_test");
+    		blogService.createComment("1", "comment", "raj_test", java.util.UUID.randomUUID().toString());
     		Assert.fail();
     	} catch (ServerSideException e) {
     		Assert.assertEquals("json_missing_callback_param", e.getServerSideErrors().getErrorColl().get(0).getId());

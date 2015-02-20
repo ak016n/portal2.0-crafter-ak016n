@@ -23,6 +23,7 @@ import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import com.att.developer.bean.EventLog;
 import com.att.developer.bean.ServerSideError;
 import com.att.developer.bean.User;
 import com.att.developer.bean.blog.BlogComment;
@@ -31,8 +32,11 @@ import com.att.developer.bean.blog.BlogError;
 import com.att.developer.bean.blog.BlogPost;
 import com.att.developer.exception.ServerSideException;
 import com.att.developer.service.BlogService;
+import com.att.developer.service.EventTrackingService;
 import com.att.developer.service.GlobalScopedParamService;
 import com.att.developer.service.portal.one.UserProfileService;
+import com.att.developer.typelist.ActorType;
+import com.att.developer.typelist.EventType;
 import com.att.developer.util.StringBuilderUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -43,12 +47,12 @@ public class BlogServiceImpl implements BlogService {
 	private static final String _OPEN_SQUARE_BRACKET = "[";
 	private static final String PASSWORD123 = ":password123";
 	private static final String JSON_USER_INVALID_USERNAME = "json_user_invalid_username";
-	private static final String DEFAULT_BLOG_HOST = "http://devpgm-wcm-stage.eng.mobilephone.net/blog/wp-json/";
+	public static final String DEFAULT_BLOG_HOST = "http://devpgm-wcm-stage.eng.mobilephone.net/blog/wp-json/";
 	private static final String DEFAULT_COMMENT_STATUS = "approved";
 	private static final String DEFAULT_BLOG_ADMIN_AUTH = "YWRtaW46cGFzc3dvcmQxMjM=";
 	private static final String BLOG_ADMIN_AUTH_KEY = "blog_admin_permission";
 	private static final String BLOG_COMMENT_STATUS_KEY = "blog_comment_status";
-	private static final String BLOG_HOST_KEY = "blog_host";
+	public static final String BLOG_HOST_KEY = "blog_host";
 	private static final String COMMENTS_PATH = "/comments";
 	private static final String POSTS_PATH = "posts/";
 	private static final String USERS_PATH = "users/";
@@ -66,6 +70,9 @@ public class BlogServiceImpl implements BlogService {
     @Inject
     private UserProfileService userProfileService;
     
+	@Inject
+	private EventTrackingService eventTrackingService;
+    
     public void setRestTemplate(RestTemplate restTemplate) {
 		this.restTemplate = restTemplate;
 	}
@@ -76,6 +83,10 @@ public class BlogServiceImpl implements BlogService {
 
 	public void setUserProfileService(UserProfileService userProfileService) {
 		this.userProfileService = userProfileService;
+	}
+	
+	public void setEventTrackingService(EventTrackingService eventTrackingService) {
+		this.eventTrackingService = eventTrackingService;
 	}
 	
 	public String getBlogHost() {
@@ -91,11 +102,11 @@ public class BlogServiceImpl implements BlogService {
 	}
 	
 	@Override
-	public BlogComment createComment(String postId, String comment, String login) {
+	public BlogComment createComment(String postId, String comment, String login, String transactionId) {
     	if(! doesUserExistOnBlogSite(login)) {
-    		createUser(login);
+    		createUser(login, transactionId);
     	}
-    	return proxyCreateComment(postId, comment, login);
+    	return proxyCreateComment(postId, comment, login, transactionId);
     }
 	
 	private boolean doesUserExistOnBlogSite(String login) {
@@ -123,7 +134,7 @@ public class BlogServiceImpl implements BlogService {
 	}
 
 	@Override
-	public boolean createUser(String login) {
+	public boolean createUser(String login, String transactionId) {
 		boolean creationStatus = false;
 		
 		User user = userProfileService.getUser(login);
@@ -136,6 +147,7 @@ public class BlogServiceImpl implements BlogService {
 		try {
 			@SuppressWarnings("rawtypes")
 			ResponseEntity<Map> responseEntity = restTemplate.exchange(getURI(uri), HttpMethod.POST, new HttpEntity<>(blogUser, headers), Map.class);
+			eventTrackingService.writeEvent(new EventLog(login, null, null, EventType.BLOG_USER_CREATED, null, ActorType.DEV_PROGRAM_USER, transactionId));
 			if(responseEntity.getStatusCode().is2xxSuccessful()) {
 				creationStatus = true;
 			}
@@ -149,7 +161,7 @@ public class BlogServiceImpl implements BlogService {
 		return creationStatus;
 	}
 	
-	public BlogComment proxyCreateComment(String postId, String data, String login) {
+	public BlogComment proxyCreateComment(String postId, String data, String login, String transactionId) {
 		String uri = StringBuilderUtil.concatString(getBlogHost() , POSTS_PATH , postId , COMMENTS_PATH);
 		
 		ResponseEntity<BlogComment> responseEntity = null;
@@ -162,7 +174,17 @@ public class BlogServiceImpl implements BlogService {
 			logger.error(e);
 			throw new RuntimeException(e);
 		}
-		return responseEntity.getBody();
+		BlogComment blogComment = responseEntity.getBody();
+		eventTrackingService.writeEvent(new EventLog(login, null, null, EventType.BLOG_COMMENT_POST, getBlogCommentId(blogComment), ActorType.DEV_PROGRAM_USER, transactionId));
+		return blogComment;
+	}
+
+	private String getBlogCommentId(BlogComment blogComment) {
+		String id = StringUtils.EMPTY;
+		if(blogComment != null) {
+			id = blogComment.getId();
+		}
+		return StringBuilderUtil.concatString("Comment id: ", id);
 	}
 
 	private void extractErrorInfoAndThrowEx(HttpStatusCodeException e) {

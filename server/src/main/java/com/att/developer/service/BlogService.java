@@ -7,12 +7,12 @@ import com.att.developer.bean.blog.BlogPost;
 
 public interface BlogService {
 
-	BlogComment createComment(String postId, String comment, String login);
-
-	boolean createUser(String login);
+	BlogComment createComment(String postId, String comment, String login, String transactionId);
 
 	List<BlogComment> getComments(String postId);
 
 	BlogPost getBlog(String postId);
+
+	boolean createUser(String login, String transactionId);
 
 }

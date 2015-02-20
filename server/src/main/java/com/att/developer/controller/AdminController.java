@@ -9,7 +9,6 @@ import javax.inject.Inject;
 import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
