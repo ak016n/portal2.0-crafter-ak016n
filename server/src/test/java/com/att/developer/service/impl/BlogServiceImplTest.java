@@ -52,7 +52,6 @@ public class BlogServiceImplTest {
    	 	mockServer = MockRestServiceServer.createServer(restTemplate);
    	 
    	 	blogService.setRestTemplate(restTemplate);
-    	blogService.init();
     }
     
     @Test

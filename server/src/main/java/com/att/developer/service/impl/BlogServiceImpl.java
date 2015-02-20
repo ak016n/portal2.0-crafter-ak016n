@@ -5,7 +5,6 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 import org.apache.commons.codec.binary.Base64;
@@ -34,16 +33,29 @@ import com.att.developer.exception.ServerSideException;
 import com.att.developer.service.BlogService;
 import com.att.developer.service.GlobalScopedParamService;
 import com.att.developer.service.portal.one.UserProfileService;
+import com.att.developer.util.StringBuilderUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Component
 public class BlogServiceImpl implements BlogService {
 
+	private static final String _CLOSE_SQUARE_BRACKET = "]";
+	private static final String _OPEN_SQUARE_BRACKET = "[";
+	private static final String PASSWORD123 = ":password123";
+	private static final String JSON_USER_INVALID_USERNAME = "json_user_invalid_username";
+	private static final String DEFAULT_BLOG_HOST = "http://devpgm-wcm-stage.eng.mobilephone.net/blog/wp-json/";
+	private static final String DEFAULT_COMMENT_STATUS = "approved";
+	private static final String DEFAULT_BLOG_ADMIN_AUTH = "YWRtaW46cGFzc3dvcmQxMjM=";
+	private static final String BLOG_ADMIN_AUTH_KEY = "blog_admin_permission";
+	private static final String BLOG_COMMENT_STATUS_KEY = "blog_comment_status";
+	private static final String BLOG_HOST_KEY = "blog_host";
+	private static final String COMMENTS_PATH = "/comments";
+	private static final String POSTS_PATH = "posts/";
+	private static final String USERS_PATH = "users/";
+	private static final String AUTHORIZATION = "Authorization";
+	private static final String BASIC = "Basic ";
+
 	private final Logger logger = LogManager.getLogger();
-	
-	private String blogHost;
-	private String blogCommentStatus;
-	private String blogAdminPermission;
 	
     @Inject
     private RestTemplate restTemplate;
@@ -67,24 +79,17 @@ public class BlogServiceImpl implements BlogService {
 	}
 	
 	public String getBlogHost() {
-		return blogHost;
+		return globalScopedParamService.get(BLOG_HOST_KEY, DEFAULT_BLOG_HOST);
 	}
 
 	public String getBlogCommentStatus() {
-		return blogCommentStatus;
+		return globalScopedParamService.get(BLOG_COMMENT_STATUS_KEY, DEFAULT_COMMENT_STATUS);
 	}
 
-	public String getBlogAdminPermission() {
-		return blogAdminPermission;
+	public String getBlogAdminAuth() {
+		return globalScopedParamService.get(BLOG_ADMIN_AUTH_KEY, DEFAULT_BLOG_ADMIN_AUTH);
 	}
 	
-	@PostConstruct
-	public void init() {
-    	blogHost = globalScopedParamService.get("blog_host", "http://141.204.193.91/wp-json/");
-    	blogCommentStatus = globalScopedParamService.get("blog_comment_status", "approved");
-    	blogAdminPermission = globalScopedParamService.get("blog_admin_permission", "YWRtaW46cGFzc3dvcmQxMjM=");
-	}
-
 	@Override
 	public BlogComment createComment(String postId, String comment, String login) {
     	if(! doesUserExistOnBlogSite(login)) {
@@ -95,7 +100,7 @@ public class BlogServiceImpl implements BlogService {
 	
 	private boolean doesUserExistOnBlogSite(String login) {
 		boolean status = false;
-		String uri = getBlogHost() + "users/" + login;
+		String uri = StringBuilderUtil.concatString(getBlogHost() , USERS_PATH , login);
 		
 		@SuppressWarnings("rawtypes")
 		ResponseEntity<Map> responseEntity = null;
@@ -107,7 +112,7 @@ public class BlogServiceImpl implements BlogService {
 				status = true;
 			}
 		} catch (RestClientException e) {
-			if(e instanceof HttpClientErrorException && StringUtils.contains(((HttpClientErrorException)e).getResponseBodyAsString(), "json_user_invalid_username")) {
+			if(e instanceof HttpClientErrorException && StringUtils.contains(((HttpClientErrorException)e).getResponseBodyAsString(), JSON_USER_INVALID_USERNAME)) {
 				// OK to swallow exception - we want it to return status as false in this scenario
 			} else {
 				logger.error(e);
@@ -124,9 +129,9 @@ public class BlogServiceImpl implements BlogService {
 		User user = userProfileService.getUser(login);
 		BlogCreateUser blogUser = new BlogCreateUser(user);
 		
-		String uri = getBlogHost() + "users";
+		String uri = StringBuilderUtil.concatString(getBlogHost() , USERS_PATH);
 		HttpHeaders headers = new HttpHeaders();
-		headers.add("Authorization", "Basic " + getBlogAdminPermission());
+		headers.add(AUTHORIZATION, BASIC + getBlogAdminAuth());
 		
 		try {
 			@SuppressWarnings("rawtypes")
@@ -145,7 +150,7 @@ public class BlogServiceImpl implements BlogService {
 	}
 	
 	public BlogComment proxyCreateComment(String postId, String data, String login) {
-		String uri = getBlogHost() + "posts/" + postId + "/comments";
+		String uri = StringBuilderUtil.concatString(getBlogHost() , POSTS_PATH , postId , COMMENTS_PATH);
 		
 		ResponseEntity<BlogComment> responseEntity = null;
 		
@@ -176,7 +181,7 @@ public class BlogServiceImpl implements BlogService {
 		BlogError blogError = null;
 		ObjectMapper mapper = new ObjectMapper();
 		try {
-			if (StringUtils.contains(errorResponse, "[") && StringUtils.contains(errorResponse, "]")) {
+			if (StringUtils.contains(errorResponse, _OPEN_SQUARE_BRACKET) && StringUtils.contains(errorResponse, _CLOSE_SQUARE_BRACKET)) {
 				BlogError[] blogErrorArr;
 				blogErrorArr = mapper.readValue(bs, BlogError[].class);
 				blogError = blogErrorArr[0];
@@ -191,13 +196,13 @@ public class BlogServiceImpl implements BlogService {
 
 	private HttpHeaders getDefaultHttpHeaders() {
 		HttpHeaders defaultHttpHeaders = new HttpHeaders();
-		defaultHttpHeaders.add("Authorization", "Basic " + getBlogAdminPermission());
+		defaultHttpHeaders.add(AUTHORIZATION, BASIC + getBlogAdminAuth());
 		return defaultHttpHeaders;
 	}
 	
 	private HttpHeaders getUserAuthHttpHeaders(String login) {
 		HttpHeaders userAuthHeaders = new HttpHeaders();
-		userAuthHeaders.add("Authorization", "Basic " + Base64.encodeBase64String((login + ":password123").getBytes()));
+		userAuthHeaders.add(AUTHORIZATION, BASIC + Base64.encodeBase64String((login + PASSWORD123).getBytes()));
 		return userAuthHeaders;
 	}
 
@@ -214,7 +219,7 @@ public class BlogServiceImpl implements BlogService {
 	
 	@Override
 	public List<BlogComment> getComments(String postId) {
-		String uri = getBlogHost() + "posts/" + postId + "/comments";
+		String uri = StringBuilderUtil.concatString(getBlogHost(), POSTS_PATH, postId, COMMENTS_PATH);
 		ParameterizedTypeReference<List<BlogComment>> typeRef = new ParameterizedTypeReference<List<BlogComment>>() {};
 		
 		ResponseEntity<List<BlogComment>> responseEntity = null;
@@ -231,7 +236,7 @@ public class BlogServiceImpl implements BlogService {
 
 	@Override
 	public BlogPost getBlog(String postId) {
-		String uri = getBlogHost() + "posts/" + postId;
+		String uri = StringBuilderUtil.concatString(getBlogHost() , POSTS_PATH , postId);
 		
 		ResponseEntity<BlogPost> responseEntity = null;
 		try {
