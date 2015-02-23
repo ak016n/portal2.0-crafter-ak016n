@@ -17,11 +17,14 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import com.att.developer.bean.EventLog;
 import com.att.developer.bean.ServerSideError;
@@ -272,6 +275,25 @@ public class BlogServiceImpl implements BlogService {
 		
 		return responseEntity.getBody();
     }
+
+	@Override
+	public List<BlogPost> getBlogs(MultiValueMap<String, String> allRequestParams) {
+		String uri = StringBuilderUtil.concatString(getBlogHost() , POSTS_PATH);
+		ParameterizedTypeReference<List<BlogPost>> typeRef = new ParameterizedTypeReference<List<BlogPost>>() {};
+		
+		ResponseEntity<List<BlogPost>> responseEntity = null;
+		try {
+			UriComponents uriComponents = UriComponentsBuilder.fromHttpUrl(uri).queryParams(allRequestParams).build();
+			responseEntity = restTemplate.exchange(uriComponents.toUri(), HttpMethod.GET, null, typeRef);
+		} catch (HttpClientErrorException | HttpServerErrorException e) {
+			extractErrorInfoAndThrowEx(e);
+		} catch (RestClientException e) {
+			logger.error(e);
+			throw new RuntimeException(e);
+		}
+		
+		return responseEntity.getBody();
+	}
 
 
 }
