@@ -1,5 +1,6 @@
 package com.att.developer.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Assert;
@@ -14,6 +15,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.test.web.client.match.MockRestRequestMatchers;
 import org.springframework.test.web.client.response.MockRestResponseCreators;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import com.att.developer.bean.EventLog;
@@ -217,6 +220,70 @@ public class BlogServiceImplTest {
 
     	try {
     		blogService.getBlog("1");
+    		Assert.fail();
+    	} catch (RuntimeException e) {
+    		Assert.assertEquals("org.springframework.web.client.HttpClientErrorException: 400 Bad Request", e.getMessage());
+    	}
+    	
+    	mockServer.verify();
+    }
+    
+    @Test
+    public void getBlogs_happyPath() {
+       	mockServer.expect(MockRestRequestMatchers.requestTo("http://dummyHost/posts/?filter[posts_per_page]=2"))
+		.andExpect(MockRestRequestMatchers.method(HttpMethod.GET))
+		.andRespond(MockRestResponseCreators.withSuccess("[{\"title\":\"New Post for testing\",\"content\":\"\",\"slug\":\"new-post-for-testing\",\"author\":{\"username\":\"raj_test\",\"ID\":\"2\"},\"ID\":\"11\",\"parent\":\"0\",\"date_created\":\"2015-02-17 12:45:16\",\"date_modified\":\"2015-02-17 12:45:16\"},"
+				+ "{\"title\":\"test post\",\"content\":\"<p>test post</p>\\n<p>&nbsp;</p>\\n<p>&nbsp;</p>\\n<p>&nbsp;</p>\\n\",\"slug\":\"test-post\",\"author\":{\"username\":\"raj_test\",\"ID\":\"2\"},\"ID\":\"6\",\"parent\":\"0\",\"date_created\":\"2015-02-17 12:00:30\",\"date_modified\":\"2015-02-17 12:00:30\"}]", MediaType.APPLICATION_JSON));
+
+    	MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+    	List<String> valueColl = new ArrayList<>();
+    	valueColl.add("2");
+    	params.put("filter[posts_per_page]", valueColl);
+       	
+       	List<BlogPost> blogs = blogService.getBlogs(params);
+
+       	Assert.assertNotNull(blogs);
+       	Assert.assertTrue(blogs.size() == 2);
+    	mockServer.verify();
+    }
+    
+    @Test(expected=IllegalArgumentException.class)
+    public void getBlogs_missingParam() {
+       	mockServer.expect(MockRestRequestMatchers.requestTo("http://dummyHost/posts/"))
+		.andExpect(MockRestRequestMatchers.method(HttpMethod.GET))
+		.andRespond(MockRestResponseCreators.withSuccess("[{\"title\":\"New Post for testing\",\"content\":\"\",\"slug\":\"new-post-for-testing\",\"author\":{\"username\":\"raj_test\",\"ID\":\"2\"},\"ID\":\"11\",\"parent\":\"0\",\"date_created\":\"2015-02-17 12:45:16\",\"date_modified\":\"2015-02-17 12:45:16\"},"
+				+ "{\"title\":\"test post\",\"content\":\"<p>test post</p>\\n<p>&nbsp;</p>\\n<p>&nbsp;</p>\\n<p>&nbsp;</p>\\n\",\"slug\":\"test-post\",\"author\":{\"username\":\"raj_test\",\"ID\":\"2\"},\"ID\":\"6\",\"parent\":\"0\",\"date_created\":\"2015-02-17 12:00:30\",\"date_modified\":\"2015-02-17 12:00:30\"}]", MediaType.APPLICATION_JSON));
+
+       	blogService.getBlogs(null);
+    	mockServer.verify();
+    }
+    
+    @Test
+    public void getBlogs_emptyParam() {
+       	mockServer.expect(MockRestRequestMatchers.requestTo("http://dummyHost/posts/"))
+		.andExpect(MockRestRequestMatchers.method(HttpMethod.GET))
+		.andRespond(MockRestResponseCreators.withSuccess("[{\"title\":\"New Post for testing\",\"content\":\"\",\"slug\":\"new-post-for-testing\",\"author\":{\"username\":\"raj_test\",\"ID\":\"2\"},\"ID\":\"11\",\"parent\":\"0\",\"date_created\":\"2015-02-17 12:45:16\",\"date_modified\":\"2015-02-17 12:45:16\"},"
+				+ "{\"title\":\"test post\",\"content\":\"<p>test post</p>\\n<p>&nbsp;</p>\\n<p>&nbsp;</p>\\n<p>&nbsp;</p>\\n\",\"slug\":\"test-post\",\"author\":{\"username\":\"raj_test\",\"ID\":\"2\"},\"ID\":\"6\",\"parent\":\"0\",\"date_created\":\"2015-02-17 12:00:30\",\"date_modified\":\"2015-02-17 12:00:30\"}]", MediaType.APPLICATION_JSON));
+
+    	MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+       	
+       	List<BlogPost> blogs = blogService.getBlogs(params);
+
+       	Assert.assertNotNull(blogs);
+       	Assert.assertTrue(blogs.size() == 2);
+    	mockServer.verify();
+    }
+    
+    @Test
+    public void getBlogs_errorHandling() {
+    	mockServer.expect(MockRestRequestMatchers.requestTo("http://dummyHost/posts/"))
+    				.andExpect(MockRestRequestMatchers.method(HttpMethod.GET))
+    				.andRespond(MockRestResponseCreators.withBadRequest());
+
+    	try {
+        	MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+    		
+    		blogService.getBlogs(params);
     		Assert.fail();
     	} catch (RuntimeException e) {
     		Assert.assertEquals("org.springframework.web.client.HttpClientErrorException: 400 Bad Request", e.getMessage());

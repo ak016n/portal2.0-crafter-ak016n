@@ -1,0 +1,56 @@
+<div class="container">
+				<form class="form-horizontal" role="form" name="adminForm" ng-controller="AdminCtrl" novalidate att-form-errors autocomplete="off">
+						<div class="form-group">
+							<div class="col-sm-offset-2 col-sm-5">
+								<h3>Global Properties</h3>
+							</div>
+						</div>
+						<div class="form-group">
+						    	<div class="col-sm-7 col-sm-offset-2">
+						    		<div class="has-error help-block">
+					        			<label name="top_lvl_errors" att-field-errors></label>
+					        		</div>
+									<div class="has-success help-block" ng-show="adminProp.successMessage != null && adminForm.$pristine">
+										{{adminProp.successMessage}}
+									</div>
+					        	</div>
+				        </div>
+				
+						<div class="form-group" ng-class="{'has-error' : validateOnSubmit && adminForm.itemKey.$invalid}">
+							<label class="required col-sm-2 control-label" for="itemKey_label">Item Key</label>
+							 <div class="col-sm-5">
+								<input name="itemKey" type="text" ng-model="adminProp.itemKey" required att-field-errors tabindex="1" typeahead="itemKey for itemKey in searchIK($viewValue)" typeahead-loading="loadingLocations"  class="form-control"/><i ng-show="loadingLocations" class="glyphicon glyphicon-refresh"></i>
+							 </div>
+						</div>
+						<div class="form-group" ng-class="{'has-error' : validateOnSubmit && adminForm.fieldKey.$invalid}">
+							<label class="required col-sm-2 control-label" for="fieldKey_label">Field Key</label>
+							<div class="col-sm-5">
+								<input name="fieldKey" type="text" id="fieldKey_input_id" ng-model="adminProp.fieldKey" required att-field-errors tabindex="2" typeahead="itemKey for itemKey in searchFK($viewValue)" typeahead-loading="loadingLocations"  class="form-control"/><i ng-show="loadingLocations" class="glyphicon glyphicon-refresh"></i>
+							</div>	
+						</div>
+						<div class="form-group" ng-class="{'has-error' : validateOnSubmit && adminForm.description.$invalid}">
+							<label class="required col-sm-2 control-label" for="description_label">Description</label>
+							<div class="col-sm-7">
+								<textarea name="description" id="description_textArea_id" ng-model="adminProp.description" tabindex="3" rows="18" class="form-control"></textarea>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-sm-offset-2 col-sm-10">
+								<button data-ng-click="validateOnSubmit=true; refresh(adminForm)" class="btn btn-primary">Refresh</button>
+								<button data-ng-click="validateOnSubmit=true; create(adminForm)" class="btn btn-primary">Create</button>
+								<button data-ng-click="validateOnSubmit=true; update(adminForm)" class="btn btn-primary">Update</button>
+								<button data-ng-click="validateOnSubmit=true; delete(adminForm)" class="btn btn-primary">Delete</button>
+							</div>
+						</div>
+						<br>
+						
+						<div class="form-group">
+							<label class="col-sm-2 control-label">Diff version: </label>
+							<select class="col-sm-1" ng-model="fromVersion" ng-options="version as version for version in versions"></select><label class="col-sm-1 control-label">against:</label><select class="col-sm-1" ng-model="withVersion" ng-options="version as version for version in versions" ng-change="diff()"></select>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-2 control-label">Response:</label>
+							<pre class="col-sm-7"><div ng-bind-html="diff.results"></div></pre>
+						</div>
+				</form>
+</div>

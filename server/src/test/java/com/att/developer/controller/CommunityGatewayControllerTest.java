@@ -14,6 +14,8 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import com.att.developer.bean.blog.BlogComment;
 import com.att.developer.bean.blog.BlogPost;
@@ -107,5 +109,22 @@ public class CommunityGatewayControllerTest {
     	
     	Assert.assertNotNull(blogPost);
     	Assert.assertEquals(BlogPostBuilder.HELLO_WORLD_POST, blogPost.getContent());
+    }
+    
+    @SuppressWarnings("unchecked")
+	@Test
+    public void getBlogsWithFilter_happyPath() {
+    	List<BlogPost> blogPostColl = new ArrayList<>();
+    	blogPostColl.add(new BlogPostBuilder().build());
+    	
+    	Mockito.when(mockBlogService.getBlogs(Mockito.any(MultiValueMap.class))).thenReturn(blogPostColl);
+    	
+    	MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+    	params.put("X", new ArrayList<String>());
+    	
+    	List<BlogPost> blogPosts = communityGatewayController.getBlogs(params);
+    	
+    	Assert.assertNotNull(blogPosts);
+    	Assert.assertTrue(blogPosts.size() == 1);
     }
 }
