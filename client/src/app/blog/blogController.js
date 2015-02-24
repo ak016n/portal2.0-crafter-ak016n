@@ -1,15 +1,19 @@
 angular.module('blog').controller('BlogCtrl', BlogCtrl);
 
-BlogCtrl.$inject = ['$scope','blogPostService'];
+BlogCtrl.$inject = ['$scope', '$sce', 'blogPostService'];
 
-function BlogCtrl(sc, blogPostService) {
-	  sc.blog = {
+function BlogCtrl($scope, $sce, blogPostService) {
+	  $scope.blog = {
 			  posts : []
 	  };
 	  
 	  blogPostService.query({}).$promise.then(
 			  function(success) {
-				 sc.blog.posts = success;
+				  angular.forEach(success, function(post) {
+					post.content = $sce.trustAsHtml(post.content);  
+				  });
+				  $scope.blog.posts = success;
+				  
 			  }, 
 			  function(error) {
 				  console.log("error");

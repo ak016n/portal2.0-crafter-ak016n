@@ -1,1 +1,1 @@
-angular.module('blog', ['ngResource', 'ui.router']);
+angular.module('blog', ['ngResource', 'ui.router', 'ngSanitize']);
