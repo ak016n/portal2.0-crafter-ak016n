@@ -1,56 +1,134 @@
-<div class="container">
-				<form class="form-horizontal" role="form" name="adminForm" ng-controller="AdminCtrl" novalidate att-form-errors autocomplete="off">
-						<div class="form-group">
-							<div class="col-sm-offset-2 col-sm-5">
-								<h3>Global Properties</h3>
-							</div>
-						</div>
-						<div class="form-group">
-						    	<div class="col-sm-7 col-sm-offset-2">
-						    		<div class="has-error help-block">
-					        			<label name="top_lvl_errors" att-field-errors></label>
-					        		</div>
-									<div class="has-success help-block" ng-show="adminProp.successMessage != null && adminForm.$pristine">
-										{{adminProp.successMessage}}
-									</div>
-					        	</div>
-				        </div>
-				
-						<div class="form-group" ng-class="{'has-error' : validateOnSubmit && adminForm.itemKey.$invalid}">
-							<label class="required col-sm-2 control-label" for="itemKey_label">Item Key</label>
-							 <div class="col-sm-5">
-								<input name="itemKey" type="text" ng-model="adminProp.itemKey" required att-field-errors tabindex="1" typeahead="itemKey for itemKey in searchIK($viewValue)" typeahead-loading="loadingLocations"  class="form-control"/><i ng-show="loadingLocations" class="glyphicon glyphicon-refresh"></i>
-							 </div>
-						</div>
-						<div class="form-group" ng-class="{'has-error' : validateOnSubmit && adminForm.fieldKey.$invalid}">
-							<label class="required col-sm-2 control-label" for="fieldKey_label">Field Key</label>
-							<div class="col-sm-5">
-								<input name="fieldKey" type="text" id="fieldKey_input_id" ng-model="adminProp.fieldKey" required att-field-errors tabindex="2" typeahead="itemKey for itemKey in searchFK($viewValue)" typeahead-loading="loadingLocations"  class="form-control"/><i ng-show="loadingLocations" class="glyphicon glyphicon-refresh"></i>
-							</div>	
-						</div>
-						<div class="form-group" ng-class="{'has-error' : validateOnSubmit && adminForm.description.$invalid}">
-							<label class="required col-sm-2 control-label" for="description_label">Description</label>
-							<div class="col-sm-7">
-								<textarea name="description" id="description_textArea_id" ng-model="adminProp.description" tabindex="3" rows="18" class="form-control"></textarea>
-							</div>
-						</div>
-						<div class="form-group">
-							<div class="col-sm-offset-2 col-sm-10">
-								<button data-ng-click="validateOnSubmit=true; refresh(adminForm)" class="btn btn-primary">Refresh</button>
-								<button data-ng-click="validateOnSubmit=true; create(adminForm)" class="btn btn-primary">Create</button>
-								<button data-ng-click="validateOnSubmit=true; update(adminForm)" class="btn btn-primary">Update</button>
-								<button data-ng-click="validateOnSubmit=true; delete(adminForm)" class="btn btn-primary">Delete</button>
-							</div>
-						</div>
-						<br>
-						
-						<div class="form-group">
-							<label class="col-sm-2 control-label">Diff version: </label>
-							<select class="col-sm-1" ng-model="fromVersion" ng-options="version as version for version in versions"></select><label class="col-sm-1 control-label">against:</label><select class="col-sm-1" ng-model="withVersion" ng-options="version as version for version in versions" ng-change="diff()"></select>
-						</div>
-						<div class="form-group">
-							<label class="col-sm-2 control-label">Response:</label>
-							<pre class="col-sm-7"><div ng-bind-html="diff.results"></div></pre>
-						</div>
-				</form>
-</div>
+  <!-- Page Content -->
+    <div class="container">
+
+        <div class="row">
+
+            <!-- Blog Entries Column -->
+            <div class="col-md-8">
+
+                <h1 class="page-header">
+                    Page Heading
+                    <small>Secondary Text</small>
+                </h1>
+
+                <!-- First Blog Post -->
+                <h2>
+                    <a href="#">Blog Post Title</a>
+                </h2>
+                <p class="lead">
+                    by <a href="index.php">Start Bootstrap</a>
+                </p>
+                <p><span class="glyphicon glyphicon-time"></span> Posted on August 28, 2013 at 10:00 PM</p>
+                <hr>
+                <img class="img-responsive" src="http://placehold.it/900x300" alt="">
+                <hr>
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolore, veritatis, tempora, necessitatibus inventore nisi quam quia repellat ut tempore laborum possimus eum dicta id animi corrupti debitis ipsum officiis rerum.</p>
+                <a class="btn btn-primary" href="#">Read More <span class="glyphicon glyphicon-chevron-right"></span></a>
+
+                <hr>
+
+                <!-- Second Blog Post -->
+                <h2>
+                    <a href="#">Blog Post Title</a>
+                </h2>
+                <p class="lead">
+                    by <a href="index.php">Start Bootstrap</a>
+                </p>
+                <p><span class="glyphicon glyphicon-time"></span> Posted on August 28, 2013 at 10:45 PM</p>
+                <hr>
+                <img class="img-responsive" src="http://placehold.it/900x300" alt="">
+                <hr>
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quibusdam, quasi, fugiat, asperiores harum voluptatum tenetur a possimus nesciunt quod accusamus saepe tempora ipsam distinctio minima dolorum perferendis labore impedit voluptates!</p>
+                <a class="btn btn-primary" href="#">Read More <span class="glyphicon glyphicon-chevron-right"></span></a>
+
+                <hr>
+
+                <!-- Third Blog Post -->
+                <h2>
+                    <a href="#">Blog Post Title</a>
+                </h2>
+                <p class="lead">
+                    by <a href="index.php">Start Bootstrap</a>
+                </p>
+                <p><span class="glyphicon glyphicon-time"></span> Posted on August 28, 2013 at 10:45 PM</p>
+                <hr>
+                <img class="img-responsive" src="http://placehold.it/900x300" alt="">
+                <hr>
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cupiditate, voluptates, voluptas dolore ipsam cumque quam veniam accusantium laudantium adipisci architecto itaque dicta aperiam maiores provident id incidunt autem. Magni, ratione.</p>
+                <a class="btn btn-primary" href="#">Read More <span class="glyphicon glyphicon-chevron-right"></span></a>
+
+                <hr>
+
+                <!-- Pager -->
+                <ul class="pager">
+                    <li class="previous">
+                        <a href="#">&larr; Older</a>
+                    </li>
+                    <li class="next">
+                        <a href="#">Newer &rarr;</a>
+                    </li>
+                </ul>
+
+            </div>
+
+            <!-- Blog Sidebar Widgets Column -->
+            <div class="col-md-4">
+
+                <!-- Blog Search Well -->
+                <div class="well">
+                    <h4>Blog Search</h4>
+                    <div class="input-group">
+                        <input type="text" class="form-control">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="button">
+                                <span class="glyphicon glyphicon-search"></span>
+                        </button>
+                        </span>
+                    </div>
+                    <!-- /.input-group -->
+                </div>
+
+                <!-- Blog Categories Well -->
+                <div class="well">
+                    <h4>Blog Categories</h4>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <ul class="list-unstyled">
+                                <li><a href="#">Category Name</a>
+                                </li>
+                                <li><a href="#">Category Name</a>
+                                </li>
+                                <li><a href="#">Category Name</a>
+                                </li>
+                                <li><a href="#">Category Name</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <!-- /.col-lg-6 -->
+                        <div class="col-lg-6">
+                            <ul class="list-unstyled">
+                                <li><a href="#">Category Name</a>
+                                </li>
+                                <li><a href="#">Category Name</a>
+                                </li>
+                                <li><a href="#">Category Name</a>
+                                </li>
+                                <li><a href="#">Category Name</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <!-- /.col-lg-6 -->
+                    </div>
+                    <!-- /.row -->
+                </div>
+
+                <!-- Side Widget Well -->
+                <div class="well">
+                    <h4>Side Widget Well</h4>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore, perspiciatis adipisci accusamus laudantium odit aliquam repellat tempore quos aspernatur vero.</p>
+                </div>
+
+            </div>
+            
+      </div>
+</div>      

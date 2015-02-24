@@ -1,6 +1,7 @@
 var app = angular.module('portalApp',
 		[ 'admin',
 		  'content',
+		  'blog',
 		  'security', 
 		  'pascalprecht.translate', 
 		  'ui.bootstrap',
