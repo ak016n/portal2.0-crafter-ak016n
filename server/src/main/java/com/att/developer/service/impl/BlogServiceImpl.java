@@ -2,6 +2,7 @@ package com.att.developer.service.impl;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -33,6 +34,7 @@ import com.att.developer.bean.blog.BlogComment;
 import com.att.developer.bean.blog.BlogCreateUser;
 import com.att.developer.bean.blog.BlogError;
 import com.att.developer.bean.blog.BlogPost;
+import com.att.developer.bean.blog.BlogTaxonomies;
 import com.att.developer.exception.ServerSideException;
 import com.att.developer.service.BlogService;
 import com.att.developer.service.EventTrackingService;
@@ -58,6 +60,8 @@ public class BlogServiceImpl implements BlogService {
 	public static final String BLOG_HOST_KEY = "blog_host";
 	private static final String COMMENTS_PATH = "/comments";
 	private static final String POSTS_PATH = "posts/";
+	private static final String CATEGORY_PATH = "taxonomies/category/terms";
+	private static final String TAG_PATH = "taxonomies/post_tag/terms";
 	private static final String USERS_PATH = "users/";
 	private static final String AUTHORIZATION = "Authorization";
 	private static final String BASIC = "Basic ";
@@ -311,4 +315,35 @@ public class BlogServiceImpl implements BlogService {
 		return response;
 	}
 
+	@Override
+	public List<String> getCategories() {
+		return getTaxonomies(CATEGORY_PATH);
+	}
+	
+	@Override
+	public List<String> getTags() {
+		return getTaxonomies(TAG_PATH);
+	}
+
+	private List<String> getTaxonomies(String path) {
+		String uri = StringBuilderUtil.concatString(getBlogHost(), path);
+		ParameterizedTypeReference<List<BlogTaxonomies>> typeRef = new ParameterizedTypeReference<List<BlogTaxonomies>>() {};
+		List<String> taxonomies = new ArrayList<>();
+		
+		ResponseEntity<List<BlogTaxonomies>> responseEntity = null;
+		try {
+			responseEntity = restTemplate.exchange(getURI(uri), HttpMethod.GET, null, typeRef);
+			
+			for(BlogTaxonomies each : responseEntity.getBody()) {
+				taxonomies.add(each.getTaxonomy());
+			}
+		} catch (HttpClientErrorException | HttpServerErrorException e) {
+			extractErrorInfoAndThrowEx(e);
+		} catch (RestClientException e) {
+			logger.error(e);
+			throw new RuntimeException(e);
+		}
+		
+		return taxonomies;
+	}
 }

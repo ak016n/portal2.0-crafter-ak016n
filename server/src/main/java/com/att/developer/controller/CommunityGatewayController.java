@@ -96,4 +96,14 @@ public class CommunityGatewayController {
 	public @ResponseBody ResponseEntity<List<BlogPost>> getBlogs(@RequestParam MultiValueMap<String, String> allRequestParams) {
 		return blogService.getBlogs(allRequestParams);
 	}
+	
+	@RequestMapping(value="/categories", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public List<String> getCategories() {
+		return blogService.getCategories();
+	}
+	
+	@RequestMapping(value="/tags", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public List<String> getTags() {
+		return blogService.getTags();
+	}
 }

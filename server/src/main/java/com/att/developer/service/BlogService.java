@@ -20,4 +20,8 @@ public interface BlogService {
 	
 	boolean createUser(String login, String transactionId);
 
+	List<String> getCategories();
+
+	List<String> getTags();
+
 }
