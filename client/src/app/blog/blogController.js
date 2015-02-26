@@ -22,6 +22,9 @@ function BlogCtrl($scope, $sce, blogPostService, blogCategoriesService) {
 		  getBlogPosts($scope, $sce, blogPostService, {"filter[category_name]" : category});
 	  };
 	  
+	  $scope.searchSelected = function() {
+		  getBlogPosts($scope, $sce, blogPostService, {"filter[s]" : $scope.search.term});
+	  };
 }
 
 function getBlogPosts($scope, $sce, blogPostService, param) {
