@@ -18,7 +18,6 @@
 	                <p>
 	                    by <a href="index.php">{{post.author.username}}</a>&nbsp;&nbsp;<span class="glyphicon glyphicon-time"></span> Posted on {{post.date_created}}
 	                </p>
-	                <hr>
 	                <p>
 	                	<img style="float: right; margin: 0px 15px 15px 0px;" ng-src="http://devpgm-wcm-stage.eng.mobilephone.net/blog{{post.image_url}}" height="250" width="250" />
 	                	
@@ -29,17 +28,8 @@
 					<hr>	
 				</div>
 				
+				<pagination boundary-links="true" total-items="totalItems" ng-model="currentPage" class="pagination-sm" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;" ng-change="pageChanged()"></pagination>
 
-
-			<!-- Pager -->
-                <ul class="pager">
-                    <li class="previous">
-                        <a href="#">&larr; Older</a>
-                    </li>
-                    <li class="next">
-                        <a href="#">Newer &rarr;</a>
-                    </li>
-                </ul>
 
             </div>
 

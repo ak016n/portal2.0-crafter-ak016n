@@ -2,6 +2,8 @@ package com.att.developer.bean.blog;
 
 import java.util.Date;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -40,7 +42,7 @@ public class BlogPost {
 	
 	@JsonProperty("image_url")
 	private String image_url;
-
+	
 	public String getId() {
 		return id;
 	}
@@ -106,13 +108,17 @@ public class BlogPost {
 	}
 	
 	public String getImage_url() {
-		return "/wp-content/uploads/" + image_url;
+		String tempUrl = null;
+		if(StringUtils.isNotBlank(image_url)) {
+			tempUrl = "/wp-content/uploads/" + image_url;
+		}
+		return tempUrl;
 	}
 
 	public void setImage_url(String image_url) {
 		this.image_url = image_url;
 	}
-
+	
 	@Override
 	public String toString() {
 		return "BlogPost [id=" + id + ", title=" + title + ", content="

@@ -277,7 +277,7 @@ public class BlogServiceImpl implements BlogService {
     }
 
 	@Override
-	public List<BlogPost> getBlogs(MultiValueMap<String, String> allRequestParams) {
+	public ResponseEntity<List<BlogPost>> getBlogs(MultiValueMap<String, String> allRequestParams) {
 		String uri = StringBuilderUtil.concatString(getBlogHost() , POSTS_PATH);
 		ParameterizedTypeReference<List<BlogPost>> typeRef = new ParameterizedTypeReference<List<BlogPost>>() {};
 		
@@ -292,8 +292,23 @@ public class BlogServiceImpl implements BlogService {
 			throw new RuntimeException(e);
 		}
 		
-		return responseEntity.getBody();
+		return buildResponseEntity(responseEntity);
 	}
 
+	private ResponseEntity<List<BlogPost>> buildResponseEntity(ResponseEntity<List<BlogPost>> responseEntity) {
+		HttpHeaders responseHeaders = new HttpHeaders();
+		responseHeaders.set("X-WP-Total", getHeader(responseEntity, "X-WP-Total"));
+		responseHeaders.set("X-WP-TotalPages", getHeader(responseEntity, "X-WP-TotalPages"));
+		
+		return new ResponseEntity<>(responseEntity.getBody(), responseHeaders, responseEntity.getStatusCode());
+	}
+
+	private String getHeader(ResponseEntity<List<BlogPost>> responseEntity, String key) {
+		String response = "1";
+		if(responseEntity.getHeaders() != null && responseEntity.getHeaders().get(key) != null) {
+			response = responseEntity.getHeaders().get(key).get(0);
+		}
+		return response;
+	}
 
 }

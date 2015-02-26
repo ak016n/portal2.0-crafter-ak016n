@@ -2,6 +2,7 @@ package com.att.developer.service;
 
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
 
 import com.att.developer.bean.blog.BlogComment;
@@ -15,7 +16,7 @@ public interface BlogService {
 
 	BlogPost getBlog(String postId);
 
-	List<BlogPost> getBlogs(MultiValueMap<String, String> allRequestParams);
+	ResponseEntity<List<BlogPost>> getBlogs(MultiValueMap<String, String> allRequestParams);
 	
 	boolean createUser(String login, String transactionId);
 

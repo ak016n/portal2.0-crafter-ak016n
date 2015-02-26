@@ -8,12 +8,14 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.att.developer.bean.ServerSideError;
@@ -91,7 +93,7 @@ public class CommunityGatewayController {
 	}
 
 	@RequestMapping(value="/posts", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<BlogPost> getBlogs(@RequestParam MultiValueMap<String, String> allRequestParams) {
+	public @ResponseBody ResponseEntity<List<BlogPost>> getBlogs(@RequestParam MultiValueMap<String, String> allRequestParams) {
 		return blogService.getBlogs(allRequestParams);
 	}
 }
