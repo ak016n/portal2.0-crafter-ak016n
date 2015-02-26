@@ -17,6 +17,11 @@ function BlogCtrl($scope, $sce, blogPostService, blogCategoriesService) {
 	  $scope.pageChanged = function() {
 		  getBlogPosts($scope, $sce, blogPostService, {page: $scope.currentPage});
 	  };
+	  
+	  $scope.categorySelected = function(category) {
+		  getBlogPosts($scope, $sce, blogPostService, {"filter[category_name]" : category});
+	  };
+	  
 }
 
 function getBlogPosts($scope, $sce, blogPostService, param) {
