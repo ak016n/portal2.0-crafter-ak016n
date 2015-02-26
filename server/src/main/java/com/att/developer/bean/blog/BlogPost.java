@@ -4,9 +4,12 @@ import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(Include.NON_NULL)
 public class BlogPost {
 
 	@JsonProperty("ID")
@@ -103,7 +106,7 @@ public class BlogPost {
 	}
 	
 	public String getImage_url() {
-		return image_url;
+		return "/wp-content/uploads/" + image_url;
 	}
 
 	public void setImage_url(String image_url) {
