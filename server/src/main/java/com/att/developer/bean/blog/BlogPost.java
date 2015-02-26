@@ -34,6 +34,9 @@ public class BlogPost {
 	private String slug;
 	
 	private BlogGetUser author;
+	
+	@JsonProperty("image_url")
+	private String image_url;
 
 	public String getId() {
 		return id;
@@ -98,13 +101,22 @@ public class BlogPost {
 	public void setAuthor(BlogGetUser author) {
 		this.author = author;
 	}
+	
+	public String getImage_url() {
+		return image_url;
+	}
+
+	public void setImage_url(String image_url) {
+		this.image_url = image_url;
+	}
 
 	@Override
 	public String toString() {
 		return "BlogPost [id=" + id + ", title=" + title + ", content="
-				+ content + ", parentId=" + parentId + ", dateCreated="
-				+ dateCreated + ", dateModified=" + dateModified + ", slug="
-				+ slug + ", author=" + author + "]";
+				+ content + ", parentId=" + parentId + ", date=" + date
+				+ ", dateCreated=" + dateCreated + ", modified=" + modified
+				+ ", dateModified=" + dateModified + ", slug=" + slug
+				+ ", author=" + author + ", image_url=" + image_url + "]";
 	}
 
 }
