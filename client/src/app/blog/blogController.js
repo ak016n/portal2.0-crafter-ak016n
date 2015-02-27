@@ -1,3 +1,5 @@
+(function() {
+    'use strict';
 angular.module('blog').controller('BlogCtrl', BlogCtrl);
 
 BlogCtrl.$inject = ['$scope', '$sce', 'blogPostService', 'blogCategoriesService'];
@@ -23,7 +25,7 @@ function BlogCtrl($scope, $sce, blogPostService, blogCategoriesService) {
 	  };
 	  
 	  $scope.searchSelected = function() {
-		  getBlogPosts($scope, $sce, blogPostService, {"filter[s]" : $scope.search.term});
+		  getBlogPosts($scope, $sce, blogPostService, {"filter[s]" : $scope.blog.search.term});
 	  };
 }
 
@@ -48,9 +50,10 @@ function getCategories($scope, blogCategoriesService) {
 				  for (var i=0; i<success.length; i+=2) {
 				    newArr.push(success.slice(i, i+2));
 				  }
-				  $scope.categories =  newArr;
+				  $scope.blog.categories =  newArr;
 			  }, 
 			  function(error) {
 				  console.log("error");
 			  });
 }
+})();
