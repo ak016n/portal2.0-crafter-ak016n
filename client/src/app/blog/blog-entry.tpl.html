@@ -5,17 +5,17 @@
 	<!-- Blog Post -->
 
 	<!-- Title -->
-	<h1>{{blogPost.title}}</h1>
+	<h1>{{blog.post.title}}</h1>
 
 	<!-- Author -->
 	<p>
-		by <a href="index.php">{{blogPost.author.username}}</a>&nbsp;&nbsp;<span class="glyphicon glyphicon-time"></span> Posted on {{blogPost.date_created}}
+		by <a href="index.php">{{blog.post.author.username}}</a>&nbsp;&nbsp;<span class="glyphicon glyphicon-time"></span> Posted on {{blog.post.date_created}}
 	</p>
 
 	<hr>
 
 	<!-- Preview Image -->
-	<img class="img-responsive" ng-src="http://devpgm-wcm-stage.eng.mobilephone.net/blog{{blogPost.image_url}}" alt="">
+	<img class="img-responsive" ng-src="http://devpgm-wcm-stage.eng.mobilephone.net/blog{{blog.post.image_url}}" alt="">
 
 	<hr>
 
@@ -31,9 +31,9 @@
 			<h4>Leave a Comment:</h4>
 			<form role="form">
 				<div class="form-group">
-					<textarea class="form-control" rows="3" ng-model="blog.comment"></textarea>
+					<textarea class="form-control" rows="3" ng-model="blog.comment.content"></textarea>
 				</div>
-				<button type="submit" class="btn btn-primary" ng-click="postComment(blogPost.ID)">Submit</button>
+				<button type="submit" class="btn btn-primary" ng-click="postComment(blog.post.ID)">Submit</button>
 			</form>
 		</div>
 
@@ -42,7 +42,7 @@
 		<!-- Posted Comments -->
 
 		<!-- Comment -->
-		<div class="media" ng-repeat="comment in blogComments">
+		<div class="media" ng-repeat="comment in blog.comments">
 			<!-- <a class="pull-left" href="#"> <img class="media-object" src="http://placehold.it/64x64" alt=""></a> -->
 			<div class="media-body">
 				<h4 class="media-heading">

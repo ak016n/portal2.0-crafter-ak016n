@@ -1,21 +1,36 @@
-angular.module('blog').factory('blogPostService', ['$resource', function($resource, $scope) {
+angular.module('blog').factory('blogService', ['$resource', function($resource, $scope) {
+	var view;
+	var service = {};
+	
+	service.posts = function() {
 		return $resource('/developer/comgw/posts/:postId', {}, {
 			query: {isArray:true}
 	    });
-  }]);
+	}
+	
+	service.comments = function() {
+		return $resource('/developer/comgw/posts/:postId/comments/:commentId', {}, {
+			query: {isArray:true}
+	    });
+	}
 
-angular.module('blog').factory('blogCommentService', ['$resource', function($resource, $scope) {
-	return $resource('/developer/comgw/posts/:postId/comments/:commentId', {}, {
-		query: {isArray:true}
-    });
-}]);
-
-angular.module('blog').factory('blogCategoriesService', ['$resource', function($resource, $scope) {
-	return $resource('/developer/comgw/categories', {}, {
-    });
-}]);
-
-angular.module('blog').factory('blogTagsService', ['$resource', function($resource, $scope) {
-	return $resource('/developer/comgw/tags', {}, {
-    });
+	service.categories = function() {
+		return $resource('/developer/comgw/categories', {}, {
+	    });
+	}
+	
+	service.tags = function() {
+		return $resource('/developer/comgw/tags', {}, {
+	    });
+	}
+	
+	service.setView = function(view) {
+		this.view = view;
+	}
+	
+	service.getView = function() {
+		return this.view;
+	}
+	
+	return service;
 }]);
