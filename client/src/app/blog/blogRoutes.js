@@ -23,7 +23,18 @@ angular.module('blog').
 					  function(error) {
 						  console.log("error");
 					  });
-				 }]
+				 }],
+			comment: ['$rootScope', '$sce','blogCommentService', '$stateParams', function getComment($rootScope, $sce, blogCommentService, $stateParams) {
+				console.log("invoking resolve 2");
+				return blogCommentService.query({postId: $stateParams.id}).$promise.then(
+						  function(success) {
+							  $rootScope.blogComments = success;
+							  return success;
+						  }, 
+						  function(error) {
+							  console.log("error");
+						  });
+			}]
 			}
 		});
 }]);

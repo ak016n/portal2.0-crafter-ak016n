@@ -2,9 +2,9 @@
     'use strict';
 angular.module('blog').controller('BlogCtrl', BlogCtrl);
 
-BlogCtrl.$inject = ['$scope', '$sce', 'blogPostService', 'blogCategoriesService'];
+BlogCtrl.$inject = ['$scope', '$sce', 'blogPostService', 'blogCategoriesService', 'blogCommentService'];
 
-function BlogCtrl($scope, $sce, blogPostService, blogCategoriesService) {
+function BlogCtrl($scope, $sce, blogPostService, blogCategoriesService, blogCommentService) {
 	 init($scope, $sce, blogPostService,blogCategoriesService);
 	 
 	  $scope.pageChanged = function() {
@@ -19,8 +19,9 @@ function BlogCtrl($scope, $sce, blogPostService, blogCategoriesService) {
 		  getBlogPosts($scope, $sce, blogPostService, {"filter[s]" : $scope.blog.search.term});
 	  };
 	  
-	  $scope.postSelected = function() {
-		  getBlogPost($scope, $sce, blogPostService, {postId: $scope.blog.postId});
+	  $scope.postComment = function(postId, parentId) {
+		  var comment = {content : $scope.blog.comment, type : 'comment', parent: parentId };
+		  postComment($scope, blogCommentService, postId, comment);
 	  };
 }
 
@@ -64,4 +65,15 @@ function getCategories($scope, blogCategoriesService) {
 				  console.log("error");
 			  });
 }
+
+function postComment($scope, blogCommentsService, postId, comment) {
+	blogCommentsService.save({postId: postId}, comment).$promise.then(
+			  function(success) {
+				  console.log("success");
+			  }, 
+			  function(error) {
+				  console.log("error");
+			  });
+}
+
 })();

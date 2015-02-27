@@ -6,6 +6,7 @@ angular.module('blog').factory('blogPostService', ['$resource', function($resour
 
 angular.module('blog').factory('blogCommentService', ['$resource', function($resource, $scope) {
 	return $resource('/developer/comgw/posts/:postId/comments/:commentId', {}, {
+		query: {isArray:true}
     });
 }]);
 
