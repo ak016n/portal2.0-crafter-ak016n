@@ -16,14 +16,14 @@
 	                <p>
 	                	<img style="float: right; margin: 0px 15px 15px 0px;" ng-src="http://devpgm-wcm-stage.eng.mobilephone.net/blog{{post.image_url}}" height="250" width="250" />
 	                	
-	                	<div ng-bind-html="post.content"></div>
+	                	<div ng-bind-html="post.content"></div><a ng-href="#/blog/{{post.ID}}">Read more....</a>
 	            
 	            		<br style="clear: both;" />    
 					</p>
 					<hr>	
 				</div>
 				
-				<pagination boundary-links="true" total-items="totalItems" ng-model="currentPage" class="pagination-sm" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;" ng-change="pageChanged()"></pagination>
+				<pagination boundary-links="true" total-items="pagination.totalItems" ng-model="pagination.currentPage" class="pagination-sm" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;" ng-change="pageChanged()"></pagination>
 
 
             </div>

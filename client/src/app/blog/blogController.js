@@ -5,19 +5,10 @@ angular.module('blog').controller('BlogCtrl', BlogCtrl);
 BlogCtrl.$inject = ['$scope', '$sce', 'blogPostService', 'blogCategoriesService'];
 
 function BlogCtrl($scope, $sce, blogPostService, blogCategoriesService) {
-	 $scope.totalItems = 1;
-	 $scope.currentPage = 1;
+	 init($scope, $sce, blogPostService,blogCategoriesService);
 	 
-	 getBlogPosts($scope, $sce, blogPostService, {});
-	 
-	 getCategories($scope, blogCategoriesService);
-	 
-	  $scope.blog = {
-			  posts : []
-	  };
-	  
 	  $scope.pageChanged = function() {
-		  getBlogPosts($scope, $sce, blogPostService, {page: $scope.currentPage});
+		  getBlogPosts($scope, $sce, blogPostService, {page: $scope.pagination.currentPage});
 	  };
 	  
 	  $scope.categorySelected = function(category) {
@@ -27,6 +18,23 @@ function BlogCtrl($scope, $sce, blogPostService, blogCategoriesService) {
 	  $scope.searchSelected = function() {
 		  getBlogPosts($scope, $sce, blogPostService, {"filter[s]" : $scope.blog.search.term});
 	  };
+	  
+	  $scope.postSelected = function() {
+		  getBlogPost($scope, $sce, blogPostService, {postId: $scope.blog.postId});
+	  };
+}
+
+function init($scope, $sce, blogPostService, blogCategoriesService) {
+		$scope.pagination = {
+				totalItems : 1,
+				currentPage : 1
+		}
+
+		$scope.blog = {
+				  posts : []
+		  };
+		 getBlogPosts($scope, $sce, blogPostService, {});
+		 getCategories($scope, blogCategoriesService);	
 }
 
 function getBlogPosts($scope, $sce, blogPostService, param) {
@@ -35,7 +43,7 @@ function getBlogPosts($scope, $sce, blogPostService, param) {
 					post.content = $sce.trustAsHtml(post.content);  
 				  });
 				  $scope.blog.posts = success;
-				  $scope.totalItems = headers("X-WP-Total");
+				  $scope.pagination.totalItems = headers("X-WP-Total");
 			  }, 
 			  function(error) {
 				  console.log("error");
