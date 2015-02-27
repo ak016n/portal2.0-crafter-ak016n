@@ -12,6 +12,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.test.web.client.match.MockRestRequestMatchers;
 import org.springframework.test.web.client.response.MockRestResponseCreators;
@@ -240,10 +241,10 @@ public class BlogServiceImplTest {
     	valueColl.add("2");
     	params.put("filter[posts_per_page]", valueColl);
        	
-       	List<BlogPost> blogs = blogService.getBlogs(params);
+       	ResponseEntity<List<BlogPost>> blogs = blogService.getBlogs(params);
 
        	Assert.assertNotNull(blogs);
-       	Assert.assertTrue(blogs.size() == 2);
+       	Assert.assertTrue(blogs.getBody().size() == 2);
     	mockServer.verify();
     }
     
@@ -267,10 +268,10 @@ public class BlogServiceImplTest {
 
     	MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
        	
-       	List<BlogPost> blogs = blogService.getBlogs(params);
+       	ResponseEntity<List<BlogPost>> blogs = blogService.getBlogs(params);
 
        	Assert.assertNotNull(blogs);
-       	Assert.assertTrue(blogs.size() == 2);
+       	Assert.assertTrue(blogs.getBody().size() == 2);
     	mockServer.verify();
     }
     

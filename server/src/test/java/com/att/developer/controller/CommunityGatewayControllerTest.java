@@ -14,6 +14,8 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
@@ -117,14 +119,14 @@ public class CommunityGatewayControllerTest {
     	List<BlogPost> blogPostColl = new ArrayList<>();
     	blogPostColl.add(new BlogPostBuilder().build());
     	
-    	Mockito.when(mockBlogService.getBlogs(Mockito.any(MultiValueMap.class))).thenReturn(blogPostColl);
+    	Mockito.when(mockBlogService.getBlogs(Mockito.any(MultiValueMap.class))).thenReturn(new ResponseEntity<List<BlogPost>>(blogPostColl, HttpStatus.OK));
     	
     	MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
     	params.put("X", new ArrayList<String>());
     	
-    	List<BlogPost> blogPosts = communityGatewayController.getBlogs(params);
+    	ResponseEntity<List<BlogPost>> blogPosts = communityGatewayController.getBlogs(params);
     	
     	Assert.assertNotNull(blogPosts);
-    	Assert.assertTrue(blogPosts.size() == 1);
+    	Assert.assertTrue(blogPosts.getBody().size() == 1);
     }
 }
