@@ -2,6 +2,7 @@ package com.att.developer.bean.blog;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -19,7 +20,6 @@ public class BlogComment {
 	@JsonProperty("parent")
 	private String parentId;
 	
-	@JsonProperty("date")
 	private Date dateCreated;
 
 	private BlogGetUser author;
@@ -56,10 +56,13 @@ public class BlogComment {
 		this.parentId = parentId;
 	}
 
+	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+	@JsonProperty("date_created")
 	public Date getDateCreated() {
 		return dateCreated;
 	}
 
+	@JsonProperty("date")
 	public void setDateCreated(Date dateCreated) {
 		this.dateCreated = dateCreated;
 	}

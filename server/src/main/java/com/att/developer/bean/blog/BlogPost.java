@@ -24,10 +24,6 @@ public class BlogPost {
 	@JsonProperty("parent")
 	private String parentId;
 	
-	private Date date;
-	
-	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
-	@JsonProperty("date_created")
 	private Date dateCreated;
 
 	private Date modified;
@@ -75,14 +71,16 @@ public class BlogPost {
 		this.parentId = parentId;
 	}
 
+	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+	@JsonProperty("date_created")
 	public Date getDateCreated() {
-		return date;
+		return dateCreated;
 	}
 
-	public void setDate(Date dateCreated) {
-		this.date = dateCreated;
+	@JsonProperty("date")
+	public void setDateCreated(Date dateCreated) {
+		this.dateCreated = dateCreated;
 	}
-
 	public Date getDateModified() {
 		return modified;
 	}
@@ -122,7 +120,7 @@ public class BlogPost {
 	@Override
 	public String toString() {
 		return "BlogPost [id=" + id + ", title=" + title + ", content="
-				+ content + ", parentId=" + parentId + ", date=" + date
+				+ content + ", parentId=" + parentId
 				+ ", dateCreated=" + dateCreated + ", modified=" + modified
 				+ ", dateModified=" + dateModified + ", slug=" + slug
 				+ ", author=" + author + ", image_url=" + image_url + "]";

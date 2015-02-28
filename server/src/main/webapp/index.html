@@ -17,7 +17,7 @@
           <ul class="nav nav-justified">
             <li ng-class="{ active: isActive('/')}"><a href="#">Home</a></li>
             <li ng-class="{active: isActive('/faq')}"><a href="#faq">FAQ</a></li>
-            <li ng-class="{active: isActive('/blog')}"><a href="#blog">Blog</a></li>
+            <li ui-sref-active="active"><a ui-sref="blog.list" ui-sref-opts="{reload: true}">Blog</a></li>
             <li ng-class="{active: isActive('/login') || isActive('/admin')}"><a href="#admin">Admin</a></li>
           </ul>
         </nav>

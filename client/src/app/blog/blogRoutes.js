@@ -21,5 +21,13 @@ angular.module('blog').
 					blogService.setView('blog.entry');
 				}]
 			}
+		}).state('blog.search', {
+			url: '?s',
+			templateUrl: 'app/blog/blog-home.tpl.html',
+			resolve: {
+				view: ['blogService', function(blogService) {
+					blogService.setView('blog.search');
+				}]
+			}
 		});
 }]);

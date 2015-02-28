@@ -16,7 +16,7 @@ function BlogCtrl($scope, $sce, blogService, $state) {
 	  };
 	  
 	  $scope.searchSelected = function() {
-		  getBlogPosts($scope, $sce, blogService.posts(), {"filter[s]" : $scope.blog.search.term});
+		  $state.transitionTo('blog.search', {s :  $scope.blog.search.term});
 	  };
 	  
 	  $scope.postComment = function(postId, parentId) {
@@ -26,24 +26,35 @@ function BlogCtrl($scope, $sce, blogService, $state) {
 		  });
 		  $scope.blog.comment.content = '';
 	  };
+	  
+	  $scope.$on('$stateChangeSuccess', function (event, toState, toParams, fromState, fromParams) {
+		  if(  !$state.params.skip && ! $scope.blog.inProgress && (angular.isUndefinedOrNull($scope.blog.post) || $scope.blog.post.ID != $state.params.id)) {
+			  $state.reload();  
+		  }
+		  
+	  });
 }
 
 function init($scope, $sce, blogService, $state) {
 		$scope.pagination = {
-				totalItems : 1,
-				currentPage : 1
+			totalItems : 1,
+			currentPage : 1
 		}
 
 		$scope.blog = {
-				  posts : []
-		  };
-		
+			posts : [],
+			inProgress : true
+		};
+	
+		getCategories($scope, blogService.categories());	
+
 		if(blogService.getView() === "blog.list") {
 			 getBlogPosts($scope, $sce, blogService.posts(), {});
-			 getCategories($scope, blogService.categories());	
-		} else {
+		} else if(blogService.getView() === "blog.entry") {
 			getPost($scope, $sce, blogService.posts(), $state);
 			getComments($scope, $sce, blogService.comments(), $state);
+		} else {
+			getBlogPosts($scope, $sce, blogService.posts(), {"filter[s]" : $state.params.s});
 		}
 }
 
@@ -54,6 +65,7 @@ function getBlogPosts($scope, $sce, blogPostService, param) {
 				  });
 				  $scope.blog.posts = success;
 				  $scope.pagination.totalItems = headers("X-WP-Total");
+				  $scope.blog.inProgress = false;
 			  }, 
 			  function(error) {
 				  console.log("error");
@@ -94,6 +106,7 @@ function getPost($scope, $sce, blogPostService, $state) {
 						  function(success) {
 							  success.content = $sce.trustAsHtml(success.content);
 							  $scope.blog.post = success;
+							  $scope.blog.inProgress = false;
 						  }, 
 						  function(error) {
 							  console.log("error");
