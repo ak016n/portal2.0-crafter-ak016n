@@ -21,12 +21,10 @@ public class BlogPost {
 	
 	private String content;
 	
+	private String excerpt;
+	
 	@JsonProperty("parent")
 	private String parentId;
-	
-	private Date dateCreated;
-
-	private Date modified;
 	
 	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	@JsonProperty("date_modified")
@@ -38,6 +36,11 @@ public class BlogPost {
 	
 	@JsonProperty("image_url")
 	private String image_url;
+	
+	// annotation at method level
+	private Date dateCreated;
+	
+	private Date modified;
 	
 	public String getId() {
 		return id;
@@ -62,6 +65,14 @@ public class BlogPost {
 	public void setContent(String content) {
 		this.content = content;
 	}
+	
+	public String getExcerpt() {
+		return excerpt;
+	}
+
+	public void setExcerpt(String excerpt) {
+		this.excerpt = excerpt;
+	}
 
 	public String getParentId() {
 		return parentId;
@@ -69,24 +80,6 @@ public class BlogPost {
 
 	public void setParentId(String parentId) {
 		this.parentId = parentId;
-	}
-
-	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
-	@JsonProperty("date_created")
-	public Date getDateCreated() {
-		return dateCreated;
-	}
-
-	@JsonProperty("date")
-	public void setDateCreated(Date dateCreated) {
-		this.dateCreated = dateCreated;
-	}
-	public Date getDateModified() {
-		return modified;
-	}
-
-	public void setModified(Date dateModified) {
-		this.modified = dateModified;
 	}
 
 	public String getSlug() {
@@ -117,13 +110,33 @@ public class BlogPost {
 		this.image_url = image_url;
 	}
 	
+	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+	@JsonProperty("date_created")
+	public Date getDateCreated() {
+		return dateCreated;
+	}
+
+	@JsonProperty("date")
+	public void setDateCreated(Date dateCreated) {
+		this.dateCreated = dateCreated;
+	}
+	
+	public Date getDateModified() {
+		return modified;
+	}
+
+	public void setModified(Date dateModified) {
+		this.modified = dateModified;
+	}
+
 	@Override
 	public String toString() {
 		return "BlogPost [id=" + id + ", title=" + title + ", content="
-				+ content + ", parentId=" + parentId
-				+ ", dateCreated=" + dateCreated + ", modified=" + modified
+				+ content + ", excerpt=" + excerpt + ", parentId=" + parentId
 				+ ", dateModified=" + dateModified + ", slug=" + slug
-				+ ", author=" + author + ", image_url=" + image_url + "]";
+				+ ", author=" + author + ", image_url=" + image_url
+				+ ", dateCreated=" + dateCreated + ", modified=" + modified
+				+ "]";
 	}
-
+	
 }
