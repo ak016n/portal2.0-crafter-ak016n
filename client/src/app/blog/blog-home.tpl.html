@@ -14,8 +14,7 @@
 	                    by {{post.author.username}}&nbsp;&nbsp;<span class="glyphicon glyphicon-time"></span> Posted on {{post.date_created}}
 	                </p>
 	                <p>
-	                	<img style="float: right; margin: 0px 15px 15px 0px;" ng-src="http://devpgm-wcm-stage.eng.mobilephone.net/blog{{post.image_url}}" height="250" width="250" />
-	                	
+	                	<img style="float: right; margin: 0px 15px 15px 0px;" ng-show="post.image_url" ng-src="http://devpgm-wcm-stage.eng.mobilephone.net/blog{{post.image_url}}" height="250" width="250" />
 	                	<div ng-bind-html="post.content"></div><a ui-sref="blog.entry({id : post.ID})" ui-sref-opts="{reload: true}">Read more....</a>
 	            
 	            		<br style="clear: both;" />    
