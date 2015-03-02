@@ -25,6 +25,7 @@ module.exports = function(config) {
       'client/bower_components/google-diff-match-patch-js/*.js',
       'client/bower_components/angular-ui-router/**/angular-ui-router.js',
       'client/bower_components/ngstorage/ngStorage.js',
+      'client/bower_components/angular-sanitize/angular-sanitize.js',
       'client/test/mock/*.js',
 	  'client/src/**/*.js',
       'client/src/app/app.js',

@@ -22,7 +22,7 @@ function BlogCtrl($scope, $sce, blogService, $state) {
 	  $scope.postComment = function(postId, parentId) {
 		  var comment = {content : $scope.blog.comment.content, type : 'comment', parent: parentId };
 		  postComment($scope, blogService.comments(), postId, comment).then( function () {
-				getComments($scope, $sce, blogService.comments(), $state)
+				getComments($scope, $sce, blogService.comments(), $state);
 		  });
 		  $scope.blog.comment.content = '';
 	  };
@@ -39,7 +39,7 @@ function init($scope, $sce, blogService, $state) {
 		$scope.pagination = {
 			totalItems : 1,
 			currentPage : 1
-		}
+		};
 
 		$scope.blog = {
 			posts : [],
