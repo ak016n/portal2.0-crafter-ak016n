@@ -4,7 +4,7 @@ angular.module('blog').controller('BlogCtrl', BlogCtrl);
 
 BlogCtrl.$inject = ['$scope', '$sce', 'blogService', '$state'];
 
-function BlogCtrl($scope, $sce, blogService, $state) {
+function BlogCtrl($scope, $sce, blogService, $state, $sanitze) {
 	 init($scope, $sce, blogService, $state);
 	 
 	  $scope.pageChanged = function() {

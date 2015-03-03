@@ -8,14 +8,14 @@
 				
 				<div ng-repeat="post in blog.posts" ui-sref-opts="{reload: true}">
 	                <h2>
-	                    <a ui-sref="blog.entry({id : post.ID})" ui-sref-opts="{reload: true}">{{post.title}}</a>
+	                    <a ui-sref="blog.entry({id : post.ID})" ui-sref-opts="{reload: true}" ><div ng-bind-html="post.title"></div></a>
 	                </h2>
 	                <p>
 	                    by {{post.author.username}}&nbsp;&nbsp;<span class="glyphicon glyphicon-time"></span> Posted on {{post.date_created}}
 	                </p>
 	                <p>
-	                	<img style="float: right; margin: 0px 15px 15px 0px;" ng-show="post.image_url" ng-src="http://devpgm-wcm-stage.eng.mobilephone.net/blog{{post.image_url}}" height="250" width="250" />
-	                	<div ng-bind-html="post.content"></div><a ui-sref="blog.entry({id : post.ID})" ui-sref-opts="{reload: true}">Read more....</a>
+	                	<img style="float: right; padding: 10px 10px;" ng-show="post.image_url" ng-src="http://devpgm-wcm-stage.eng.mobilephone.net/blog{{post.image_url}}" />
+	                	<div ng-bind-html="post.excerpt"></div><a ui-sref="blog.entry({id : post.ID})" ui-sref-opts="{reload: true}">Read more....</a>
 	            
 	            		<br style="clear: both;" />    
 					</p>
