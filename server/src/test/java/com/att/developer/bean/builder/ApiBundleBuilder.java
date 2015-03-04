@@ -11,10 +11,12 @@ public class ApiBundleBuilder {
     private ApiBundle apiBundle = new ApiBundle();
     
     public ApiBundleBuilder(){
-        apiBundle.setStartDate(Instant.now());
-        apiBundle.setEndDate(Instant.now().plusSeconds(15000));
+    	Instant now = Instant.now();
+        apiBundle.setStartDate(now);
+        apiBundle.setEndDate(now.plusSeconds(15000));
         apiBundle.setName("n_" + apiBundle.getId());
         apiBundle.setComments("some comments");
+        apiBundle.setCreatedOn(now);
     }
     
     public ApiBundle build(){

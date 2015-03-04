@@ -137,11 +137,9 @@ public class EventLog implements Serializable {
 	}
 
 	public void setCreatedOn(Instant created) {
-		if (createdOn != null) {
+		if (created != null) {
 			this.createdOn = Date.from(created);
-		} else {
-			this.createdOn = null;
-		}
+		} 
 	}
 
 	public String toString() {
