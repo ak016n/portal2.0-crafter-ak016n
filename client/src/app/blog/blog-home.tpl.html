@@ -5,29 +5,32 @@
                     Community
                     <small>Blog</small>
                 </h1>
-                
-				<div ng-class="{'alert alert-success' : !flashMessages.isError(), 'alert alert-danger' : flashMessages.isError()}" ng-repeat="flashMessage in flashMessages.getMessage()">
-				 {{flashMessage}}
-				</div>
-				
-				<div ng-hide="flashMessages.isError()">
-					<div ng-repeat="post in blog.posts" ui-sref-opts="{reload: true}">
-		                <h2>
-		                    <a ui-sref="blog.entry({id : post.ID})" ui-sref-opts="{reload: true}" ><div ng-bind-html="post.title"></div></a>
-		                </h2>
-		                <p>
-		                    by {{post.author.username}}&nbsp;&nbsp;<span class="glyphicon glyphicon-time"></span> Posted on {{post.date_created}}
-		                </p>
-		                <p>
-		                	<img style="float: right; padding: 10px 10px;" ng-show="post.image_url" ng-src="http://devpgm-wcm-stage.eng.mobilephone.net/blog{{post.image_url}}" />
-		                	<div ng-bind-html="post.excerpt"></div><a ui-sref="blog.entry({id : post.ID})" ui-sref-opts="{reload: true}">Read more....</a>
-		            
-		            		<br style="clear: both;" />    
-						</p>
-						<hr>	
+                <div class="col-lg-12">
+					<div ng-class="{'alert alert-success padded' : !flashMessages.isError(), 'alert alert-danger padded' : flashMessages.isError()}" ng-repeat="flashMessage in flashMessages.getMessage()">
+					 {{flashMessage}}
 					</div>
 					
-					<pagination boundary-links="true" total-items="pagination.totalItems" ng-model="pagination.currentPage" class="pagination-sm" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;" ng-change="pageChanged()"></pagination>
+					
+					<div ng-hide="flashMessages.isError()">
+						<div ng-repeat="post in blog.posts" ui-sref-opts="{reload: true}">
+			                <h2>
+			                    <a ui-sref="blog.entry({id : post.ID})" ui-sref-opts="{reload: true}" ><div ng-bind-html="post.title"></div></a>
+			                </h2>
+			                <p>
+			                    by {{post.author.username}}&nbsp;&nbsp;<span class="glyphicon glyphicon-time"></span> Posted on {{post.date_created}}
+			                </p>
+			                <p>
+			                	<img style="float: right; padding: 10px 10px;" ng-show="post.image_url" ng-src="http://devpgm-wcm-stage.eng.mobilephone.net/blog{{post.image_url}}" />
+			                	<div ng-bind-html="post.excerpt"></div><a ui-sref="blog.entry({id : post.ID})" ui-sref-opts="{reload: true}">Read more....</a>
+			            
+			            		<br style="clear: both;" />    
+							</p>
+							<hr>	
+						</div>
+						
+						<pagination boundary-links="true" total-items="pagination.totalItems" ng-model="pagination.currentPage" class="pagination-sm" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;" ng-change="pageChanged()"></pagination>
+					</div>
+				
 				</div>
 
             </div>

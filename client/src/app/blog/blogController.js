@@ -8,11 +8,11 @@ function BlogCtrl($scope, $sce, blogService, $state, flashMessageService) {
 	 init($scope, $sce, blogService, $state, flashMessageService);
 	 
 	  $scope.pageChanged = function() {
-		  getBlogPosts($scope, $sce, blogService.posts(), {page: $scope.pagination.currentPage});
+		  getBlogPosts($scope, $sce, blogService.posts(), {page: $scope.pagination.currentPage}, flashMessageService);
 	  };
 	  
 	  $scope.categorySelected = function(category) {
-		  getBlogPosts($scope, $sce, blogService.posts(), {"filter[category_name]" : category});
+		  getBlogPosts($scope, $sce, blogService.posts(), {"filter[category_name]" : category}, flashMessageService);
 	  };
 	  
 	  $scope.searchSelected = function() {
@@ -21,8 +21,8 @@ function BlogCtrl($scope, $sce, blogService, $state, flashMessageService) {
 	  
 	  $scope.postComment = function(postId, parentId) {
 		  var comment = {content : $scope.blog.comment.content, type : 'comment', parent: parentId };
-		  postComment($scope, blogService.comments(), postId, comment).then( function () {
-				getComments($scope, $sce, blogService.comments(), $state);
+		  postComment($scope, blogService.comments(), postId, comment, flashMessageService).then( function () {
+				getComments($scope, $sce, blogService.comments(), $state, flashMessageService);
 		  });
 		  $scope.blog.comment.content = '';
 	  };
@@ -48,19 +48,19 @@ function init($scope, $sce, blogService, $state, flashMessageService) {
 			inProgress : true
 		};
 	
-		getCategories($scope, blogService.categories());	
+		getCategories($scope, blogService.categories(), flashMessageService);	
 
 		if(blogService.getView() === "blog.list") {
-			 getBlogPosts($scope, $sce, blogService.posts(), {});
+			 getBlogPosts($scope, $sce, blogService.posts(), {}, flashMessageService);
 		} else if(blogService.getView() === "blog.entry") {
 			getPost($scope, $sce, blogService.posts(), $state, flashMessageService);
-			getComments($scope, $sce, blogService.comments(), $state);
+			getComments($scope, $sce, blogService.comments(), $state, flashMessageService);
 		} else {
-			getBlogPosts($scope, $sce, blogService.posts(), {"filter[s]" : $state.params.s});
+			getBlogPosts($scope, $sce, blogService.posts(), {"filter[s]" : $state.params.s}, flashMessageService);
 		}
 }
 
-function getBlogPosts($scope, $sce, blogPostService, param) {
+function getBlogPosts($scope, $sce, blogPostService, param, flashMessageService) {
 	  blogPostService.query(param, function(success, headers) {
 				  angular.forEach(success, function(post) {
 					post.content = $sce.trustAsHtml(post.content);  
@@ -70,11 +70,12 @@ function getBlogPosts($scope, $sce, blogPostService, param) {
 				  $scope.blog.inProgress = false;
 			  }, 
 			  function(error) {
-				  console.log("error");
+				  flashMessageService.setError(true);
+				  flashMessageService.setMessage(error.data.errors);
 			  });
 }
 
-function getCategories($scope, blogCategoriesService) {
+function getCategories($scope, blogCategoriesService, flashMessageService) {
 	blogCategoriesService.query({}).$promise.then(
 			  function(success) {
 				  // slicing data into two column sets
@@ -85,19 +86,21 @@ function getCategories($scope, blogCategoriesService) {
 				  $scope.blog.categories =  newArr;
 			  }, 
 			  function(error) {
-				  console.log("error");
+				  flashMessageService.setMessage(error.data.errors);
 			  });
 }
 
-function postComment($scope, blogCommentsService, postId, comment) {
+function postComment($scope, blogCommentsService, postId, comment, flashMessageService) {
 	 var promise = blogCommentsService.save({postId: postId}, comment).$promise;
-	
+	 flashMessageService.clearAll();
+	 
 	 promise.then(
 			  function(success) {
-				  console.log("success");
+				  flashMessageService.addMessage("Comment has been successfully created.");
 			  }, 
 			  function(error) {
-				  console.log("error");
+				  //flashMessageService.setError(true); Not setting because we still want to show the post even if there are comment issues
+				  flashMessageService.setMessage(error.data.errors);
 			  });
 	
 	return promise;
@@ -116,13 +119,14 @@ function getPost($scope, $sce, blogPostService, $state, flashMessageService) {
 						  });
 }
 
-function getComments($scope, $sce, blogCommentService, $state) {
+function getComments($scope, $sce, blogCommentService, $state, flashMessageService) {
 	blogCommentService.query({postId: $state.params.id}).$promise.then(
 			  function(success) {
 				  $scope.blog.comments = success;
 			  }, 
 			  function(error) {
-				  console.log("error");
+				  //flashMessageService.setError(true); Not setting because we still want to show the post even if there are comment issues
+				  flashMessageService.setMessage(error.data.errors);
 			  });
 }
 

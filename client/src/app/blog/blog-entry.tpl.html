@@ -3,52 +3,55 @@
 <div class="col-lg-8">
 
 	<!-- Blog Post -->
-	<div ng-class="{'alert alert-success' : !flashMessages.isError(), 'alert alert-danger' : flashMessages.isError()}" ng-repeat="flashMessage in flashMessages.getMessage()">
-	 {{flashMessage}}
-	</div>
+	<div class="col-lg-12">
+		<div ng-class="{'alert alert-success margin' : !flashMessages.isError(), 'alert alert-danger margin' : flashMessages.isError()}" ng-repeat="flashMessage in flashMessages.getMessage()">
+		 {{flashMessage}}
+		</div>
+	
 
-	<div ng-hide="flashMessages.isError()">
-		<!-- Title -->
-		<h1><div ng-bind-html="blog.post.title"></div></h1>
-	
-		<!-- Author -->
-		<p>
-			by <a href="index.php">{{blog.post.author.username}}</a>&nbsp;&nbsp;<span class="glyphicon glyphicon-time"></span> Posted on {{blog.post.date_created}}
-		</p>
-	
-		<hr>
-	
-		<!-- Post Content -->
-		<p class="lead"><div ng-bind-html="blog.post.content"></div></p>
-	
-		<hr>
-	
-			<!-- Blog Comments -->
-	
-			<!-- Comments Form -->
-			<div class="well">
-				<h4>Leave a Comment:</h4>
-				<form role="form">
-					<div class="form-group">
-						<textarea class="form-control" rows="3" ng-model="blog.comment.content"></textarea>
-					</div>
-					<button type="submit" class="btn btn-primary" ng-click="postComment(blog.post.ID)">Submit</button>
-				</form>
-			</div>
-	
+		<div ng-hide="flashMessages.isError()">
+			<!-- Title -->
+			<h1><div ng-bind-html="blog.post.title"></div></h1>
+		
+			<!-- Author -->
+			<p>
+				by <a href="index.php">{{blog.post.author.username}}</a>&nbsp;&nbsp;<span class="glyphicon glyphicon-time"></span> Posted on {{blog.post.date_created}}
+			</p>
+		
 			<hr>
-	
-			<!-- Posted Comments -->
-			<h3>Comments</h3>
-			<!-- Comment -->
-			<div class="media" ng-repeat="comment in blog.comments">
-				<div class="media-body">
-					<h4 class="media-heading">
-						by <mark>{{comment.author.username}}</mark> on <small>{{comment.date_created}}</small>
-					</h4>
-						<div ng-bind-html="comment.content"></div>
+		
+			<!-- Post Content -->
+			<p class="lead"><div ng-bind-html="blog.post.content"></div></p>
+		
+			<hr>
+		
+				<!-- Blog Comments -->
+		
+				<!-- Comments Form -->
+				<div class="well">
+					<h4>Leave a Comment:</h4>
+					<form role="form">
+						<div class="form-group">
+							<textarea class="form-control" rows="3" ng-model="blog.comment.content"></textarea>
+						</div>
+						<button type="submit" class="btn btn-primary" ng-click="postComment(blog.post.ID)">Submit</button>
+					</form>
 				</div>
-			</div>
+		
+				<hr>
+		
+				<!-- Posted Comments -->
+				<h3>Comments</h3>
+				<!-- Comment -->
+				<div class="media" ng-repeat="comment in blog.comments">
+					<div class="media-body">
+						<h4 class="media-heading">
+							by <mark>{{comment.author.username}}</mark> on <small>{{comment.date_created}}</small>
+						</h4>
+							<div ng-bind-html="comment.content"></div>
+					</div>
+				</div>
+		</div>
 	</div>
 
 	</div>
