@@ -2,10 +2,10 @@
     'use strict';
 angular.module('blog').controller('BlogCtrl', BlogCtrl);
 
-BlogCtrl.$inject = ['$scope', '$sce', 'blogService', '$state'];
+BlogCtrl.$inject = ['$scope', '$sce', 'blogService', '$state', 'flashMessageService'];
 
-function BlogCtrl($scope, $sce, blogService, $state, $sanitze) {
-	 init($scope, $sce, blogService, $state);
+function BlogCtrl($scope, $sce, blogService, $state, flashMessageService) {
+	 init($scope, $sce, blogService, $state, flashMessageService);
 	 
 	  $scope.pageChanged = function() {
 		  getBlogPosts($scope, $sce, blogService.posts(), {page: $scope.pagination.currentPage});
@@ -35,7 +35,9 @@ function BlogCtrl($scope, $sce, blogService, $state, $sanitze) {
 	  });
 }
 
-function init($scope, $sce, blogService, $state) {
+function init($scope, $sce, blogService, $state, flashMessageService) {
+		$scope.flashMessages = flashMessageService;
+	
 		$scope.pagination = {
 			totalItems : 1,
 			currentPage : 1
@@ -51,7 +53,7 @@ function init($scope, $sce, blogService, $state) {
 		if(blogService.getView() === "blog.list") {
 			 getBlogPosts($scope, $sce, blogService.posts(), {});
 		} else if(blogService.getView() === "blog.entry") {
-			getPost($scope, $sce, blogService.posts(), $state);
+			getPost($scope, $sce, blogService.posts(), $state, flashMessageService);
 			getComments($scope, $sce, blogService.comments(), $state);
 		} else {
 			getBlogPosts($scope, $sce, blogService.posts(), {"filter[s]" : $state.params.s});
@@ -101,7 +103,7 @@ function postComment($scope, blogCommentsService, postId, comment) {
 	return promise;
 }
 
-function getPost($scope, $sce, blogPostService, $state) {
+function getPost($scope, $sce, blogPostService, $state, flashMessageService) {
 	blogPostService.get({postId: $state.params.id}).$promise.then(
 						  function(success) {
 							  success.content = $sce.trustAsHtml(success.content);
@@ -109,7 +111,8 @@ function getPost($scope, $sce, blogPostService, $state) {
 							  $scope.blog.inProgress = false;
 						  }, 
 						  function(error) {
-							  console.log("error");
+							  flashMessageService.setError(true);
+							  flashMessageService.setMessage(error.data.errors);
 						  });
 }
 
