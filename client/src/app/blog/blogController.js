@@ -114,7 +114,7 @@ function postComment($scope, blogCommentsService, postId, comment, flashMessageS
 }
 
 function getPost($scope, $sce, blogPostService, $state, flashMessageService) {
-	blogPostService.get({postId: $state.params.id}).$promise.then(
+	blogPostService.get({postId: $state.params.slug}).$promise.then(
 						  function(success) {
 							  success.content = $sce.trustAsHtml(success.content);
 							  $scope.blog.post = success;

@@ -14,12 +14,15 @@ angular.module('blog').
 				}]
 			}
 		}).state('blog.entry', {
-			url: "/:id",
+			url: "/:slug",
 			templateUrl: 'app/blog/blog-entry.tpl.html',
 			resolve: {
 				view: ['blogService', function(blogService) {
 					blogService.setView('blog.entry');
 				}]
+			},
+			params: {
+				id: null
 			}
 		}).state('blog.search', {
 			url: '?s',
