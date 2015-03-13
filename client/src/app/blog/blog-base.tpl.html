@@ -26,7 +26,7 @@
                     <div class="row">
                         <div class="col-lg-6" ng-repeat="arrays in blog.categories">
                             <ul class="list-unstyled" ng-repeat="item in arrays">
-                                <li><a ng-href="#/blog?categories={{item}}" ng-click="categorySelected(item)">{{item}}</a></li>
+                                <li><a ng-href="#/blog/categories/{{item}}">{{item}}</a></li>
                             </ul>
                         </div>
 

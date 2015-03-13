@@ -50,13 +50,20 @@ function init($scope, $sce, blogService, $state, flashMessageService) {
 	
 		getCategories($scope, blogService.categories(), flashMessageService);	
 
-		if(blogService.getView() === "blog.list") {
-			 getBlogPosts($scope, $sce, blogService.posts(), {}, flashMessageService);
-		} else if(blogService.getView() === "blog.entry") {
-			getPost($scope, $sce, blogService.posts(), $state, flashMessageService);
-			getComments($scope, $sce, blogService.comments(), $state, flashMessageService);
-		} else {
-			getBlogPosts($scope, $sce, blogService.posts(), {"filter[s]" : $state.params.s}, flashMessageService);
+		switch(blogService.getView()) {
+			case "blog.list":
+				 getBlogPosts($scope, $sce, blogService.posts(), {}, flashMessageService);
+				 break;
+			case "blog.entry":
+				getPost($scope, $sce, blogService.posts(), $state, flashMessageService);
+				getComments($scope, $sce, blogService.comments(), $state, flashMessageService);
+				break;
+			case "blog.list.categories":	
+				getBlogPosts($scope, $sce, blogService.posts(), {"filter[category_name]" : $state.params.category}, flashMessageService);
+				break;
+			default:
+				getBlogPosts($scope, $sce, blogService.posts(), {"filter[s]" : $state.params.s}, flashMessageService);
+				break;
 		}
 }
 
