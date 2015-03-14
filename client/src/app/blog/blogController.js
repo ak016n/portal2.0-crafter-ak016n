@@ -55,8 +55,9 @@ function init($scope, $sce, blogService, $state, flashMessageService) {
 				 getBlogPosts($scope, $sce, blogService.posts(), {}, flashMessageService);
 				 break;
 			case "blog.entry":
-				getPost($scope, $sce, blogService.posts(), $state, flashMessageService);
-				getComments($scope, $sce, blogService.comments(), $state, flashMessageService);
+				getPost($scope, $sce, blogService.posts(), $state, flashMessageService).then( function () {
+					getComments($scope, $sce, blogService.comments(), $state, flashMessageService);
+				  });
 				break;
 			case "blog.list.categories":	
 				getBlogPosts($scope, $sce, blogService.posts(), {"filter[category_name]" : $state.params.category}, flashMessageService);
@@ -114,20 +115,25 @@ function postComment($scope, blogCommentsService, postId, comment, flashMessageS
 }
 
 function getPost($scope, $sce, blogPostService, $state, flashMessageService) {
-	blogPostService.get({postId: $state.params.slug}).$promise.then(
-						  function(success) {
-							  success.content = $sce.trustAsHtml(success.content);
-							  $scope.blog.post = success;
-							  $scope.blog.inProgress = false;
-						  }, 
-						  function(error) {
-							  flashMessageService.setError(true);
-							  flashMessageService.setMessage(error.data.errors);
-						  });
+	var promise = blogPostService.get({postId: $state.params.slug}).$promise;
+	
+	promise.then(
+			  function(success) {
+				  success.content = $sce.trustAsHtml(success.content);
+				  $scope.blog.post = success;
+				  $scope.blog.inProgress = false;
+			  }, 
+			  function(error) {
+				  flashMessageService.setError(true);
+				  flashMessageService.setMessage(error.data.errors);
+			  });
+				
+	return promise;
 }
 
 function getComments($scope, $sce, blogCommentService, $state, flashMessageService) {
-	blogCommentService.query({postId: $state.params.id}).$promise.then(
+	var postId = $state.params.id != null ? $state.params.id : $scope.blog.post.ID;
+	blogCommentService.query({postId: postId}).$promise.then(
 			  function(success) {
 				  $scope.blog.comments = success;
 			  }, 
