@@ -83,14 +83,14 @@ describe('test BlogController', function() {
 		
 	}));
 	
-    it('should have called default "init"', function() {
+    it('should have called default "init blog.list" for default', function() {
     	
     	controller('BlogCtrl', {$scope: scope, blogService: mockBlogService, $sce: sce, $state: state, flashMessageService: mockFlashMessageService});
     	expect(scope.pagination.totalItems).toBe(1);
     	expect(mockBlogService.posts).toHaveBeenCalled();
     });
     
-    it('should have called "init blog.list"', function() {
+    it('should have called "init blog.list"  when callback success', function() {
     	
     	mockBlogService.setView('blog.list');
     	response = [{title : 'test', content: 'content desc 1'}];
@@ -107,7 +107,7 @@ describe('test BlogController', function() {
     	expect(mockBlogService.posts).toHaveBeenCalled();
     });
     
-    it('should throw error "init blog.list"', function() {
+    it('should throw error "init blog.list" when callback error', function() {
     	
     	mockBlogService.setView('blog.list');
     	errorResponse = {
@@ -127,7 +127,7 @@ describe('test BlogController', function() {
     	expect(mockBlogService.posts).toHaveBeenCalled();
     });
     
-    it('should have called "init blog.entry"', function() {
+    it('should have called "init blog.entry" for blog.entry view', function() {
     	
     	mockBlogService.setView('blog.entry');
     	response = {title : 'test', content: 'content desc 1'};
@@ -142,7 +142,7 @@ describe('test BlogController', function() {
     	expect(mockBlogService.categories).toHaveBeenCalled();
     });
     
-    it('should have called "init blog.categories"', function() {
+    it('should have called "init blog.categories" for blog.categories view', function() {
     	
     	mockBlogService.setView('blog.categories');
     	response = ['X', 'Y', 'Z'];
