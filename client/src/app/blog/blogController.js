@@ -69,6 +69,7 @@ function init($scope, $sce, blogService, $state, flashMessageService) {
 }
 
 function getBlogPosts($scope, $sce, blogPostService, param, flashMessageService) {
+	  $scope.loading = true;
 	  blogPostService.query(param, function(success, headers) {
 				  angular.forEach(success, function(post) {
 					post.content = $sce.trustAsHtml(post.content);  
@@ -76,10 +77,12 @@ function getBlogPosts($scope, $sce, blogPostService, param, flashMessageService)
 				  $scope.blog.posts = success;
 				  $scope.pagination.totalItems = headers("X-WP-Total");
 				  $scope.blog.inProgress = false;
+				  $scope.loading = false;
 			  }, 
 			  function(error) {
 				  flashMessageService.setError(true);
 				  flashMessageService.setMessage(error.data.errors);
+				  $scope.loading = false;
 			  });
 }
 
@@ -116,7 +119,7 @@ function postComment($scope, blogCommentsService, postId, comment, flashMessageS
 
 function getPost($scope, $sce, blogPostService, $state, flashMessageService) {
 	var promise = blogPostService.get({postId: $state.params.slug}).$promise;
-	
+	$scope.loading = true;
 	promise.then(
 			  function(success) {
 				  success.content = $sce.trustAsHtml(success.content);
@@ -126,6 +129,8 @@ function getPost($scope, $sce, blogPostService, $state, flashMessageService) {
 			  function(error) {
 				  flashMessageService.setError(true);
 				  flashMessageService.setMessage(error.data.errors);
+			  }).finally(function() {
+				    $scope.loading = false;
 			  });
 				
 	return promise;

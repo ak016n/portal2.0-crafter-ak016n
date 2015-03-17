@@ -10,6 +10,8 @@
 					 {{flashMessage}}
 					</div>
 					
+					<img src="/developer/resources/images/ajax-loader.gif" class="center-block margin" ng-show="loading"/>
+					
 					<div ng-hide="flashMessages.isError()">
 						<div ng-repeat="post in blog.posts" ui-sref-opts="{reload: true}">
 			                <h2>
