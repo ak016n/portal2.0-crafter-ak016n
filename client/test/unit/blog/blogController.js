@@ -8,8 +8,8 @@ describe('test BlogController', function() {
 		scope = $rootScope.$new();
 		
 		q = $q;
-		
 		$httpBackend = _$httpBackend_;
+		controller = $controller;
 		
     	// This is for translate
     	$httpBackend.when('GET', '/developer/i18N?lang=en').respond({});
@@ -57,7 +57,11 @@ describe('test BlogController', function() {
 					query: function() {
 							deferred = $q.defer();
 						   return {$promise: deferred.promise};
-				    }
+				    },
+					save: function() {
+						deferred = $q.defer();
+					   return {$promise: deferred.promise};
+					}
 				}
 			}
 		};
@@ -72,11 +76,10 @@ describe('test BlogController', function() {
 			return this.view;
 		};
 		
-		controller = $controller;
-		
-		mockFlashMessageService = jasmine.createSpyObj('flashMessageService', ['setMessage']);
+		mockFlashMessageService = jasmine.createSpyObj('flashMessageService', ['setMessage', 'getMessage', 'addMessage', 'setError', 'isError', 'clearAll']);
 		spyOn(mockBlogService, 'posts').andCallThrough();
 		spyOn(mockBlogService, 'categories').andCallThrough();
+		spyOn(mockBlogService, 'comments').andCallThrough();
 		
 	}));
 	
@@ -101,6 +104,26 @@ describe('test BlogController', function() {
     	callbackSuccess(response, header);
     	
     	expect(scope.blog.posts).toBe(response);
+    	expect(mockBlogService.posts).toHaveBeenCalled();
+    });
+    
+    it('should throw error "init blog.list"', function() {
+    	
+    	mockBlogService.setView('blog.list');
+    	errorResponse = {
+    			data : {"errors":[{"id":"Unexpected","message":"error message"}]}
+    	};
+
+    	header = function(string) {
+    			return "10";
+    	}
+    	
+    	controller('BlogCtrl', {$scope: scope, blogService: mockBlogService, $sce: sce, $state: state, flashMessageService: mockFlashMessageService});
+    	
+    	callbackError(errorResponse);
+    	
+    	expect(mockFlashMessageService.setError).toHaveBeenCalled();
+    	expect(mockFlashMessageService.setMessage).toHaveBeenCalled();
     	expect(mockBlogService.posts).toHaveBeenCalled();
     });
     
@@ -131,6 +154,57 @@ describe('test BlogController', function() {
     	
     	expect(scope.blog.categories).toEqual([['X', 'Y'], ['Z']]); // slicing to fit the
     	expect(mockBlogService.categories).toHaveBeenCalled();
+    });
+    
+    it('should have thrown error "init blog.categories"', function() {
+    	
+    	mockBlogService.setView('blog.categories');
+    	errorResponse = {
+    			data : {"errors":[{"id":"Unexpected","message":"error message"}]}
+    	};
+
+    	controller('BlogCtrl', {$scope: scope, blogService: mockBlogService, $sce: sce, $state: state, flashMessageService: mockFlashMessageService});
+    	
+    	deferred.reject(errorResponse);
+    	scope.$digest();
+    	
+    	expect(mockFlashMessageService.setError).not.toHaveBeenCalled();
+    	expect(mockFlashMessageService.setMessage).toHaveBeenCalled();
+    	expect(mockBlogService.categories).toHaveBeenCalled();
+    });
+	
+    it('should have post comment successfully', function() {
+    	controller('BlogCtrl', {$scope: scope, blogService: mockBlogService, $sce: sce, $state: state, flashMessageService: mockFlashMessageService});
+    	
+    	scope.blog.comment = {
+    			content : 'raj vs howard'
+    	};
+    	scope.postComment('1', '1');
+    	
+    	deferred.resolve();
+    	scope.$digest();
+    	
+    	expect(mockFlashMessageService.addMessage).toHaveBeenCalled();
+    	expect(mockBlogService.comments).toHaveBeenCalled();
+    });
+    
+    it('should have post comment failure', function() {
+    	controller('BlogCtrl', {$scope: scope, blogService: mockBlogService, $sce: sce, $state: state, flashMessageService: mockFlashMessageService});
+    	
+    	scope.blog.comment = {
+    			content : 'raj vs howard'
+    	};
+    	scope.postComment('1', '1');
+    	errorResponse = {
+    			data : {"errors":[{"id":"Unexpected","message":"error message"}]}
+    	};
+    	
+    	deferred.reject(errorResponse);
+    	scope.$digest();
+    	
+    	expect(mockFlashMessageService.addMessage).not.toHaveBeenCalled();
+    	expect(mockFlashMessageService.setMessage).toHaveBeenCalled();
+    	expect(mockBlogService.comments).toHaveBeenCalled();
     });
 	
 });
