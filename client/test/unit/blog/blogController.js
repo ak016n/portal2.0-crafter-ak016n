@@ -2,7 +2,7 @@ describe('test BlogController', function() {
     //mock Application to allow us to inject our own dependencies
     beforeEach(angular.mock.module('portalApp'));
 	
-    var scope, sce, mockBlogService, state, mockFlashMessageService, q, httpBackend, deferred, callbackSuccess, callbackError, resource;
+    var scope, sce, mockBlogService, state, mockFlashMessageService, q, $httpBackend, deferred, callbackSuccess, callbackError, resource;
     
 	beforeEach(angular.mock.inject(function($rootScope, $sce, $state, $controller, $q, $injector,  _$httpBackend_) {
 		scope = $rootScope.$new();
