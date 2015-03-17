@@ -5,7 +5,7 @@ angular.module('blog').controller('BlogCtrl', BlogCtrl);
 BlogCtrl.$inject = ['$scope', '$sce', 'blogService', '$state', 'flashMessageService'];
 
 function BlogCtrl($scope, $sce, blogService, $state, flashMessageService) {
-	 init($scope, $sce, blogService, $state, flashMessageService);
+	  init($scope, $sce, blogService, $state, flashMessageService);
 	 
 	  $scope.pageChanged = function() {
 		  getBlogPosts($scope, $sce, blogService.posts(), {page: $scope.pagination.currentPage}, flashMessageService);
@@ -132,7 +132,7 @@ function getPost($scope, $sce, blogPostService, $state, flashMessageService) {
 }
 
 function getComments($scope, $sce, blogCommentService, $state, flashMessageService) {
-	var postId = $state.params.id != null ? $state.params.id : $scope.blog.post.ID;
+	var postId = $state.params.id !== null ? $state.params.id : $scope.blog.post.ID;
 	blogCommentService.query({postId: postId}).$promise.then(
 			  function(success) {
 				  $scope.blog.comments = success;
