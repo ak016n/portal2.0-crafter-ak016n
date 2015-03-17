@@ -22,7 +22,7 @@
 
                 <!-- Blog Categories Well -->
                 <div class="well">
-                    <h4>Blog Categories</h4>
+                    <h4>Categories</h4>
                     <div class="row">
                         <div class="col-lg-6" ng-repeat="arrays in blog.categories">
                             <ul class="list-unstyled" ng-repeat="item in arrays">
@@ -37,8 +37,16 @@
 
                 <!-- Side Widget Well -->
                 <div class="well">
-                    <h4>Side Widget Well</h4>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore, perspiciatis adipisci accusamus laudantium odit aliquam repellat tempore quos aspernatur vero.</p>
+                     <h4>Tags</h4>
+                    <div class="row">
+                        <div class="col-lg-6" ng-repeat="arrays in blog.tags">
+                            <ul class="list-unstyled" ng-repeat="item in arrays">
+                                <li><a ng-href="#/blog/tags/{{item}}">{{item}}</a></li>
+                            </ul>
+                        </div>
+
+                        <!-- /.col-lg-6 -->
+                    </div>
                 </div>
 
             </div>

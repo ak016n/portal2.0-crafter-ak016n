@@ -40,5 +40,13 @@ angular.module('blog').
 					blogService.setView('blog.list.categories');
 				}]
 			}
+		}).state('blog.tags', {
+			url: '/tags/:tag',
+			templateUrl: 'app/blog/blog-home.tpl.html',
+			resolve: {
+				view: ['blogService', function(blogService) {
+					blogService.setView('blog.list.tags');
+				}]
+			}
 		});
 }]);

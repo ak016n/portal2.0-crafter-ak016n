@@ -48,7 +48,8 @@ function init($scope, $sce, blogService, $state, flashMessageService) {
 			inProgress : true
 		};
 	
-		getCategories($scope, blogService.categories(), flashMessageService);	
+		getCategories($scope, blogService.categories(), flashMessageService);
+		getTags($scope, blogService.tags(), flashMessageService);
 
 		switch(blogService.getView()) {
 			case "blog.list":
@@ -61,6 +62,9 @@ function init($scope, $sce, blogService, $state, flashMessageService) {
 				break;
 			case "blog.list.categories":	
 				getBlogPosts($scope, $sce, blogService.posts(), {"filter[category_name]" : $state.params.category}, flashMessageService);
+				break;
+			case "blog.list.tags":	
+				getBlogPosts($scope, $sce, blogService.posts(), {"filter[tag]" : $state.params.tag}, flashMessageService);
 				break;
 			default:
 				getBlogPosts($scope, $sce, blogService.posts(), {"filter[s]" : $state.params.s}, flashMessageService);
@@ -95,6 +99,21 @@ function getCategories($scope, blogCategoriesService, flashMessageService) {
 				    newArr.push(success.slice(i, i+2));
 				  }
 				  $scope.blog.categories =  newArr;
+			  }, 
+			  function(error) {
+				  flashMessageService.setMessage(error.data.errors);
+			  });
+}
+
+function getTags($scope, blogTagService, flashMessageService) {
+	blogTagService.query({}).$promise.then(
+			  function(success) {
+				  // slicing data into two column sets
+				  var newArr = [];
+				  for (var i=0; i<success.length; i+=2) {
+				    newArr.push(success.slice(i, i+2));
+				  }
+				  $scope.blog.tags =  newArr;
 			  }, 
 			  function(error) {
 				  flashMessageService.setMessage(error.data.errors);
