@@ -2,7 +2,7 @@ describe('test BlogController', function() {
     //mock Application to allow us to inject our own dependencies
     beforeEach(angular.mock.module('portalApp'));
 	
-    var scope, sce, mockBlogService, state, mockFlashMessageService, q, $httpBackend, deferred, callbackSuccess, callbackError, resource;
+    var scope, sce, mockBlogService, state, mockFlashMessageService, q, $httpBackend, categoriesDeferred, tagDeferred, deferred, callbackSuccess, callbackError, resource;
     
 	beforeEach(angular.mock.inject(function($rootScope, $sce, $state, $controller, $q, $injector,  _$httpBackend_) {
 		scope = $rootScope.$new();
@@ -34,10 +34,18 @@ describe('test BlogController', function() {
 			categories : function() {
 			   return {
 				   query: function() {
-					   deferred = $q.defer();
-					   return {$promise: deferred.promise};
+					   categoriesDeferred = $q.defer();
+					   return {$promise: categoriesDeferred.promise};
 			      }
 			   }
+			},
+			tags : function() {
+				   return {
+					   query: function() {
+						   tagDeferred = $q.defer();
+						   return {$promise: tagDeferred.promise};
+				      }
+				   }
 			},
 			posts : function() {
 				   return {
@@ -79,6 +87,7 @@ describe('test BlogController', function() {
 		mockFlashMessageService = jasmine.createSpyObj('flashMessageService', ['setMessage', 'getMessage', 'addMessage', 'setError', 'isError', 'clearAll']);
 		spyOn(mockBlogService, 'posts').andCallThrough();
 		spyOn(mockBlogService, 'categories').andCallThrough();
+		spyOn(mockBlogService, 'tags').andCallThrough();
 		spyOn(mockBlogService, 'comments').andCallThrough();
 		
 	}));
@@ -144,12 +153,12 @@ describe('test BlogController', function() {
     
     it('should have called "init blog.categories" for blog.categories view', function() {
     	
-    	mockBlogService.setView('blog.categories');
+    	mockBlogService.setView('blog.list.categories');
     	response = ['X', 'Y', 'Z'];
 
     	controller('BlogCtrl', {$scope: scope, blogService: mockBlogService, $sce: sce, $state: state, flashMessageService: mockFlashMessageService});
     	
-    	deferred.resolve(response);
+    	categoriesDeferred.resolve(response);
     	scope.$digest();
     	
     	expect(scope.blog.categories).toEqual([['X', 'Y'], ['Z']]); // slicing to fit the
@@ -158,19 +167,50 @@ describe('test BlogController', function() {
     
     it('should have thrown error "init blog.categories"', function() {
     	
-    	mockBlogService.setView('blog.categories');
+    	mockBlogService.setView('blog.list.categories');
     	errorResponse = {
     			data : {"errors":[{"id":"Unexpected","message":"error message"}]}
     	};
 
     	controller('BlogCtrl', {$scope: scope, blogService: mockBlogService, $sce: sce, $state: state, flashMessageService: mockFlashMessageService});
     	
-    	deferred.reject(errorResponse);
+    	categoriesDeferred.reject(errorResponse);
     	scope.$digest();
     	
     	expect(mockFlashMessageService.setError).not.toHaveBeenCalled();
     	expect(mockFlashMessageService.setMessage).toHaveBeenCalled();
     	expect(mockBlogService.categories).toHaveBeenCalled();
+    });
+    
+    it('should have called "init blog.tags" for blog.tags view', function() {
+    	
+    	mockBlogService.setView('blog.list.tags');
+    	response = ['X', 'Y', 'Z'];
+
+    	controller('BlogCtrl', {$scope: scope, blogService: mockBlogService, $sce: sce, $state: state, flashMessageService: mockFlashMessageService});
+    	
+    	tagDeferred.resolve(response);
+    	scope.$digest();
+    	
+    	expect(scope.blog.tags).toEqual([['X', 'Y'], ['Z']]); // slicing to fit the
+    	expect(mockBlogService.tags).toHaveBeenCalled();
+    });
+    
+    it('should have thrown error "init blog.tags"', function() {
+    	
+    	mockBlogService.setView('blog.list.tags');
+    	errorResponse = {
+    			data : {"errors":[{"id":"Unexpected","message":"error message"}]}
+    	};
+
+    	controller('BlogCtrl', {$scope: scope, blogService: mockBlogService, $sce: sce, $state: state, flashMessageService: mockFlashMessageService});
+    	
+    	tagDeferred.reject(errorResponse);
+    	scope.$digest();
+    	
+    	expect(mockFlashMessageService.setError).not.toHaveBeenCalled();
+    	expect(mockFlashMessageService.setMessage).toHaveBeenCalled();
+    	expect(mockBlogService.tags).toHaveBeenCalled();
     });
 	
     it('should have post comment successfully', function() {
