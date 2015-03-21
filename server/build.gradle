@@ -17,6 +17,7 @@ ext {
  	slf4jVersion="1.7.7"
  	log4jVersion="2.0.1"
  	mysqlVersion = mysqlVersion_ext // refer below buildScript block, to modify shared variable
+ 	flywayVersion = flywayVersion_ext // refer below buildScript block, to modify shared variable
  	httpClientVersion = "4.3.5"
 }
 
@@ -170,6 +171,7 @@ buildscript {
 
 	ext {
  		mysqlVersion_ext = "5.1.31"
+ 		flywayVersion_ext = "3.2.1"
 	}
 	
 	repositories {
@@ -177,13 +179,12 @@ buildscript {
 	}
 	dependencies {
 		// TODO - fix it after groovy support for 1.8 is available
-		// classpath "org.flywaydb:flyway-gradle-plugin:3.0"
-		classpath "com.googlecode.flyway:flyway-gradle-plugin:2.3"
+		classpath "org.flywaydb:flyway-gradle-plugin:${flywayVersion_ext}"
 		classpath "mysql:mysql-connector-java:${mysqlVersion_ext}"
 	}
 }
 
-apply plugin: "flyway"
+apply plugin: "org.flywaydb.flyway"
 
 println "flyway.url = $env.flyway.url"
 println "flyway.url = $env.flyway.schemas"
