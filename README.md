@@ -37,7 +37,7 @@ git config --global https.proxy http://one.proxy.att.com:8080
 Step 6: Validate the project setup with
 ``` gradle
 Command Prompt
-cmd> gradlew flywayInit flywayMigrate npmInstall build
+cmd> gradlew flywayMigrate -i npmInstall build
  
 Environment is set to local
 config [flyway:[password:dev_core, driver:com.mysql.jdbc.Driver, schemas:[dev_core], user:dev_core, version:1.0, url:jdbc:mysql://localhost:3306/]]
