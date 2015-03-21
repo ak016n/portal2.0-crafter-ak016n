@@ -180,7 +180,7 @@ public class GlobalScopedParamServiceImpl implements GlobalScopedParamService {
 		}
 		if (!found) {
 			Map<String, Object> globalDefaultPropertiesMap = propertiesMap.get(buildKeyFromIKFK(GLOBAL_IK, DEFAULT_FK));
-			value = (String) globalDefaultPropertiesMap.get(key);
+			value = (globalDefaultPropertiesMap != null) ? (String) globalDefaultPropertiesMap.get(key) : null;
 		}
 		
 		return value;
