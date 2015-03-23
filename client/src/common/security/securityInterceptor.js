@@ -21,7 +21,7 @@ angular.module('security').config(['$httpProvider', function($httpProvider, $sta
 			},
 			request : function(config) {
 				if(angular.isDefined($sessionStorage.accessToken)) {
-					config.headers = {'Authorization' : 'Bearer ' + $sessionStorage.accessToken};
+					config.headers['Authorization'] = 'Bearer ' + $sessionStorage.accessToken;
 				}
 				return config;
 			}
