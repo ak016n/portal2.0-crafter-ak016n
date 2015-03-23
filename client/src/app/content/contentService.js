@@ -1,3 +1,8 @@
-angular.module('content').factory('contentService', ['$resource', function($resource) {
-    return $resource('/developer/content/:subPath');
-}]);
+(function() {
+    'use strict';
+
+	angular.module('content').factory('contentService', ['$resource', function($resource) {
+	    return $resource('/developer/content/:subPath');
+	}]);
+
+})();
