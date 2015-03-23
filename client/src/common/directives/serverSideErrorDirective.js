@@ -78,7 +78,7 @@
 	        	attFormErrorsCtrl.addCtrl(attrs.name, attFieldErrorsCtrl);
 	
 	        	var el = getTemplate();
-	        	compiled = $compile(el)(scope);
+	        	var compiled = $compile(el)(scope);
 	        	
 	        	if(element.parent().find('label').length === 0) {
 	        		element.parent().parent().find('label').after(compiled);

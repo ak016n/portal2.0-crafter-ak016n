@@ -4,7 +4,7 @@
 	angular.module('security').factory('principal', ['$http', '$timeout', '$rootScope', function($http, $timeout, $rootScope) {
 		var principal;
 		var times = 0;
-		authenticated = false;
+		var authenticated = false;
 		
 		return {
 			
