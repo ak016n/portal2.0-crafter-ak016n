@@ -18,7 +18,7 @@ ext {
  	log4jVersion="2.0.1"
  	mysqlVersion = mysqlVersion_ext // refer below buildScript block, to modify shared variable
  	flywayVersion = flywayVersion_ext // refer below buildScript block, to modify shared variable
- 	httpClientVersion = "4.4"
+ 	httpClientVersion = "4.3.5"
 }
 
 jacoco {
