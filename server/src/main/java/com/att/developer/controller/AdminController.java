@@ -1,5 +1,6 @@
 package com.att.developer.controller;
 
+import java.io.IOException;
 import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
@@ -33,6 +34,8 @@ import com.att.developer.service.EventTrackingService;
 import com.att.developer.service.GlobalScopedParamService;
 import com.att.developer.service.UserService;
 import com.att.developer.util.FaultUtils;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 
 @RestController
 @RequestMapping("/admin")
@@ -157,6 +160,7 @@ public class AdminController {
 		} else {
 			try {
 				User user = getUserFromSecurityContext();
+				validateJson(attProperties.getDescription(), errorColl);
 				lclAttProperties = globalScopedParamService.createProperties(attProperties, (user != null) ? user.getId() : principal.getName());
 			} catch (DuplicateDataException e) {
 				ServerSideError error = new ServerSideError.Builder().id("ssGeneralError").message("Record already exist. Please use update").build();
@@ -170,6 +174,19 @@ public class AdminController {
 		return lclAttProperties;
     }
 
+	private void validateJson(String description, ServerSideErrors errorColl) {
+		try {
+			globalScopedParamService.getPropertiesMapFromText(description);	
+		} catch (JsonParseException | JsonMappingException  e) {
+			ServerSideError error = new ServerSideError.Builder().id("ssGeneralError").message("Error parsing JSON. Reason: " + e.getMessage()).build();
+			throw new ServerSideException(errorColl.add(error));
+		} catch (IOException e) {
+			ServerSideError error = new ServerSideError.Builder().id("ssGeneralError").message("Error creating record. Reason: " + e.getMessage()).build();
+			throw new ServerSideException(errorColl.add(error));
+		} 
+		
+	}
+
     @RequestMapping(method = RequestMethod.PUT)
     public AttProperties updateProperty(@RequestBody @Valid AttProperties attProperties, BindingResult bindingResult) {
     	AttProperties lclAttProperties = null;
@@ -180,6 +197,7 @@ public class AdminController {
 			throw new ServerSideException(errorColl);
 		} else {
 			try {
+				validateJson(attProperties.getDescription(), errorColl);
 				lclAttProperties = globalScopedParamService.updateProperties(attProperties);
 			} catch (DAOException | UnsupportedOperationException e) {
 				ServerSideError error = new ServerSideError.Builder().id("ssGeneralError").message("Error updating record. Reason: " + e.getMessage()).build();

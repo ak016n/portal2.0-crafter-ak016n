@@ -1,5 +1,6 @@
 package com.att.developer.controller;
 
+import java.io.IOException;
 import java.security.Principal;
 import java.util.Arrays;
 import java.util.List;
@@ -21,6 +22,8 @@ import com.att.developer.exception.DuplicateDataException;
 import com.att.developer.exception.ServerSideException;
 import com.att.developer.exception.UnsupportedOperationException;
 import com.att.developer.service.GlobalScopedParamService;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 
 public class AdminControllerTest {
 
@@ -193,6 +196,20 @@ public class AdminControllerTest {
 		Mockito.verify(mockGlobalScopedParamService, Mockito.atLeastOnce()).createProperties(Mockito.any(AttProperties.class), Mockito.anyString());
 	}
 	
+	@Test(expected = ServerSideException.class)
+	public void testCreate_jsonParsingException() throws JsonParseException, JsonMappingException, IOException {
+		Mockito.when(mockPrincipal.getName()).thenReturn("sheldon");
+		
+		Mockito.when(mockGlobalScopedParamService.getPropertiesMapFromText("x=y")).thenThrow(new JsonParseException("json unparseable", null));
+		
+		Mockito.when(mockGlobalScopedParamService.createProperties(Mockito.any(AttProperties.class), Mockito.anyString())).thenReturn(new AttProperties());
+		
+		AttProperties attProperties = adminController.createProperty(new AttPropertiesBuilder().withDescription("x=y").build(), mockBindingResult, mockPrincipal);
+		
+		Mockito.verify(mockGlobalScopedParamService, Mockito.atLeastOnce()).createProperties(Mockito.any(AttProperties.class), Mockito.anyString());
+		Assert.assertNotNull(attProperties);
+	}
+	
 	@Test
 	public void testUpdate_happyPath() {
 		Mockito.when(mockPrincipal.getName()).thenReturn("sheldon");
@@ -200,6 +217,19 @@ public class AdminControllerTest {
 		Mockito.when(mockGlobalScopedParamService.updateProperties(Mockito.any(AttProperties.class))).thenReturn(new AttProperties());
 		
 		AttProperties attProperties = adminController.updateProperty(new AttPropertiesBuilder().build(), mockBindingResult);
+		
+		Mockito.verify(mockGlobalScopedParamService, Mockito.atLeastOnce()).updateProperties(Mockito.any(AttProperties.class));
+		Assert.assertNotNull(attProperties);
+	}
+	
+	@Test(expected = ServerSideException.class)
+	public void testUpdate_jsonParseException() throws JsonParseException, JsonMappingException, IOException {
+		Mockito.when(mockPrincipal.getName()).thenReturn("sheldon");
+		
+		Mockito.when(mockGlobalScopedParamService.getPropertiesMapFromText("x=y")).thenThrow(new JsonParseException("json unparseable", null));
+		Mockito.when(mockGlobalScopedParamService.updateProperties(Mockito.any(AttProperties.class))).thenReturn(new AttProperties());
+		
+		AttProperties attProperties = adminController.updateProperty(new AttPropertiesBuilder().withDescription("x=y").build(), mockBindingResult);
 		
 		Mockito.verify(mockGlobalScopedParamService, Mockito.atLeastOnce()).updateProperties(Mockito.any(AttProperties.class));
 		Assert.assertNotNull(attProperties);
