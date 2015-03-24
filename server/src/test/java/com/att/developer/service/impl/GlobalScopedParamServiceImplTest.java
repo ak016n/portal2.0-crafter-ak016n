@@ -2,7 +2,6 @@ package com.att.developer.service.impl;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.persistence.PersistenceException;
 
@@ -71,7 +70,7 @@ public class GlobalScopedParamServiceImplTest {
 	public void testGet_envSpecific() {
 		System.setProperty("ENV", "INT");
 		Mockito.when(mockAttPropertiesDAO.findActiveProp("GLOBAL", "DEFAULT")).thenReturn(new AttPropertiesBuilder().withItemKey("GLOBAL").withFieldKey("DEFAULT").build());
-		Mockito.when(mockAttPropertiesDAO.findActiveProp("ENV", "INT")).thenReturn(new AttPropertiesBuilder().withItemKey("ENV").withFieldKey("INT").withDescription("status=together").build());
+		Mockito.when(mockAttPropertiesDAO.findActiveProp("ENV", "INT")).thenReturn(new AttPropertiesBuilder().withItemKey("ENV").withFieldKey("INT").withDescription("\"status\":\"together\"").build());
 		
 		globalScopedParamService.initialize();
 		
@@ -81,58 +80,21 @@ public class GlobalScopedParamServiceImplTest {
 	}
 
 	@Test
-	public void testGetSet() {
-		Mockito.when(mockAttPropertiesDAO.findActiveProp("GLOBAL", "DEFAULT")).thenReturn(new AttPropertiesBuilder().withItemKey("GLOBAL").withFieldKey("DEFAULT").build());
-		Mockito.when(mockAttPropertiesDAO.findActiveProp("COLL", "SET")).thenReturn(new AttPropertiesBuilder().withItemKey("COLL").withFieldKey("SET").withDescription("setOfValue=Set:[[a,b,c,d]]").build());
-		
-		globalScopedParamService.initialize();
-		
-		Set<String> value = globalScopedParamService.getSet("COLL","SET","setOfValue");
-		
-		Assert.assertTrue("contains value", value.contains("a"));
-	}
-	
-	
-	@Test
-	public void testGetSet_withSpacesInKey() {
-		Mockito.when(mockAttPropertiesDAO.findActiveProp("GLOBAL", "DEFAULT")).thenReturn(new AttPropertiesBuilder().withItemKey("GLOBAL").withFieldKey("DEFAULT").build());
-		Mockito.when(mockAttPropertiesDAO.findActiveProp("COLL", "SET")).thenReturn(new AttPropertiesBuilder().withItemKey("COLL").withFieldKey("SET").withDescription("setOfValue=Set : [[a,b,c,d]]").build()); // Spaces on Set{space}:{space}
-		
-		globalScopedParamService.initialize();
-		
-		Set<String> value = globalScopedParamService.getSet("COLL","SET","setOfValue");
-		
-		Assert.assertTrue("contains value", value.contains("a"));
-	}
-	
-	@Test
 	public void testGetSet_moreThanOne() {
 		Mockito.when(mockAttPropertiesDAO.findActiveProp("GLOBAL", "DEFAULT")).thenReturn(new AttPropertiesBuilder().withItemKey("GLOBAL").withFieldKey("DEFAULT").build());
-		Mockito.when(mockAttPropertiesDAO.findActiveProp("COLL", "SET")).thenReturn(new AttPropertiesBuilder().withItemKey("COLL").withFieldKey("SET").withDescription("setOfValue=Set:[[a,b,c,d]]\nsecondIsString=string\nthirdIsASet=Set:[[thai, indian, mexi]]").build());
+		Mockito.when(mockAttPropertiesDAO.findActiveProp("COLL", "SET")).thenReturn(new AttPropertiesBuilder().withItemKey("COLL").withFieldKey("SET").withDescription("{\r\n    \"setOfValue\": [\r\n        \"a\",\r\n        \"b\",\r\n        \"c\",\r\n        \"d\"\r\n    ],\r\n    \"secondIsString\": \"string\",\r\n    \"thirdIsASet\": [\r\n        \"thai\",\r\n        \"indian\",\r\n        \"mexi\"\r\n    ]\r\n}").build());
 		
 		globalScopedParamService.initialize();
 		
-		Set<String> value = globalScopedParamService.getSet("COLL","SET","thirdIsASet");
+		List<String> value = globalScopedParamService.getList("COLL","SET","thirdIsASet");
 		
 		Assert.assertTrue("contains value", value.contains("mexi"));
 	}
 	
 	@Test
-	public void testGetArray() {
-		Mockito.when(mockAttPropertiesDAO.findActiveProp("GLOBAL", "DEFAULT")).thenReturn(new AttPropertiesBuilder().withItemKey("GLOBAL").withFieldKey("DEFAULT").build());
-		Mockito.when(mockAttPropertiesDAO.findActiveProp("COLL", "ARRAY")).thenReturn(new AttPropertiesBuilder().withItemKey("COLL").withFieldKey("ARRAY").withDescription("setOfValue=Array:[[a,b,c,d]]\nsecondIsString=string\nthirdIsASet=Set:[[thai, indian, mexi]]").build());
-		
-		globalScopedParamService.initialize();
-		
-		String[] value = globalScopedParamService.getArray("COLL","ARRAY","setOfValue");
-		
-		Assert.assertEquals(value[0], "a");
-	}
-	
-	@Test
 	public void testGetList() {
 		Mockito.when(mockAttPropertiesDAO.findActiveProp("GLOBAL", "DEFAULT")).thenReturn(new AttPropertiesBuilder().withItemKey("GLOBAL").withFieldKey("DEFAULT").build());
-		Mockito.when(mockAttPropertiesDAO.findActiveProp("COLL", "LIST")).thenReturn(new AttPropertiesBuilder().withItemKey("COLL").withFieldKey("LIST").withDescription("setOfValue=LIST:[[a,b,c,d]]\nsecondIsString=string\nthirdIsASet=Set:[[thai, indian, mexi]]").build());
+		Mockito.when(mockAttPropertiesDAO.findActiveProp("COLL", "LIST")).thenReturn(new AttPropertiesBuilder().withItemKey("COLL").withFieldKey("LIST").withDescription("{\"setOfValue\": [\"a\",\"b\",\"c\"],\"secondIsString\": \"string\",\"thirdIsASet\": [\"thai\",\"indian\",\"mexi\"]}").build());
 		
 		globalScopedParamService.initialize();
 		
@@ -144,7 +106,7 @@ public class GlobalScopedParamServiceImplTest {
 	@Test
 	public void testGetMap() {
 		Mockito.when(mockAttPropertiesDAO.findActiveProp("GLOBAL", "DEFAULT")).thenReturn(new AttPropertiesBuilder().withItemKey("GLOBAL").withFieldKey("DEFAULT").build());
-		Mockito.when(mockAttPropertiesDAO.findActiveProp("COLL", "MAP")).thenReturn(new AttPropertiesBuilder().withItemKey("COLL").withFieldKey("MAP").withDescription("setOfValue=Map:[[a=v1,b=v2,c=v3,d=v4]]\nsecondIsString=string\nthirdIsASet=Set:[[thai, indian, mexi]]").build());
+		Mockito.when(mockAttPropertiesDAO.findActiveProp("COLL", "MAP")).thenReturn(new AttPropertiesBuilder().withItemKey("COLL").withFieldKey("MAP").withDescription("{\"setOfValue\": {\"a\": \"v1\",\"b\": \"v2\",\"c\": \"v3\",\"d\": \"v4\"},\"secondIsString\": \"string\",\"thirdIsASet\": [\"thai\",\"indian\",\"mexi\"]}").build());
 		
 		globalScopedParamService.initialize();
 		
@@ -256,5 +218,47 @@ public class GlobalScopedParamServiceImplTest {
 		globalScopedParamService.deleteProperties(attProperties);
 		attProperties.setDeleted(true);
 		Mockito.verify(mockAttPropertiesDAO, Mockito.atMost(1)).update(attProperties);
+	}
+	
+	@Test
+	public void testGetPropertiesMapFromText_string() {
+		Map<String, Object> map = globalScopedParamService.getPropertiesMapFromText("{\"x\" : \"y\"}");
+		
+		Assert.assertEquals("y", map.get("x"));
+	}
+	
+	@Test
+	public void testGetPropertiesMapFromText_list() {
+		Map<String, Object> map = globalScopedParamService.getPropertiesMapFromText("{ \"x\": [\"y\",\"z\"]}");
+		
+		Assert.assertTrue(map.get("x") instanceof List);
+	}
+	
+	@Test
+	public void testGetPropertiesMapFromText_map() {
+		Map<String, Object> map = globalScopedParamService.getPropertiesMapFromText("{\"x\": {\"y\": \"z\"}}");
+		
+		Assert.assertTrue(map.get("x") instanceof Map);
+	}
+	
+	@Test
+	public void testGetPropertiesMapFromText_missingStartBrackets() {
+		Map<String, Object> map = globalScopedParamService.getPropertiesMapFromText("\r\n \"x\": [\"y\",\"z\"]}");
+		
+		Assert.assertTrue(map.get("x") instanceof List);
+	}
+	
+	@Test
+	public void testGetPropertiesMapFromText_missingEndBrackets() {
+		Map<String, Object> map = globalScopedParamService.getPropertiesMapFromText("{ \"x\": [\"y\",\"z\"]");
+		
+		Assert.assertTrue(map.get("x") instanceof List);
+	}
+	
+	@Test
+	public void testGetPropertiesMapFromText_missingBothBrackets() {
+		Map<String, Object> map = globalScopedParamService.getPropertiesMapFromText("\"x\": [\"y\",\"z\"]");
+		
+		Assert.assertTrue(map.get("x") instanceof List);
 	}
 }

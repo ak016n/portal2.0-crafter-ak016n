@@ -9,7 +9,7 @@ public class AttPropertiesBuilder {
 	public AttPropertiesBuilder() {
 		attProperties.setItemKey("leonard");
 		attProperties.setFieldKey("penny");
-		attProperties.setDescription("status=complex");
+		attProperties.setDescription("{\"status\":\"complex\"}");
 		attProperties.setVersion(1);
 	}
 
