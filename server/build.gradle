@@ -9,7 +9,7 @@ apply plugin: "jacoco"
 
 ext {
  	springVersion = "4.1.5.RELEASE"
- 	springSecurityVersion = "3.2.5.RELEASE"
+ 	springSecurityVersion = "3.2.6.RELEASE"
  	tomcatVersion = "7.0.54"
  	hibernateVersion = "4.3.8.Final"
  	atomikosVersion = "3.9.3"
@@ -18,7 +18,7 @@ ext {
  	log4jVersion="2.0.1"
  	mysqlVersion = mysqlVersion_ext // refer below buildScript block, to modify shared variable
  	flywayVersion = flywayVersion_ext // refer below buildScript block, to modify shared variable
- 	httpClientVersion = "4.3.5"
+ 	httpClientVersion = "4.4"
 }
 
 jacoco {
