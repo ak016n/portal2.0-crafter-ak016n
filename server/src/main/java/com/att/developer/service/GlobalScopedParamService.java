@@ -1,14 +1,15 @@
 package com.att.developer.service;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
 
 import com.att.developer.bean.AttProperties;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 
 public interface GlobalScopedParamService {
-	public abstract Properties getPropertiesMapFromText(String propertiesText);
+	public abstract Map<String, Object> getPropertiesMapFromText(String propertiesText) throws JsonParseException, JsonMappingException, IOException;
 
 	/**
 	 * Get global scoped parameter values, first tries environment specific option and then tries global default	
@@ -25,17 +26,9 @@ public interface GlobalScopedParamService {
 	 */
 	public abstract String get(String key, String defaultValue);
 
-	public abstract Set<String> getSet(String itemKey, String fieldKey,
-			String key);
+	public abstract List<String> getList(String itemKey, String fieldKey, String key);
 
-	public abstract String[] getArray(String itemKey, String fieldKey,
-			String key);
-
-	public abstract List<String> getList(String itemKey, String fieldKey,
-			String key);
-
-	public abstract Map<String, String> getMap(String itemKey, String fieldKey,
-			String key);
+	public abstract Map<String, String> getMap(String itemKey, String fieldKey, String key);
 
 	/**
 	 * High level method returns map of ItemKey and fieldKey

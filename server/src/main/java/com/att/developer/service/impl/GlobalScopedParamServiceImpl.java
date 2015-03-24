@@ -1,14 +1,9 @@
 package com.att.developer.service.impl;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.PostConstruct;
@@ -28,11 +23,14 @@ import com.att.developer.bean.EventLog;
 import com.att.developer.dao.AttPropertiesDAO;
 import com.att.developer.exception.DAOException;
 import com.att.developer.exception.DuplicateDataException;
+import com.att.developer.exception.UnsupportedOperationException;
 import com.att.developer.service.EventTrackingService;
 import com.att.developer.service.GlobalScopedParamService;
 import com.att.developer.typelist.ActorType;
 import com.att.developer.typelist.EventType;
-import com.att.developer.exception.UnsupportedOperationException;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class GlobalScopedParamServiceImpl implements GlobalScopedParamService {
@@ -40,15 +38,6 @@ public class GlobalScopedParamServiceImpl implements GlobalScopedParamService {
 	public static final String NO_CHANGE_MSG = "No change detected to be updated.";
 	public static final String ALREADY_DELETED_MSG = "Update not allowed on already deleted item.";
 	public static final String TRY_AGAIN_LATER_MSG = "Unable to update at this time, please try again.";
-	private static final String MAP_DSL = "MAP:";
-	private static final String LIST_DSL = "LIST:";
-	private static final String ARRAY_DSL = "ARRAY:";
-	private static final String SET_DSL = "SET:";
-	private static final String DSL_CLOSE_DBL_SQ_BRCKT_REGEX = "\\]\\]";
-	private static final String SPACE_REGEX = "\\s+";
-	private static final String DSL_OPN_DBL_SQ_BRCKT_REGEX = "\\[\\[";
-	private static final String DSL_OPN_DBL_SQ_BRCKT = "[[";
-	private static final String EQUALS = "=";
 	private static final String COMMA = ",";
 	private static final String KEY_SEPARATOR = "_||_";
 	private static final String ENV_SPECIFIC_IK = "ENV";
@@ -92,49 +81,13 @@ public class GlobalScopedParamServiceImpl implements GlobalScopedParamService {
 			logger.info("Missing property configuration for : ItemKey: " + itemKey + " FieldKey: " + fieldKey);
 			return;
 		}
-		Properties map = getPropertiesMapFromText(attProperties.getDescription());
+		Map<String, Object> map = getPropertiesMapFromText(attProperties.getDescription());
 		addOrUpdatePropertiesMap(itemKey, fieldKey, map);
 	}
 	
-	private void addOrUpdatePropertiesMap(String itemKey, String fieldKey, Properties map) {
-		Map<String, Object> descMap = new HashMap<>();
+	private void addOrUpdatePropertiesMap(String itemKey, String fieldKey, Map<String, Object> map) {
 		String key = buildKeyFromIKFK(itemKey, fieldKey);
-		for (Object eachKey : map.keySet()) {
-			String value = (String) map.get(eachKey);
-			if (value.contains(DSL_OPN_DBL_SQ_BRCKT)) {
-				String dslIdentifierArr[] = value.split(DSL_OPN_DBL_SQ_BRCKT_REGEX);
-				String dslIdentifier = dslIdentifierArr[0].replaceAll(SPACE_REGEX, StringUtils.EMPTY); // Remove spaces
-				String data = dslIdentifierArr[1].replaceAll(DSL_CLOSE_DBL_SQ_BRCKT_REGEX, StringUtils.EMPTY);
-				switch (dslIdentifier.toUpperCase()) {
-				case SET_DSL:
-					Set<String> tempSet = new HashSet<String>(Arrays.asList(getTrimmedStringArray(data)));
-					descMap.put((String) eachKey, tempSet);
-					break;
-				case ARRAY_DSL:
-					descMap.put((String) eachKey, getTrimmedStringArray(data));
-					break;
-				case LIST_DSL:
-					descMap.put((String) eachKey, Arrays.asList(getTrimmedStringArray(data)));
-					break;
-				case MAP_DSL:
-					Map<String, String> innerMap = new HashMap<>();
-			        for (String each : getTrimmedStringArray(data)) {
-			            Object[] objArray = each.split(EQUALS,2);
-			            innerMap.put((String)objArray[0], (String)objArray[1]);
-			        }
-			        descMap.put((String) eachKey, innerMap);
-					break;
-				default:
-					logger.error("Missing proper DSL: Valid values are SET:[[]], LIST:[[]], ARRAY:[[]], MAP:[[]] value received : key : " + key + " value : " + data);
-					break;
-				}
-			} else {
-				// then its probably a regular string
-				descMap.put((String)eachKey, value);
-			}
-			propertiesMap.put(key, descMap);
-		}
-
+		propertiesMap.put(key, map);
 	}
 
 	private String buildKeyFromIKFK(String itemKey, String fieldKey) {
@@ -156,19 +109,37 @@ public class GlobalScopedParamServiceImpl implements GlobalScopedParamService {
     
 	
 	@Override
-	public Properties getPropertiesMapFromText(String propertiesText) {
-        Properties property = new Properties();
-        if(StringUtils.isNotBlank(propertiesText)){
-            
-            try(ByteArrayInputStream bs = new ByteArrayInputStream(propertiesText.getBytes());) {
-                property.load(bs);
-            } catch (IOException e) {
-            	logger.error("Load properties : ", e);
-            }
-        }
-        return property;
+	public Map<String, Object> getPropertiesMapFromText(String propertiesText) {
+		
+		String jsonText = appendBraces(propertiesText);
+		JsonFactory factory = new JsonFactory(); 
+	    ObjectMapper mapper = new ObjectMapper(factory); 
+	    TypeReference<HashMap<String,Object>> typeRef = new TypeReference<HashMap<String,Object>>() {};
+
+	    Map<String, Object> mapOfProperties = null;
+		try {
+			mapOfProperties = mapper.readValue(jsonText, typeRef);
+		} catch (IOException e) {
+			logger.error("Error while reading property: " + jsonText , e);
+			//TODO debate if it is ok to swallow, it shouldn't throw exception at this point in code
+		}
+        return mapOfProperties;
     }
 	
+	private String appendBraces(String propertiesText) {
+		StringBuilder jsonText = new StringBuilder();
+		if (!propertiesText.trim().startsWith("{")) {
+			jsonText.append("{");
+		}
+		
+		jsonText.append(propertiesText);
+		
+		if (!propertiesText.trim().endsWith("}")) {
+			jsonText.append("}");
+		}
+		return jsonText.toString();
+	}
+
 	@Override
 	public String get(String key) {
 		boolean found = false;
@@ -195,25 +166,6 @@ public class GlobalScopedParamServiceImpl implements GlobalScopedParamService {
 	
 	@Override
 	@SuppressWarnings("unchecked")
-	public Set<String> getSet(String itemKey, String fieldKey, String key) {
-		if(propertiesMap.get(buildKeyFromIKFK(itemKey, fieldKey)) == null) {
-			initializeProperties(itemKey, fieldKey);
-		}
-		Map<String, Object> tempMap = propertiesMap.get(buildKeyFromIKFK(itemKey, fieldKey));
-		return (tempMap != null)? (Set<String>) tempMap.get(key) : null;
-	}
-	
-	@Override
-	public String[] getArray(String itemKey, String fieldKey, String key) {
-		if(propertiesMap.get(buildKeyFromIKFK(itemKey, fieldKey)) == null) {
-			initializeProperties(itemKey, fieldKey);
-		}
-		Map<String, Object> tempMap = propertiesMap.get(buildKeyFromIKFK(itemKey, fieldKey));
-		return (tempMap != null)? (String[]) tempMap.get(key) : null;
-	}
-	
-	@Override
-	@SuppressWarnings("unchecked")
 	public List<String> getList(String itemKey, String fieldKey, String key) {
 		if(propertiesMap.get(buildKeyFromIKFK(itemKey, fieldKey)) == null) {
 			initializeProperties(itemKey, fieldKey);
@@ -222,14 +174,18 @@ public class GlobalScopedParamServiceImpl implements GlobalScopedParamService {
 		return (tempMap != null)? (List<String>) tempMap.get(key) : null;
 	}
 	
-	@Override
 	@SuppressWarnings("unchecked")
-	public Map<String, String> getMap(String itemKey, String fieldKey, String key) {
+	public Map<String, String> getMapOfString(String itemKey, String fieldKey, String key) {
 		if(propertiesMap.get(buildKeyFromIKFK(itemKey, fieldKey)) == null) {
 			initializeProperties(itemKey, fieldKey);
 		}
 		Map<String, Object> tempMap = propertiesMap.get(buildKeyFromIKFK(itemKey, fieldKey));
 		return (tempMap != null)? (Map<String, String>) tempMap.get(key) : null;
+	}
+	
+	@Override
+	public Map<String, String> getMap(String itemKey, String fieldKey, String key) {
+		return getMapOfString(itemKey, fieldKey, key);
 	}
 	
 	/**
@@ -330,5 +286,4 @@ public class GlobalScopedParamServiceImpl implements GlobalScopedParamService {
 	public List<String> search(String itemKey,String fieldKey) {
 		return attPropertiesDAO.search(itemKey, fieldKey);
 	}
-
 }
