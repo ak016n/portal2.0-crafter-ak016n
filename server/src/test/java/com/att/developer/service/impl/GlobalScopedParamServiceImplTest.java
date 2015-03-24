@@ -4,6 +4,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.hasItem;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -25,6 +26,8 @@ import com.att.developer.exception.DAOException;
 import com.att.developer.exception.DuplicateDataException;
 import com.att.developer.exception.UnsupportedOperationException;
 import com.att.developer.service.EventTrackingService;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 
 public class GlobalScopedParamServiceImplTest {
 
@@ -225,7 +228,7 @@ public class GlobalScopedParamServiceImplTest {
 	}
 	
 	@Test
-	public void testGetPropertiesMapFromText_string() {
+	public void testGetPropertiesMapFromText_string() throws JsonParseException, JsonMappingException, IOException {
 		Map<String, Object> map = globalScopedParamService.getPropertiesMapFromText("{\"x\" : \"y\"}");
 		
 		Assert.assertEquals("y", map.get("x"));
@@ -233,7 +236,7 @@ public class GlobalScopedParamServiceImplTest {
 	
 	
 	@Test
-	public void testGetPropertiesMapFromText_list() {
+	public void testGetPropertiesMapFromText_list() throws JsonParseException, JsonMappingException, IOException {
 		Map<String, Object> map = globalScopedParamService.getPropertiesMapFromText("{ \"x\": [\"y\",\"z\"]}");
 		
 		Assert.assertTrue(map.get("x") instanceof List);
@@ -244,7 +247,7 @@ public class GlobalScopedParamServiceImplTest {
 	
 	
 	@Test
-	public void testGetPropertiesMapFromText_map() {
+	public void testGetPropertiesMapFromText_map() throws JsonParseException, JsonMappingException, IOException {
 		Map<String, Object> map = globalScopedParamService.getPropertiesMapFromText("{\"x\": {\"y\": \"z\"}}");
 		
 		Assert.assertTrue(map.get("x") instanceof Map);
@@ -254,7 +257,7 @@ public class GlobalScopedParamServiceImplTest {
 	}
 	
 	@Test
-	public void testGetPropertiesMapFromText_missingStartBrackets() {
+	public void testGetPropertiesMapFromText_missingStartBrackets() throws JsonParseException, JsonMappingException, IOException {
 		Map<String, Object> map = globalScopedParamService.getPropertiesMapFromText("\r\n \"x\": [\"y\",\"z\"]}");
 		
 		Assert.assertTrue(map.get("x") instanceof List);
@@ -264,7 +267,7 @@ public class GlobalScopedParamServiceImplTest {
 	}
 	
 	@Test
-	public void testGetPropertiesMapFromText_missingEndBrackets() {
+	public void testGetPropertiesMapFromText_missingEndBrackets() throws JsonParseException, JsonMappingException, IOException {
 		Map<String, Object> map = globalScopedParamService.getPropertiesMapFromText("{ \"x\": [\"y\",\"z\"]");
 		
 		Assert.assertTrue(map.get("x") instanceof List);
@@ -274,12 +277,17 @@ public class GlobalScopedParamServiceImplTest {
 	}
 	
 	@Test
-	public void testGetPropertiesMapFromText_missingBothBrackets() {
+	public void testGetPropertiesMapFromText_missingBothBrackets() throws JsonParseException, JsonMappingException, IOException {
 		Map<String, Object> map = globalScopedParamService.getPropertiesMapFromText("\"x\": [\"y\",\"z\"]");
 		
 		Assert.assertTrue(map.get("x") instanceof List);
 		@SuppressWarnings("unchecked")
 		List<String> listOfStrings = (List<String>) map.get("x");
 		assertThat(listOfStrings, hasItem("y") );
+	}
+	
+	@Test(expected=JsonParseException.class)
+	public void testGetPropertiesMapFromText_jsonParseExcpection() throws JsonParseException, JsonMappingException, IOException {
+		globalScopedParamService.getPropertiesMapFromText("x=y");
 	}
 }

@@ -29,7 +29,9 @@ import com.att.developer.service.GlobalScopedParamService;
 import com.att.developer.typelist.ActorType;
 import com.att.developer.typelist.EventType;
 import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
@@ -81,7 +83,13 @@ public class GlobalScopedParamServiceImpl implements GlobalScopedParamService {
 			logger.info("Missing property configuration for : ItemKey: " + itemKey + " FieldKey: " + fieldKey);
 			return;
 		}
-		Map<String, Object> map = getPropertiesMapFromText(attProperties.getDescription());
+		Map<String, Object> map = null;
+		try {
+			map = getPropertiesMapFromText(attProperties.getDescription());
+		} catch (IOException e) {
+			logger.error("Error while reading property: ItemKey : " + itemKey + " , FieldKey : " + fieldKey , e);
+			throw new RuntimeException(e); // technically we should never get here unless there was a database corruption
+		}
 		addOrUpdatePropertiesMap(itemKey, fieldKey, map);
 	}
 	
@@ -109,20 +117,13 @@ public class GlobalScopedParamServiceImpl implements GlobalScopedParamService {
     
 	
 	@Override
-	public Map<String, Object> getPropertiesMapFromText(String propertiesText) {
-		
+	public Map<String, Object> getPropertiesMapFromText(String propertiesText) throws JsonParseException, JsonMappingException, IOException {
 		String jsonText = appendBraces(propertiesText);
 		JsonFactory factory = new JsonFactory(); 
 	    ObjectMapper mapper = new ObjectMapper(factory); 
 	    TypeReference<HashMap<String,Object>> typeRef = new TypeReference<HashMap<String,Object>>() {};
 
-	    Map<String, Object> mapOfProperties = null;
-		try {
-			mapOfProperties = mapper.readValue(jsonText, typeRef);
-		} catch (IOException e) {
-			logger.error("Error while reading property: " + jsonText , e);
-			//TODO debate if it is ok to swallow, it shouldn't throw exception at this point in code
-		}
+	    Map<String, Object> mapOfProperties = mapper.readValue(jsonText, typeRef);
         return mapOfProperties;
     }
 	
