@@ -1,5 +1,9 @@
 package com.att.developer.service.impl;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasEntry;
+import static org.hamcrest.Matchers.hasItem;
+
 import java.util.List;
 import java.util.Map;
 
@@ -227,18 +231,26 @@ public class GlobalScopedParamServiceImplTest {
 		Assert.assertEquals("y", map.get("x"));
 	}
 	
+	
 	@Test
 	public void testGetPropertiesMapFromText_list() {
 		Map<String, Object> map = globalScopedParamService.getPropertiesMapFromText("{ \"x\": [\"y\",\"z\"]}");
 		
 		Assert.assertTrue(map.get("x") instanceof List);
+		@SuppressWarnings("unchecked")
+		List<String> listOfStrings = (List<String>) map.get("x");
+		assertThat(listOfStrings, hasItem("y") );
 	}
+	
 	
 	@Test
 	public void testGetPropertiesMapFromText_map() {
 		Map<String, Object> map = globalScopedParamService.getPropertiesMapFromText("{\"x\": {\"y\": \"z\"}}");
 		
 		Assert.assertTrue(map.get("x") instanceof Map);
+		@SuppressWarnings("unchecked")
+		Map<String, String> mapOfStrings = (Map<String, String>) map.get("x");
+		assertThat(mapOfStrings, hasEntry("y", "z") );
 	}
 	
 	@Test
@@ -246,6 +258,9 @@ public class GlobalScopedParamServiceImplTest {
 		Map<String, Object> map = globalScopedParamService.getPropertiesMapFromText("\r\n \"x\": [\"y\",\"z\"]}");
 		
 		Assert.assertTrue(map.get("x") instanceof List);
+		@SuppressWarnings("unchecked")
+		List<String> listOfStrings = (List<String>) map.get("x");
+		assertThat(listOfStrings, hasItem("y") );
 	}
 	
 	@Test
@@ -253,6 +268,9 @@ public class GlobalScopedParamServiceImplTest {
 		Map<String, Object> map = globalScopedParamService.getPropertiesMapFromText("{ \"x\": [\"y\",\"z\"]");
 		
 		Assert.assertTrue(map.get("x") instanceof List);
+		@SuppressWarnings("unchecked")
+		List<String> listOfStrings = (List<String>) map.get("x");
+		assertThat(listOfStrings, hasItem("y") );
 	}
 	
 	@Test
@@ -260,5 +278,8 @@ public class GlobalScopedParamServiceImplTest {
 		Map<String, Object> map = globalScopedParamService.getPropertiesMapFromText("\"x\": [\"y\",\"z\"]");
 		
 		Assert.assertTrue(map.get("x") instanceof List);
+		@SuppressWarnings("unchecked")
+		List<String> listOfStrings = (List<String>) map.get("x");
+		assertThat(listOfStrings, hasItem("y") );
 	}
 }
