@@ -252,7 +252,6 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
     @EnableAuthorizationServer
     protected static class AuthorizationServerConfiguration extends AuthorizationServerConfigurerAdapter {
 
-		@Autowired
         private TokenStore tokenStore;
         
         @Autowired
