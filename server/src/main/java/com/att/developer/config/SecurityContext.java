@@ -34,7 +34,6 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.annotation.web.servlet.configuration.EnableWebMvcSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -72,7 +71,6 @@ import com.att.developer.security.Oauth2UserApprovalHandler;
 
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled=true)
-@EnableWebMvcSecurity
 @EnableWebSecurity
 public class SecurityContext extends WebSecurityConfigurerAdapter {
 
@@ -176,7 +174,6 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
     @Configuration
     @EnableResourceServer
     @EnableGlobalMethodSecurity(prePostEnabled=true)
-    @EnableWebMvcSecurity
     @EnableWebSecurity
     protected static class ResourceServerConfiguration extends ResourceServerConfigurerAdapter {
 
