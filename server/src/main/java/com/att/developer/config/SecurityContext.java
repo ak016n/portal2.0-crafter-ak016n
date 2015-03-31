@@ -89,22 +89,6 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
         auth.userDetailsService(userDetailsService).passwordEncoder(new AttPasswordEncoder());
     }
 	
-    protected void configure(HttpSecurity http) throws Exception {
-   	http
-            .authorizeRequests()
-                .antMatchers("/index.html/**").permitAll()
-                .antMatchers("/resources/**").permitAll()
-                .antMatchers("/i18n").permitAll()
-                .antMatchers("/cg/**").permitAll()
-                .antMatchers("/comgw/**").permitAll()
-                .antMatchers("/content/**").permitAll()
-                .anyRequest().authenticated();
-
-        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);	
-
-        http.csrf().disable();
-    }
-	
     @Override
     @Bean
     public AuthenticationManager authenticationManagerBean() throws Exception {
@@ -232,6 +216,18 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
 
                     .antMatchers("/cauth/eventLog/**").access("#oauth2.hasScope('trust')")
                     .antMatchers("/oauth/revoke/**").access("#oauth2.isClient() and #oauth2.hasScope('trust')")
+                    .antMatchers("/index.html/**").permitAll()
+                    .antMatchers("/resources/**").permitAll()
+	                .antMatchers("/i18n").permitAll()
+	                .antMatchers("/cg/**").permitAll()
+	                .antMatchers("/comgw/**").permitAll()
+	                .antMatchers("/content/**").permitAll()
+	                .antMatchers("/api-docs/**").permitAll()
+	                .antMatchers("/lib/**").permitAll()
+	                .antMatchers("/css/**").permitAll()
+	                .antMatchers("/js/**").permitAll()
+	                .antMatchers("/swagger-ui.js").permitAll()
+	                .antMatchers("/sdoc.jsp").permitAll()
                     .anyRequest().authenticated()
             .and()
                 .csrf().disable()
