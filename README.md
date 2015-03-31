@@ -9,7 +9,7 @@ Step 1: Install Java JDK 1.8 and above *
     Those can be found on the shared server 
     \\WABOTH9CDFILE05.itservices.sbc.com\DPGM_ONBOARD\Third Party App Installation Files\Java\jce_policy-8.zip
 
-Step 2: Install Mysql 5.6 and above *
+Step 2: Install Mysql 5.6 and above *, create an user with dev_core/dev_core
 
 Step 3: Install STS or Eclipse for IDE
 
@@ -92,6 +92,6 @@ Started Tomcat Server
 The Server is running at http://localhost:9080/developer
 ```
 
-Step 8: Access Portal 2.0 and start developing http://localhost:9080/developer/views/adminConsole/admin.html
+Step 8: Access Portal 2.0 and start developing http://localhost:9080/developer
 
 * Many of the third party binaries (java, mysql) are located on this server :  \\WABOTH9CDFILE05.itservices.sbc.com\DPGM_ONBOARD\Third Party App Installation Files
