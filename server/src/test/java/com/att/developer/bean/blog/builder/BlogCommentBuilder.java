@@ -14,7 +14,7 @@ public class BlogCommentBuilder {
         blogComment.setPostId("1");
         blogComment.setParentId("0");
         blogComment.setContent("hello world comment");
-        blogComment.setDateCreated(new Date());
+        blogComment.setDate(new Date());
     }
     
     public BlogComment build(){

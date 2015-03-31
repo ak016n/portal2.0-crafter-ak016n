@@ -117,7 +117,7 @@ public class BlogPost {
 	}
 
 	@JsonProperty("date")
-	public void setDateCreated(Date dateCreated) {
+	public void setDate(Date dateCreated) {
 		this.dateCreated = dateCreated;
 	}
 	
