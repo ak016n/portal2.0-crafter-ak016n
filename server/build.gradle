@@ -14,11 +14,12 @@ ext {
  	hibernateVersion = "4.3.8.Final"
  	atomikosVersion = "3.9.3"
  	activeMqVersion = "5.10.0"
- 	slf4jVersion="1.7.7"
- 	log4jVersion="2.0.1"
+ 	slf4jVersion ="1.7.7"
+ 	log4jVersion ="2.0.1"
  	mysqlVersion = mysqlVersion_ext // refer below buildScript block, to modify shared variable
  	flywayVersion = flywayVersion_ext // refer below buildScript block, to modify shared variable
  	httpClientVersion = "4.3.5"
+ 	jamonVersion = "2.81"
 }
 
 jacoco {
@@ -73,13 +74,13 @@ dependencies {
 		   "com.atomikos:transactions:${atomikosVersion}",
 		   "com.atomikos:transactions-hibernate3:${atomikosVersion}",
 		   "org.apache.activemq:activemq-all:${activeMqVersion}",
-		   "commons-pool:commons-pool:1.6", "com.jamonapi:jamon:2.78"
+		   "commons-pool:commons-pool:1.6", "com.jamonapi:jamon:${jamonVersion}"
 		   
 	tomcat("org.apache.tomcat.embed:tomcat-embed-jasper:${tomcatVersion}") {
 		exclude group: "org.eclipse.jdt.core.compiler", module: "ecj"
 	}
 	
-	compile group: "commons-io", name: "commons-io", version: "1.4"
+	compile "commons-io:commons-io:2.4"
 	compile "org.springframework:spring-context:${springVersion}"
 	compile "org.springframework:spring-orm:${springVersion}"
 	compile "org.springframework:spring-webmvc:${springVersion}"
@@ -107,7 +108,7 @@ dependencies {
 	providedCompile "org.apache.activemq:activemq-all:${activeMqVersion}"
 	providedCompile "javax.servlet:javax.servlet-api:3.1.0", "javax.servlet:jsp-api:2.0"
 	providedCompile "commons-pool:commons-pool:1.6"
-	providedCompile "com.jamonapi:jamon:2.78"
+	providedCompile "com.jamonapi:jamon:${jamonVersion}"
 	
 	
 	compile "org.apache.commons:commons-lang3:3.3.2"
@@ -116,7 +117,7 @@ dependencies {
 	compile "org.apache.logging.log4j:log4j-1.2-api:${log4jVersion}"
 	compile "org.apache.logging.log4j:log4j-slf4j-impl:${log4jVersion}"
 	
-	compile "org.hibernate:hibernate-validator:5.1.0.Final"
+	compile "org.hibernate:hibernate-validator:5.1.3.Final"
 	compile "javax.inject:javax.inject:1"
 	compile "com.fasterxml.jackson.core:jackson-databind:2.5.1"
 	compile "org.openid4java:openid4java:0.9.8"
