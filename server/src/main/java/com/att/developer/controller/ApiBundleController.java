@@ -25,9 +25,14 @@ import com.att.developer.bean.SessionUser;
 import com.att.developer.bean.User;
 import com.att.developer.security.PermissionManager;
 import com.att.developer.service.ApiBundleService;
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.Authorization;
+import com.wordnik.swagger.annotations.AuthorizationScope;
 
 @Controller
 @RequestMapping("/uauth/apiBundle")
+@Api(value = "/apiBundle", description = "Manage bundle and its permissions")
 public class ApiBundleController {
 
     private final Logger logger = LogManager.getLogger();
@@ -38,6 +43,10 @@ public class ApiBundleController {
     @Resource
     private PermissionManager permissionManager;
 
+    @ApiOperation(value="Get edit blog entries",authorizations = { @Authorization(value = "oauth2", scopes = {
+		@AuthorizationScope(scope = "read", description = "Read permission"),
+		@AuthorizationScope(scope = "write", description = "Write permission") 
+		})})
     @RequestMapping(value = "/edit", method = RequestMethod.GET)
     public String getEdit(@RequestParam(value = "id", required = true) String id, Model model, @ModelAttribute SessionUser sessionUser) {
         logger.debug("Received request to show edit page");

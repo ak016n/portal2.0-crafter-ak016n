@@ -129,6 +129,7 @@ dependencies {
 	//swagger
 	compile "org.ajar:swagger-spring-mvc-ui:0.4"
 	compile "com.mangofactory:swagger-springmvc:1.0.2"
+	//compile "io.springfox:springfox-core:2.0.0"
 	
 	testCompile "junit:junit:4.12"
 	testCompile "org.mockito:mockito-all:1.10.19"

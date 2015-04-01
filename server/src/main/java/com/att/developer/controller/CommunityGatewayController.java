@@ -25,12 +25,16 @@ import com.att.developer.exception.ServerSideException;
 import com.att.developer.service.BlogService;
 import com.att.developer.util.Constants;
 import com.att.developer.util.CookieUtil;
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiParam;
 
 /**
  * Community Gateway Controller - used for Blog and Forums 
  */
 @RestController
 @RequestMapping("/comgw")
+@Api(value = "/community", description = "Community - Blog and Forums")
 public class CommunityGatewayController {
 	
     @Inject
@@ -92,8 +96,11 @@ public class CommunityGatewayController {
 		return blogService.getBlog(postId);
 	}
 
+	@ApiOperation(value="List of blog posts")
 	@RequestMapping(value="/posts", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public @ResponseBody ResponseEntity<List<BlogPost>> getBlogs(@RequestParam MultiValueMap<String, String> allRequestParams) {
+	public @ResponseBody ResponseEntity<List<BlogPost>> getBlogs(
+			@ApiParam(name="filter", value="pass in filter conditions") 
+			@RequestParam MultiValueMap<String, String> allRequestParams) {
 		return blogService.getBlogs(allRequestParams);
 	}
 	
