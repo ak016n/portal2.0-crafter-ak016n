@@ -7,7 +7,7 @@ buildscript {
 		jcenter()
 	}
 	dependencies {
-		classpath 'com.moowork.gradle:gradle-grunt-plugin:0.6'
+		classpath 'com.moowork.gradle:gradle-grunt-plugin:0.9'
 	}
 }
 
