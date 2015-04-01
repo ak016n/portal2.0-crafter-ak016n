@@ -243,9 +243,10 @@ build.dependsOn ':client:grunt_build'
 war.dependsOn ':client:grunt_war'
 war.baseName = 'developer'
 
-/*
+
 eclipse {
 	project {
+		name = 'server'
 		natures.add "org.springframework.ide.eclipse.core.springnature"
 		natures.add "org.springsource.ide.eclipse.gradle.core.nature"
 		natures.add "org.eclipse.jdt.core.javanature"
@@ -258,22 +259,13 @@ eclipse {
 		buildCommand "org.eclipse.wst.common.project.facet.core.builder"
 		buildCommand "org.eclipse.wst.validation.validationbuilder"
 		buildCommand "org.springframework.ide.eclipse.core.springbuilder"
-		
-		file {
-			withXml { xmlProvider -> 
-				Node project = xmlProvider.asNode()
-				Node filter = project.appendNode('filteredResources').appendNode('filter')
-                filter.appendNode('id', 1408990610016) 
-                filter.appendNode('name', '')
-                filter.appendNode('type', 26)
-                Node matcher = filter.appendNode('matcher')
-                matcher.appendNode('id', 'org.eclipse.ui.ide.multiFilter')
-                matcher.appendNode('arguments', '1.0-projectRelativePath-equals-true-false-client')
-			}
-		}
 	}
+	
 	classpath {
 		file {
+			whenMerged { classpath ->
+				classpath.entries.removeAll { entry -> true }
+			}
 			withXml {
 				Node node = it.asNode()
 				node.appendNode("classpathentry",[kind:"src",output:"bin",path:"src/integration/java"])
@@ -285,11 +277,10 @@ eclipse {
 				node.appendNode("classpathentry",[exported:"true",kind:"con",path:"org.eclipse.jdt.launching.JRE_CONTAINER"])
 				node.appendNode("classpathentry",[exported:"true",kind:"con",path:"org.eclipse.jst.j2ee.internal.web.container"])
 				node.appendNode("classpathentry",[exported:"true",kind:"con",path:"org.springsource.ide.eclipse.gradle.classpathcontainer"]).appendNode('attributes').appendNode('attribute', [name:"org.eclipse.jst.component.dependency", value:"/WEB-INF/lib"])
-				
-				node.appendNode("classpathentry",[kind:"src",output:"bin",path:"src/main/webapp/WEB-INF/classes"])
+				node.appendNode("classpathentry",[kind:"output",path:"src/main/webapp/WEB-INF/classes"])
 				
 			}
 		}
 	}
 }
-*/
+

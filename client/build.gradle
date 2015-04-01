@@ -1,3 +1,6 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+
 /**
  * Grunt Related Tasks
  */
@@ -20,3 +23,29 @@ node {
 }
 
 grunt_build.dependsOn 'npmInstall'
+
+eclipse {
+	project {
+		name = 'client'
+		
+		natures.add "org.springsource.ide.eclipse.gradle.core.nature"
+		natures.add "org.eclipse.jdt.core.javanature"
+		
+		buildCommand "org.eclipse.jdt.core.javabuilder"
+	}
+	
+
+	classpath {
+		file {
+			whenMerged { classpath ->
+				classpath.entries.removeAll { entry -> true }
+			}
+			withXml {
+				Node node = it.asNode()
+				node.appendNode("classpathentry",[kind:"con",path:"org.eclipse.jdt.launching.JRE_CONTAINER"])
+				node.appendNode("classpathentry",[exported:"true",kind:"con",path:"org.springsource.ide.eclipse.gradle.classpathcontainer"])
+				node.appendNode("classpathentry",[kind:"output",path:"bin/"])	
+			}
+		}
+	}
+}
