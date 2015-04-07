@@ -10,6 +10,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.AsyncSupportConfigurer;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
@@ -23,6 +25,8 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import com.att.developer.docs.ClientCredentialGrant;
 import com.att.developer.exception.TimeoutDeferredResultProcessingInterceptor;
 import com.att.developer.service.impl.LocaleAwareResourceBundleMessageSource;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import com.mangofactory.swagger.configuration.SpringSwaggerConfig;
 import com.mangofactory.swagger.models.dto.ApiInfo;
 import com.mangofactory.swagger.models.dto.AuthorizationType;
@@ -82,6 +86,27 @@ public class WebContext extends WebMvcConfigurerAdapter {
 		return messageSource;
 	}
 	
+    /**
+     * Avoid Lazy load exception
+     */
+    private MappingJackson2HttpMessageConverter jacksonMessageConverter(){
+        MappingJackson2HttpMessageConverter messageConverter = new MappingJackson2HttpMessageConverter();
+
+        ObjectMapper mapper = new ObjectMapper();
+        //Registering Hibernate4Module to support lazy objects
+        mapper.registerModule(new Hibernate4Module());
+
+        messageConverter.setObjectMapper(mapper);
+        return messageConverter;
+
+    }
+    
+    @Override
+    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+        converters.add(jacksonMessageConverter());
+        super.configureMessageConverters(converters);
+    }
+    
 	/**
 	 * SWAGGER - API Doc Tool
 	 */
