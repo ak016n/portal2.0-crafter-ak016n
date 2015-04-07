@@ -95,3 +95,20 @@ The Server is running at http://localhost:9080/developer
 Step 8: Access Portal 2.0 and start developing http://localhost:9080/developer
 
 * Many of the third party binaries (java, mysql) are located on this server :  \\WABOTH9CDFILE05.itservices.sbc.com\DPGM_ONBOARD\Third Party App Installation Files
+
+
+Client
+==========
+
+1. Make dynamic change while the server is still running
+
+``` gradle
+Creates app.js with latest modifications
+
+cmd> gradlew grunt_debug
+
+Watch for changes and automatically build app.js (note: there is an issue watch doesn't start watching until HTML template file is touched)
+cmd> gradlew grunt_watch
+
+```
+
