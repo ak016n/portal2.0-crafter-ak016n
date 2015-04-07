@@ -208,7 +208,7 @@ flyway {
 	user = env.flyway.user
 	password = env.flyway.password
 	schemas = env.flyway.schemas
-	initVersion = env.flyway.version
+	baselineVersion = env.flyway.version
 }
 
 /** Tomcat settings */
