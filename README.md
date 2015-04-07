@@ -112,3 +112,9 @@ cmd> gradlew grunt_watch
 
 ```
 
+Code check-in
+=============
+
+1. Fork the project
+2. Make required modifications
+3. Create a pull request 
