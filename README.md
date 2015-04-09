@@ -112,6 +112,13 @@ cmd> gradlew grunt_watch
 
 ```
 
+2. Running Karma unit test
+```gradle
+continously runs karma in the background
+
+cmd> gradlew grunt_test
+```
+
 Code check-in
 =============
 
