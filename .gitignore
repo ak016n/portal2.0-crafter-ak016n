@@ -15,9 +15,8 @@
 /client/dist
 /client/nodejs
 bower_components
-/src/main/webapp/resources/css
-/src/main/webapp/resources/script
-/src/main/webapp/resources/views
+/server/src/main/webapp/resources/css
+/server/src/main/webapp/resources/script
 script
 dist
 /client/.settings
