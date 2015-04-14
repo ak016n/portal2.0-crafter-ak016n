@@ -10,7 +10,7 @@ if "%OS%"=="Windows_NT" setlocal
 
 @rem Add default JVM options here. You can also use JAVA_OPTS and GRADLE_OPTS to pass JVM options to this script.
 set DEFAULT_JVM_OPTS=
-set GRADLE_OPTS=-Xdebug -Xrunjdwp:transport=dt_socket,address=5005,server=y,suspend=n %GRADLE_OPTS%
+
 REM set CATALINA_OPTS=-Xdebug -Xrunjdwp:transport=dt_socket,address=8787,server=y,suspend=n
 
 set DIRNAME=%~dp0
@@ -72,6 +72,24 @@ set CMD_LINE_ARGS=%$
 @rem Setup the command line
 
 set CLASSPATH=%APP_HOME%\gradle\wrapper\gradle-wrapper.jar
+
+if "%1" == "remote_debug" (
+	set CMD_LINE_ARGS=
+	echo Running in remote_debug mode
+	set GRADLE_OPTS=-Xdebug -Xrunjdwp:transport=dt_socket,address=5005,server=y,suspend=n %GRADLE_OPTS%
+	goto loop
+) else (
+	echo Skipping remote_debug
+	goto afterloop
+)
+
+:loop
+shift
+if [%1]==[] goto afterloop
+set CMD_LINE_ARGS=%CMD_LINE_ARGS% %1
+goto loop
+
+:afterloop
 
 @rem Execute Gradle
 "%JAVA_EXE%" %DEFAULT_JVM_OPTS% %JAVA_OPTS% %GRADLE_OPTS% "-Dorg.gradle.appname=%APP_BASE_NAME%" -classpath "%CLASSPATH%" org.gradle.wrapper.GradleWrapperMain %CMD_LINE_ARGS%

@@ -431,15 +431,15 @@
 		height: 90px;
 		overflow: hidden;
 	}
-	.sub-header h1 {width: 540px;}
+	.sub-header h1 { float: left; }
 	.sub-header h1 a {
 		color: #666;
 		font-size: 83.33%;
 		line-height: 90px;
 	}
-	.sub-header nav,
+	.sub-header nav { float:right; margin:0; }
 	.sub-header nav ul,
-	.sub-header nav ul li { float:right; margin:0; }
+	.sub-header nav ul li { float:left; margin:0; }
 	.sub-header nav ul li a {
 		border-left: 1px solid #eaeaea;
 		color: #fff;
@@ -523,14 +523,14 @@
 	section.hMarginRight section.hMarginRight {padding-right:0;}
 	section.hMarginBoth {padding-left:120px;padding-right:120px;}
 	section.hMarginBoth section.hMarginBoth {padding-left:0;padding-right:0;}
-	section.vMarginTop30 {padding-top:30px;}
 	section.vMarginTop {padding-top:60px;}
 	section.vMarginTop section.vMarginTop {padding-top:0;}
 	section.vMarginBottom {padding-bottom:60px;}
 	section.vMarginBottom section.vMarginBottom {padding-bottom:0;}
 	section.vMarginBoth {padding-top:60px;padding-bottom:60px;}
 	section.vMarginBoth section.vMarginBoth {padding-top:0;padding-bottom:0;}
-
+	
+	
 /* Community section Styles 
 ============================== */
 
@@ -559,17 +559,27 @@
 ============================== */
 
 /* Large Screen (screen-lg) */
-@media (min-width: 1200px) { }
+@media (min-width: 1200px) {}
 
 /* Medium Screen (screen-md) */
-@media (min-width: 768px) and (max-width: 991px) { }
+@media (min-width: 992px) {}
 
 /* Small Screen (screen-sm) */
-@media (max-width: 767px) {
+@media (min-width: 768px) {}
+
+/* Keep container width at 1200 even if viewport is 480+ */
+@media (min-width: 480px) {
+	.container { width: 1200px; }
+}
+
+/* Xtra-Small Screen (screen-xs) */
+@media (max-width: 480px) {
+	.sub-header { height: auto; }
+	.sub-header nav, .sub-header nav ul { float: none; width:100%;}
+	.sub-header nav ul li  { float: none; border-top: 1px solid #eaeaea;}
+	.sub-header nav ul li a { width:100%; line-height: 45px;}
+
 	/* content-group.css Styles Brought In
 	============================== */
 	section.hMarginLeft, section.hMarginRight, section.hMarginBoth {padding:0;}
 }
-
-/* Xtra-Small Screen (screen-xs) */
-@media (max-width: 480px) { }

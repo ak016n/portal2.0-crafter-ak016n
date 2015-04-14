@@ -20,6 +20,8 @@ import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
@@ -27,9 +29,11 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.jta.JtaTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.ui.freemarker.FreeMarkerConfigurationFactoryBean;
 
 import com.atomikos.icatch.config.UserTransactionService;
 import com.atomikos.icatch.config.UserTransactionServiceImp;
+import com.att.developer.service.impl.DatabaseTemplateLoader;
 import com.jamonapi.MonitorFactory;
 
 @Configuration
@@ -179,12 +183,31 @@ public class AppContext {
     public void destroy(){
         logger.info("Developer shutting down destroy / cleanup ");
         
-        
         boolean perfMonitoringOn = Boolean.valueOf(performanceMonitoringOn);
-        if(perfMonitoringOn){
+        if(perfMonitoringOn) {
             Logger performanceLogger = LogManager.getLogger("performance");
             String htmlJamonReport = MonitorFactory.getReport();
             performanceLogger.warn("jamon html report at shutdown \n\n " + htmlJamonReport);
         }
+    }
+    
+    @Bean
+    public DatabaseTemplateLoader databaseTemplateLoader() {
+    	return new DatabaseTemplateLoader();
+    }
+    
+    
+    @Bean
+    public JavaMailSender mailSender() {
+    	JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+    	mailSender.setHost("localhost");
+    	return mailSender;
+    }
+
+    @Bean
+    public FreeMarkerConfigurationFactoryBean freemarkerEngine() {
+    	FreeMarkerConfigurationFactoryBean freemarkerConfigurationFactoryBean = new FreeMarkerConfigurationFactoryBean();
+    	freemarkerConfigurationFactoryBean.setPreTemplateLoaders(databaseTemplateLoader());
+    	return freemarkerConfigurationFactoryBean;
     }
 }

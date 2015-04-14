@@ -5,9 +5,9 @@ import com.att.developer.bean.User;
 
 public interface EventTrackingService {
 
-	public void globalPropertiesChangeEvent(EventLog eventLog);
+	 void globalPropertiesChangeEvent(EventLog eventLog);
 
-	public void writeEvent(EventLog eventLog);
+	 void writeEvent(EventLog eventLog);
 	
-	public void userUpdateEvent(User user);
+	 void userUpdateEvent(User user);
 }
