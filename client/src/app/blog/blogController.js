@@ -40,7 +40,8 @@
 		
 			$scope.pagination = {
 				totalItems : 1,
-				currentPage : 1
+				currentPage : 1,
+				maxSize : 5
 			};
 	
 			$scope.blog = {

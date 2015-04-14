@@ -473,31 +473,3 @@
   border-radius: 5px;
   box-shadow: 1px 1px 0px #E8E8E8;
 }
-
-.well .row {
-	margin:5px 10px 10px 10px;
-}
-
-.mainContainer {
-	  margin-top: 20px;
-}
-
-.rightSection {
-	padding-left:40px;
-}
-
-.well h5.heading-bar-title {
-	padding: 5px 10px 10px 10px;
-	border-bottom: 1px solid #cccccc;
-	display:block;
-	font-size:14px;
-	font-weight:bold;
-}
-
-.well ul.list-unstyled {
-  margin:0;
-}
-.well ul.list-unstyled li{
-  margin-bottom:5px;
-  font-size:12px;
-}
