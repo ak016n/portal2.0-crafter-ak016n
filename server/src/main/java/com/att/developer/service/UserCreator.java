@@ -6,5 +6,5 @@ import com.att.developer.bean.User;
 
 public interface UserCreator {
 
-    public SessionUser buildSessionUserFromUserEntity(User portalUser);
+    SessionUser buildSessionUserFromUserEntity(User portalUser);
 }

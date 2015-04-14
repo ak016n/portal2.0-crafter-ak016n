@@ -4,7 +4,6 @@ import java.util.Map;
 
 public interface TemplateBasedEmailService {
 
-	public abstract void sendMail(String templateName,
-			Map<String, Object> messageContentMap);
+	void sendMail(String templateName, Map<String, Object> messageContentMap);
 
 }

@@ -19,7 +19,7 @@ public interface ApiBundleService {
 	 * returnObject refers to the returned object.
 	 */
 	@PostAuthorize("hasRole('ROLE_SYS_ADMIN') or hasPermission(returnObject, 'WRITE')")
-	public ApiBundle getApiBundle(String id);
+	ApiBundle getApiBundle(String id);
 
 	/**
 	 * Retrieves all Bundles .
@@ -30,13 +30,13 @@ public interface ApiBundleService {
 	// Note: hasRole is FIRST in the order as it is less expensive check than
 	// hasPermission
 	@PostFilter("hasRole('ROLE_SYS_ADMIN') or hasPermission(filterObject, 'READ')")
-	public List<ApiBundle> getAll();
+	List<ApiBundle> getAll();
 
 	/**
 	 * Need to be admin to create 
 	 */
 	@PreAuthorize("hasRole('ROLE_SYS_ADMIN')")
-	public ApiBundle create(ApiBundle apiBundle, User user);
+	 ApiBundle create(ApiBundle apiBundle, User user);
 
 	/**
 	 * Edits a Bundle.
@@ -46,18 +46,18 @@ public interface ApiBundleService {
 	 */
 	//TODO: remove hasPermission and replace with hasRole.  Left in place temporarily for demo/poc purposes.
 	@PreAuthorize("hasPermission(#apiBundle, 'WRITE')")
-	public ApiBundle edit(ApiBundle apiBundle);
+	 ApiBundle edit(ApiBundle apiBundle);
 
 	/**
 	 * Deletes a Bundle.  Must be an Administrator
 	 */
 	@PreAuthorize("hasRole('ROLE_SYS_ADMIN')")
-	public void delete(ApiBundle apiBundle);
+	 void delete(ApiBundle apiBundle);
 
 //	@PreAuthorize("hasRole('ROLE_SYS_ADMIN')  and #oauth2.isUser()")
 	@PreAuthorize("hasRole('ROLE_SYS_ADMIN')")
-	public void grantPermission(ApiBundle apiBundle, Organization org, User actor);
+	 void grantPermission(ApiBundle apiBundle, Organization org, User actor);
 
 	@PreAuthorize("hasRole('ROLE_SYS_ADMIN')")
-	public void removeAllPermissions(ApiBundle apiBundle, Organization org, User actor);
+	 void removeAllPermissions(ApiBundle apiBundle, Organization org, User actor);
 }

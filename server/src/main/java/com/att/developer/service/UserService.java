@@ -4,10 +4,10 @@ import com.att.developer.bean.User;
 
 public interface UserService {
 
-	public User getUserByLogin(String login);
+	User getUserByLogin(String login);
 
-	public User getUserByEmail(String email);
+	User getUserByEmail(String email);
 
-	public User getUser(User user);
+	User getUser(User user);
 
 }
