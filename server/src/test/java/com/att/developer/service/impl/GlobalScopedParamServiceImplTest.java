@@ -77,7 +77,7 @@ public class GlobalScopedParamServiceImplTest {
 	public void testGet_envSpecific() {
 		System.setProperty("ENV", "INT");
 		Mockito.when(mockAttPropertiesDAO.findActiveProp("GLOBAL", "DEFAULT")).thenReturn(new AttPropertiesBuilder().withItemKey("GLOBAL").withFieldKey("DEFAULT").build());
-		Mockito.when(mockAttPropertiesDAO.findActiveProp("ENV", "INT")).thenReturn(new AttPropertiesBuilder().withItemKey("ENV").withFieldKey("INT").withDescription("\"status\":\"together\"").build());
+		Mockito.when(mockAttPropertiesDAO.findActiveProp("ENV", "INT")).thenReturn(new AttPropertiesBuilder().withItemKey("ENV").withFieldKey("INT").withDescription("{\"status\":\"together\"}").build());
 		
 		globalScopedParamService.initialize();
 		
@@ -254,36 +254,6 @@ public class GlobalScopedParamServiceImplTest {
 		@SuppressWarnings("unchecked")
 		Map<String, String> mapOfStrings = (Map<String, String>) map.get("x");
 		assertThat(mapOfStrings, hasEntry("y", "z") );
-	}
-	
-	@Test
-	public void testGetPropertiesMapFromText_missingStartBrackets() throws JsonParseException, JsonMappingException, IOException {
-		Map<String, Object> map = globalScopedParamService.getPropertiesMapFromText("\r\n \"x\": [\"y\",\"z\"]}");
-		
-		Assert.assertTrue(map.get("x") instanceof List);
-		@SuppressWarnings("unchecked")
-		List<String> listOfStrings = (List<String>) map.get("x");
-		assertThat(listOfStrings, hasItem("y") );
-	}
-	
-	@Test
-	public void testGetPropertiesMapFromText_missingEndBrackets() throws JsonParseException, JsonMappingException, IOException {
-		Map<String, Object> map = globalScopedParamService.getPropertiesMapFromText("{ \"x\": [\"y\",\"z\"]");
-		
-		Assert.assertTrue(map.get("x") instanceof List);
-		@SuppressWarnings("unchecked")
-		List<String> listOfStrings = (List<String>) map.get("x");
-		assertThat(listOfStrings, hasItem("y") );
-	}
-	
-	@Test
-	public void testGetPropertiesMapFromText_missingBothBrackets() throws JsonParseException, JsonMappingException, IOException {
-		Map<String, Object> map = globalScopedParamService.getPropertiesMapFromText("\"x\": [\"y\",\"z\"]");
-		
-		Assert.assertTrue(map.get("x") instanceof List);
-		@SuppressWarnings("unchecked")
-		List<String> listOfStrings = (List<String>) map.get("x");
-		assertThat(listOfStrings, hasItem("y") );
 	}
 	
 	@Test(expected=JsonParseException.class)

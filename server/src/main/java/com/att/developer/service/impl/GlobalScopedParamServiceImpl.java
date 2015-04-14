@@ -119,8 +119,7 @@ public class GlobalScopedParamServiceImpl implements GlobalScopedParamService {
     
 	
 	@Override
-	public Map<String, Object> getPropertiesMapFromText(String propertiesText) throws JsonParseException, JsonMappingException, IOException {
-		String jsonText = appendBraces(propertiesText);
+	public Map<String, Object> getPropertiesMapFromText(String jsonText) throws JsonParseException, JsonMappingException, IOException {
 		JsonFactory factory = new JsonFactory(); 
 	    ObjectMapper mapper = new ObjectMapper(factory); 
 	    TypeReference<HashMap<String,Object>> typeRef = new TypeReference<HashMap<String,Object>>() {};
@@ -129,20 +128,6 @@ public class GlobalScopedParamServiceImpl implements GlobalScopedParamService {
         return mapOfProperties;
     }
 	
-	private String appendBraces(String propertiesText) {
-		StringBuilder jsonText = new StringBuilder();
-		if (!propertiesText.trim().startsWith("{")) {
-			jsonText.append("{");
-		}
-		
-		jsonText.append(propertiesText);
-		
-		if (!propertiesText.trim().endsWith("}")) {
-			jsonText.append("}");
-		}
-		return jsonText.toString();
-	}
-
 	@Override
 	public String get(String key) {
 		boolean found = false;
