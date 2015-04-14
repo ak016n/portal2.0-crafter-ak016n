@@ -125,3 +125,13 @@ Code check-in
 1. Fork the project
 2. Make required modifications
 3. Create a pull request 
+
+Java Remote Debug
+=================
+1. gradlew remote_debug <%GRADLE TASKS%>
+
+```gradle
+
+cmd> gradlew remote_debug war tomcatRun
+```
+2. Port to connect is 5005
