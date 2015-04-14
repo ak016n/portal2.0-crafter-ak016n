@@ -9,6 +9,7 @@ import javax.annotation.Resource;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.att.developer.exception.UnsupportedOperationException;
 import com.att.developer.service.GlobalScopedParamService;
 import com.att.developer.util.Constants;
 
@@ -23,8 +24,7 @@ public class DatabaseTemplateLoader implements TemplateLoader {
 	public Object findTemplateSource(String name) throws IOException {
 		String[] templateName = StringUtils.split(name, Constants.MESSAGE_SEPARATOR);
 		if(templateName.length < 3) {
-			// templateSubpath = templateName[1];
-			//Todo throw an exception
+			throw new UnsupportedOperationException("Missing required field, expecting 3 level depth " + name);
 		} 
 		Map<String, String> mapOfString = globalScopedParamService.getMap(Constants.MESSAGE_TEMPLATE, templateName[0].toUpperCase(), templateName[1]);
 		return mapOfString.get(templateName[2]);

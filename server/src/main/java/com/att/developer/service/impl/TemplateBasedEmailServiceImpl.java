@@ -6,16 +6,21 @@ import javax.inject.Inject;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 
+import com.att.developer.exception.MessageProcessingException;
 import com.att.developer.service.TemplateBasedEmailService;
 import com.att.developer.util.Constants;
 import com.att.developer.util.MessageUtils;
 
 @Component
 public class TemplateBasedEmailServiceImpl implements TemplateBasedEmailService {
+	
+	private final Logger logger = LogManager.getLogger();
 	
 	private static final String BODY = "body";
 	private static final String SUBJECT = "subject";
@@ -36,7 +41,7 @@ public class TemplateBasedEmailServiceImpl implements TemplateBasedEmailService 
     }
     
     @Override
-	public void sendMail(String templateName, Map<String, Object> messageContentMap) {
+	public void sendMail(String templateName, Map<String, Object> messageContentMap) throws MessageProcessingException {
     	MimeMessage message = mailSender.createMimeMessage();
 
     	// use the true flag to indicate you need a multipart message
@@ -45,10 +50,10 @@ public class TemplateBasedEmailServiceImpl implements TemplateBasedEmailService 
 			helper.setTo(messageUtils.getMessage(buildKey(templateName, Constants.EMAIL_MESSAGE_TYPE, TO), messageContentMap));
 			helper.setSubject(messageUtils.getMessage(buildKey(templateName, Constants.EMAIL_MESSAGE_TYPE, SUBJECT), messageContentMap));
 			helper.setText(messageUtils.getMessage(buildKey(templateName, Constants.EMAIL_MESSAGE_TYPE, BODY), messageContentMap));
-		} catch (MessagingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		} catch (MessagingException | MessageProcessingException e) {
+			logger.error("Error processing template : " + templateName, e);
+			throw new MessageProcessingException(e);
+		} 
     	mailSender.send(message);
     }
     
@@ -66,3 +71,4 @@ public class TemplateBasedEmailServiceImpl implements TemplateBasedEmailService 
     }
 
 }
+;
