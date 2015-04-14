@@ -415,7 +415,7 @@
 		font-weight: normal;
 	}
 
-/* Default.css Styles Brought In
+/* default.css Styles Brought In
 ============================== */
 	#content-area {
 		background: none repeat scroll 0 0 #FFFFFF;
@@ -424,13 +424,127 @@
 		box-shadow: 0 -3px 100px #E2E2E2;
 	}
 
+	.sub-header {
+		border-bottom: 1px solid #eaeaea;
+		border-top: 1px solid #dadada;
+		background-color: #f6f6f6;
+		height: 90px;
+		overflow: hidden;
+	}
+	.sub-header h1 {width: 540px;}
+	.sub-header h1 a {
+		color: #666;
+		font-size: 83.33%;
+		line-height: 90px;
+	}
+	.sub-header nav,
+	.sub-header nav ul,
+	.sub-header nav ul li { float:right; margin:0; }
+	.sub-header nav ul li a {
+		border-left: 1px solid #eaeaea;
+		color: #fff;
+		display: inline-block;
+		font-size: 92.85%;
+		font-weight: bold;
+		line-height: 90px;
+		padding: 0 30px;
+	}
+	.sub-header nav ul li.active a { background-color: #fff; color: #067ab4;}
+
+/* content-group.css Styles Brought In
+============================== */
+	section.gradientTopToBottom {
+		background: -webkit-linear-gradient(top, #f0f0f0, #ffffff 30%); /* For Safari 5.1 to 6.0 */
+		background: -o-linear-gradient(bottom, #f0f0f0, #ffffff 30%); /* For Opera 11.1 to 12.0 */
+		background: -moz-linear-gradient(bottom, #f0f0f0, #ffffff 30%); /* For Firefox 3.6 to 15 */
+		background: linear-gradient(to bottom, #f0f0f0, #ffffff 30%); /* Standard syntax */
+	}
+	section.gradientTopToBottom section.gradientTopToBottom {background:none;}
+	section.gradientTopRightToBottomLeft {
+		background: -webkit-linear-gradient(right top, #f0f0f0, #ffffff 10%); /* For Safari 5.1 to 6.0 */
+		background: -o-linear-gradient(bottom left, #f0f0f0, #ffffff 10%); /* For Opera 11.1 to 12.0 */
+		background: -moz-linear-gradient(bottom left, #f0f0f0, #ffffff 10%); /* For Firefox 3.6 to 15 */
+		background: linear-gradient(to bottom left, #f0f0f0, #ffffff 10%); /* Standard syntax */
+	}
+	section.gradientTopRightToBottomLeft section.gradientTopRightToBottomLeft {background:none;}
+	section.gradientRightToLeft {
+		background: -webkit-linear-gradient(right, #f0f0f0, #ffffff 15%); /* For Safari 5.1 to 6.0 */
+		background: -o-linear-gradient(left, #f0f0f0, #ffffff 15%); /* For Opera 11.1 to 12.0 */
+		background: -moz-linear-gradient(left, #f0f0f0, #ffffff 15%); /* For Firefox 3.6 to 15 */
+		background: linear-gradient(to left, #f0f0f0, #ffffff 15%); /* Standard syntax */
+	}
+	section.gradientRightToLeft section.gradientRightToLeft {background:none;}
+	section.gradientBottomRightToTopLeft {
+		background: -webkit-linear-gradient(right bottom, #f0f0f0, #ffffff 10%); /* For Safari 5.1 to 6.0 */
+		background: -o-linear-gradient(top left, #f0f0f0, #ffffff 10%); /* For Opera 11.1 to 12.0 */
+		background: -moz-linear-gradient(top left, #f0f0f0, #ffffff 10%); /* For Firefox 3.6 to 15 */
+		background: linear-gradient(to top left, #f0f0f0, #ffffff 10%); /* Standard syntax */
+	}
+	section.gradientBottomRightToTopLeft section.gradientBottomRightToTopLeft {background:none;}
+	section.gradientBottomToTop {
+		background: -webkit-linear-gradient(bottom, #f0f0f0, #ffffff 30%); /* For Safari 5.1 to 6.0 */
+		background: -o-linear-gradient(top, #f0f0f0, #ffffff 30%); /* For Opera 11.1 to 12.0 */
+		background: -moz-linear-gradient(top, #f0f0f0, #ffffff 30%); /* For Firefox 3.6 to 15 */
+		background: linear-gradient(to top, #f0f0f0, #ffffff 30%); /* Standard syntax */
+	}
+	section.gradientBottomToTop section.gradientBottomToTop {background:none;}
+	section.gradientBottomLeftToTopRight {
+		background: -webkit-linear-gradient(left bottom, #f0f0f0, #ffffff 10%); /* For Safari 5.1 to 6.0 */
+		background: -o-linear-gradient(top right, #f0f0f0, #ffffff 10%); /* For Opera 11.1 to 12.0 */
+		background: -moz-linear-gradient(top right, #f0f0f0, #ffffff 10%); /* For Firefox 3.6 to 15 */
+		background: linear-gradient(to top right, #f0f0f0, #ffffff 10%); /* Standard syntax */
+	}
+	section.gradientBottomLeftToTopRight section.gradientBottomLeftToTopRight {background:none;}
+	section.gradientLeftToRight {
+		background: -webkit-linear-gradient(left, #f0f0f0, #ffffff 15%); /* For Safari 5.1 to 6.0 */
+		background: -o-linear-gradient(right, #f0f0f0, #ffffff 15%); /* For Opera 11.1 to 12.0 */
+		background: -moz-linear-gradient(right, #f0f0f0, #ffffff 15%); /* For Firefox 3.6 to 15 */
+		background: linear-gradient(to right, #f0f0f0, #ffffff 15%); /* Standard syntax */
+	}
+	section.gradientLeftToRight section.gradientLeftToRight {background:none;}
+	section.gradientTopLeftToBottomRight {
+		background: -webkit-linear-gradient(left top, #f0f0f0, #ffffff 10%); /* For Safari 5.1 to 6.0 */
+		background: -o-linear-gradient(bottom right, #f0f0f0, #ffffff 10%); /* For Opera 11.1 to 12.0 */
+		background: -moz-linear-gradient(bottom right, #f0f0f0, #ffffff 10%); /* For Firefox 3.6 to 15 */
+		background: linear-gradient(to bottom right, #f0f0f0, #ffffff 10%); /* Standard syntax */
+	}			
+	section.gradientTopLeftToBottomRight section.gradientTopLeftToBottomRight {background:none;}
+	section.borderTop { border-top: 1px solid #e4e4e4; }
+	section.borderTop section.borderTop {border-top:none;}
+	section.borderRight { border-right: 1px solid #e4e4e4; }
+	section.borderRight section.borderRight {border-right:none;}
+	section.borderLeft { border-left: 1px solid #e4e4e4; }
+	section.borderLeft section.borderLeft {border-left:none;}
+	section.borderBottom { border-bottom: 1px solid #e4e4e4; }
+	section.borderBottom section.borderBottom {border-bottom:none;}
+	section.hMarginLeft {padding-left:120px;}
+	section.hMarginLeft section.hMarginLeft {padding-left:0;}
+	section.hMarginRight {padding-right:120px;}
+	section.hMarginRight section.hMarginRight {padding-right:0;}
+	section.hMarginBoth {padding-left:120px;padding-right:120px;}
+	section.hMarginBoth section.hMarginBoth {padding-left:0;padding-right:0;}
+	section.vMarginTop {padding-top:60px;}
+	section.vMarginTop section.vMarginTop {padding-top:0;}
+	section.vMarginBottom {padding-bottom:60px;}
+	section.vMarginBottom section.vMarginBottom {padding-bottom:0;}
+	section.vMarginBoth {padding-top:60px;padding-bottom:60px;}
+	section.vMarginBoth section.vMarginBoth {padding-top:0;padding-bottom:0;}
+
 /* Responsive Styles Brought In
 ============================== */
+
 /* Large Screen (screen-lg) */
 @media (min-width: 1200px) { }
+
 /* Medium Screen (screen-md) */
 @media (min-width: 768px) and (max-width: 991px) { }
+
 /* Small Screen (screen-sm) */
-@media (max-width: 767px) { }
+@media (max-width: 767px) {
+	/* content-group.css Styles Brought In
+	============================== */
+	section.hMarginLeft, section.hMarginRight, section.hMarginBoth {padding:0;}
+}
+
 /* Xtra-Small Screen (screen-xs) */
 @media (max-width: 480px) { }

@@ -47,6 +47,7 @@
 				posts : [],
 				inProgress : true
 			};
+			$scope.blogLimit = 5;
 		
 			getCategories($scope, blogService.categories(), flashMessageService);
 			getTags($scope, blogService.tags(), flashMessageService);
