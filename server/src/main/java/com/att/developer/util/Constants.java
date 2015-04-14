@@ -12,4 +12,7 @@ public interface Constants {
     public static final String AUTHORIZATION_TOKEN = "AUTHORIZATION";
     
 	public static final String SS_GENERAL_ERROR_ID = "ssGeneralError";
+	public static final String MESSAGE_TEMPLATE = "MESSAGE_TEMPLATE";
+	public static final String MESSAGE_SEPARATOR = "->";
+	public static final String EMAIL_MESSAGE_TYPE = "email";
 }

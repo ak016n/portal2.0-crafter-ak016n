@@ -11,11 +11,16 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 
 import com.att.developer.service.TemplateBasedEmailService;
+import com.att.developer.util.Constants;
 import com.att.developer.util.MessageUtils;
 
 @Component
 public class TemplateBasedEmailServiceImpl implements TemplateBasedEmailService {
 	
+	private static final String BODY = "body";
+	private static final String SUBJECT = "subject";
+	private static final String TO = "to";
+
 	@Inject
     private JavaMailSender mailSender;
 	
@@ -30,9 +35,6 @@ public class TemplateBasedEmailServiceImpl implements TemplateBasedEmailService 
         this.messageUtils = messageUtils;
     }
     
-    /* (non-Javadoc)
-	 * @see com.att.developer.service.impl.TemplateBasedEmailService#sendMail(java.lang.String, java.util.Map)
-	 */
     @Override
 	public void sendMail(String templateName, Map<String, Object> messageContentMap) {
     	MimeMessage message = mailSender.createMimeMessage();
@@ -40,9 +42,9 @@ public class TemplateBasedEmailServiceImpl implements TemplateBasedEmailService 
     	// use the true flag to indicate you need a multipart message
     	try {
 			MimeMessageHelper helper = new MimeMessageHelper(message, true);
-			helper.setTo(messageUtils.getMessage(buildKey(templateName, "email", "to"), messageContentMap));
-			helper.setSubject(messageUtils.getMessage(buildKey(templateName, "email", "subject"), messageContentMap));
-			helper.setText(messageUtils.getMessage(buildKey(templateName, "email", "body"), messageContentMap));
+			helper.setTo(messageUtils.getMessage(buildKey(templateName, Constants.EMAIL_MESSAGE_TYPE, TO), messageContentMap));
+			helper.setSubject(messageUtils.getMessage(buildKey(templateName, Constants.EMAIL_MESSAGE_TYPE, SUBJECT), messageContentMap));
+			helper.setText(messageUtils.getMessage(buildKey(templateName, Constants.EMAIL_MESSAGE_TYPE, BODY), messageContentMap));
 		} catch (MessagingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -55,7 +57,7 @@ public class TemplateBasedEmailServiceImpl implements TemplateBasedEmailService 
     	boolean isFirst = true;
     	for(String each : keys) {
     		if(!isFirst) {
-    			messageKey.append("->");
+    			messageKey.append(Constants.MESSAGE_SEPARATOR);
     		}
     		messageKey.append(each);
     		isFirst = false;

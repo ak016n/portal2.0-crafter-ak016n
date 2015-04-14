@@ -10,6 +10,7 @@ import javax.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 
 import com.att.developer.service.GlobalScopedParamService;
+import com.att.developer.util.Constants;
 
 import freemarker.cache.TemplateLoader;
 
@@ -20,12 +21,12 @@ public class DatabaseTemplateLoader implements TemplateLoader {
 	
 	@Override
 	public Object findTemplateSource(String name) throws IOException {
-		String[] templateName = StringUtils.split(name, "->");
+		String[] templateName = StringUtils.split(name, Constants.MESSAGE_SEPARATOR);
 		if(templateName.length < 3) {
 			// templateSubpath = templateName[1];
 			//Todo throw an exception
 		} 
-		Map<String, String> mapOfString = globalScopedParamService.getMap("MESSAGE", templateName[0].toUpperCase(), templateName[1]);
+		Map<String, String> mapOfString = globalScopedParamService.getMap(Constants.MESSAGE_TEMPLATE, templateName[0].toUpperCase(), templateName[1]);
 		return mapOfString.get(templateName[2]);
 	}
 
