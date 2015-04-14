@@ -10,24 +10,22 @@
 
 <body ng-app="portalApp">
     <div class="container" id="content-area">
+		<section class="sub-header hMarginBoth">
+			<h1><a href="/community">Community</a></h1>
+			<nav ng-controller="NavigationCtrl">
+				<ul>
+					<li><a href="/community/events" title="Take a look at AT&amp;T Community Events" class="inactive bg-blue-dark">Hackathons &amp; Events</a></li>
+					<li><a href="http://developerboards.att.lithium.com/t5/Forums/ct-p/FURM" title="Be part of our AT&amp;T Community Forums" class="inactive bg-blue-dark">Forums</a></li>
+					<li ng-class="{active: isActive('/blog')}"><a ui-sref="blog.list" ui-sref-opts="{reload: true}" title="Explore the AT&amp;T Community Blog" class="active bg-blue-dark">Blog</a></li>
+				</ul>
+			</nav>
+		</section>
 
-      <div class="masthead">
-        <h3 class="text-muted">AT&amp;T</h3>
-        <nav ng-controller="NavigationCtrl">
-          <ul class="nav nav-justified">
-            <li ng-class="{ active: isActive('/')}"><a href="#">Home</a></li>
-            <li ng-class="{active: isActive('/faq')}"><a href="#faq">FAQ</a></li>
-            <li ui-sref-active="active"><a ui-sref="blog.list" ui-sref-opts="{reload: true}">Blog</a></li>
-            <li ng-class="{active: isActive('/login') || isActive('/admin')}"><a href="#admin">Admin</a></li>
-          </ul>
-        </nav>
-      </div>
+		<section ui-view class="hMarginBoth"></section>
 
-      <div ui-view></div>
-
-      <div class="footer">
-        <p>&copy; Company 2015</p>
-      </div>
+		<section class="footer">
+			<p>&copy; Company 2015</p>
+		</section>
 
     </div> <!-- /container -->
 	<!-- Best practice to load scripts at the end of body tag -->
