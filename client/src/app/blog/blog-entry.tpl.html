@@ -40,13 +40,13 @@
 				<hr>
 		
 				<!-- Posted Comments -->
-				<h3>Comments</h3>
+				<h5>Comments</h5>
 				<!-- Comment -->
 				<div class="media" ng-repeat="comment in blog.comments">
 					<div class="media-body">
-						<h4 class="media-heading">
-							by <mark>{{comment.author.username}}</mark> on <small>{{comment.date_created}}</small>
-						</h4>
+						<h6 class="media-heading">
+							by <span class="text-blue">{{comment.author.username}}</span> on <small>{{comment.date_created}}</small>
+						</h6>
 							<div ng-bind-html="comment.content"></div>
 					</div>
 				</div>
