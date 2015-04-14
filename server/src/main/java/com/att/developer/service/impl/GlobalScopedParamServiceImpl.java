@@ -86,6 +86,8 @@ public class GlobalScopedParamServiceImpl implements GlobalScopedParamService {
 		Map<String, Object> map = null;
 		try {
 			map = getPropertiesMapFromText(attProperties.getDescription());
+			map.put("x_date_created", attProperties.getDateCreated());
+			map.put("x_version", attProperties.getVersion());
 		} catch (IOException e) {
 			logger.error("Error while reading property: ItemKey : " + itemKey + " , FieldKey : " + fieldKey , e);
 			throw new RuntimeException(e); // technically we should never get here unless there was a database corruption
@@ -187,6 +189,20 @@ public class GlobalScopedParamServiceImpl implements GlobalScopedParamService {
 	@Override
 	public Map<String, String> getMap(String itemKey, String fieldKey, String key) {
 		return getMapOfString(itemKey, fieldKey, key);
+	}
+	
+	@Override
+	public String get(String itemKey, String fieldKey, String key, String defaultVal) {
+		if(propertiesMap.get(buildKeyFromIKFK(itemKey, fieldKey)) == null) {
+			initializeProperties(itemKey, fieldKey);
+		}
+		Map<String, Object> tempMap = propertiesMap.get(buildKeyFromIKFK(itemKey, fieldKey));
+		return (tempMap != null)? (String) tempMap.get(key) : defaultVal;
+	}
+	
+	@Override
+	public String get(String itemKey, String fieldKey, String key) {
+		return this.get(itemKey, fieldKey, key, null);
 	}
 	
 	/**

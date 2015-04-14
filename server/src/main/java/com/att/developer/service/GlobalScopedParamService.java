@@ -53,4 +53,8 @@ public interface GlobalScopedParamService {
 	public abstract List<String> search(String itemKey);
 
 	public abstract List<String> search(String itemKey, String fieldKey);
+
+	String get(String itemKey, String fieldKey, String key);
+
+	String get(String itemKey, String fieldKey, String key, String defaultVal);
 }
