@@ -8,7 +8,7 @@
 		  init($scope, $sce, blogService, $state, flashMessageService);
 		 
 		  $scope.pageChanged = function() {
-			  getBlogPosts($scope, $sce, blogService.posts(), {page: $scope.pagination.currentPage}, flashMessageService);
+			  getBlogPosts($scope, $sce, blogService.posts(), {"filter[posts_per_page]" : 5, page: $scope.pagination.currentPage}, flashMessageService);
 		  };
 		  
 		  $scope.categorySelected = function(category) {
@@ -48,14 +48,13 @@
 				posts : [],
 				inProgress : true
 			};
-			$scope.blogLimit = 5;
 		
 			getCategories($scope, blogService.categories(), flashMessageService);
 			getTags($scope, blogService.tags(), flashMessageService);
 	
 			switch(blogService.getView()) {
 				case "blog.list":
-					 getBlogPosts($scope, $sce, blogService.posts(), {}, flashMessageService);
+					 getBlogPosts($scope, $sce, blogService.posts(), {"filter[posts_per_page]" : 5}, flashMessageService);
 					 break;
 				case "blog.entry":
 					getPost($scope, $sce, blogService.posts(), $state, flashMessageService).then( function () {
