@@ -467,9 +467,7 @@
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fff2dede', endColorstr='#ffebcccc', GradientType=0);
 }
 .well {
-  background: #FFFFFF;
   padding:10px;
-  border: 1px solid #E9E9E9;
   border-radius: 5px;
   box-shadow: 1px 1px 0px #E8E8E8;
 }
