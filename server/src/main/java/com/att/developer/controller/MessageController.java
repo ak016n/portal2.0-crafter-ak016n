@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.att.developer.exception.MessageProcessingException;
 import com.att.developer.service.TemplateBasedEmailService;
 
 @RestController
@@ -21,7 +22,11 @@ public class MessageController {
 	
     @RequestMapping(value="/{templateName}", method = RequestMethod.POST)
     public void sendEmail(@PathVariable("templateName") String templateName, @RequestBody Map<String, Object> map) {
-    	templateBasedEmailService.sendMail(templateName, map);
+    	try {
+			templateBasedEmailService.sendMail(templateName, map);
+		} catch (MessageProcessingException e) {
+			throw new RuntimeException(e);
+		}
     }
 	
 }
