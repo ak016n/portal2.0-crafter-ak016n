@@ -524,6 +524,7 @@
 	section.hMarginBoth {padding-left:120px;padding-right:120px;}
 	section.hMarginBoth section.hMarginBoth {padding-left:0;padding-right:0;}
 	section.vMarginTop {padding-top:60px;}
+	section.vMarginTop30 {padding-top:30px;}
 	section.vMarginTop section.vMarginTop {padding-top:0;}
 	section.vMarginBottom {padding-bottom:60px;}
 	section.vMarginBottom section.vMarginBottom {padding-bottom:0;}
