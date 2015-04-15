@@ -20,6 +20,10 @@ public class DatabaseTemplateLoader implements TemplateLoader {
 	@Resource
 	private GlobalScopedParamService globalScopedParamService;
 	
+	public void setGlobalScopedParamService(GlobalScopedParamService globalScopedParamService) {
+		this.globalScopedParamService = globalScopedParamService;
+	}
+
 	@Override
 	public Object findTemplateSource(String name) throws IOException {
 		String[] templateName = StringUtils.split(name, Constants.MESSAGE_SEPARATOR);
@@ -37,6 +41,9 @@ public class DatabaseTemplateLoader implements TemplateLoader {
 
 	@Override
 	public Reader getReader(Object templateSource, String encoding) throws IOException {
+		if(!(templateSource instanceof String)) {
+			throw new UnsupportedOperationException("Expected templateSource to be of type String, instead got " + templateSource.getClass());
+		}
 		return new StringReader((String) templateSource);
 	}
 
