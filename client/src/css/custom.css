@@ -524,11 +524,37 @@
 	section.hMarginBoth {padding-left:120px;padding-right:120px;}
 	section.hMarginBoth section.hMarginBoth {padding-left:0;padding-right:0;}
 	section.vMarginTop {padding-top:60px;}
+	section.vMarginTop30 {padding-top:30px;}
 	section.vMarginTop section.vMarginTop {padding-top:0;}
 	section.vMarginBottom {padding-bottom:60px;}
 	section.vMarginBottom section.vMarginBottom {padding-bottom:0;}
 	section.vMarginBoth {padding-top:60px;padding-bottom:60px;}
 	section.vMarginBoth section.vMarginBoth {padding-top:0;padding-bottom:0;}
+	
+	
+/* Community section Styles 
+============================== */
+
+.community_well .row {
+	margin:5px 10px 10px 10px;
+}
+
+.community_well h5 {
+	padding: 5px 10px 10px 10px;
+	border-bottom: 1px solid #cccccc;
+	display:block;
+	font-size:14px;
+	font-weight:bold;
+}
+
+
+.community_well ul.list-unstyled {
+  margin:0;
+}
+.community_well ul.list-unstyled li{
+  margin-bottom:5px;
+  font-size:85.7%;
+}
 
 /* Responsive Styles Brought In
 ============================== */

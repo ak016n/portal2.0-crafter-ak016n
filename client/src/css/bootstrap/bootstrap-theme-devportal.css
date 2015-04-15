@@ -1,0 +1,16 @@
+/*!
+ * devportal 2.0 customized themes
+ */
+
+
+.well {
+  padding:10px;
+  border-radius: 5px;
+  box-shadow: 1px 1px 0px #E8E8E8;
+}
+
+.page-header {
+  display: block;
+  margin: 0 0 17px;
+  
+}
