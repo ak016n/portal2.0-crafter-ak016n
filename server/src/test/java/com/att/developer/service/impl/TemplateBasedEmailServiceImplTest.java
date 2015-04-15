@@ -1,5 +1,8 @@
 package com.att.developer.service.impl;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.mail.internet.MimeMessage;
 
 import org.junit.Before;
@@ -35,12 +38,16 @@ public class TemplateBasedEmailServiceImplTest {
 	@Test
 	@SuppressWarnings("unchecked")
 	public void testSendMail_happyPath() throws MessageProcessingException {
-		Mockito.when(mockMailSender.createMimeMessage()).thenReturn(Mockito.mock(MimeMessage.class));
-		Mockito.when(mockMessageUtils.getMessage("hello_world->email->to", null)).thenReturn("leonard@tbs.com");
-		Mockito.when(mockMessageUtils.getMessage("hello_world->email->subject", null)).thenReturn("comic book store");
-		Mockito.when(mockMessageUtils.getMessage("hello_world->email->body", null)).thenReturn("need copies of hulk");
 		
-		templateBasedEmailService.sendMail("hello_world", null);
+		Map<String, Object> mapOfObjects = new HashMap<>();
+		mapOfObjects.put("x", "y");
+		
+		Mockito.when(mockMailSender.createMimeMessage()).thenReturn(Mockito.mock(MimeMessage.class));
+		Mockito.when(mockMessageUtils.getMessage("hello_world->email->to", mapOfObjects)).thenReturn("leonard@tbs.com");
+		Mockito.when(mockMessageUtils.getMessage("hello_world->email->subject", mapOfObjects)).thenReturn("comic book store");
+		Mockito.when(mockMessageUtils.getMessage("hello_world->email->body", mapOfObjects)).thenReturn("need copies of hulk");
+		
+		templateBasedEmailService.sendMail("hello_world", mapOfObjects);
 		
 		Mockito.verify(mockMailSender, Mockito.times(1)).send(Mockito.any(MimeMessage.class));
 		Mockito.verify(mockMessageUtils, Mockito.times(3)).getMessage(Mockito.anyString(), Mockito.anyMap());
