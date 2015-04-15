@@ -14,9 +14,9 @@
 					
 					<div ng-hide="flashMessages.isError()">
 						<div ng-repeat="post in blog.posts" ui-sref-opts="{reload: true}">
-			                <h2>
+			                <h4>
 			                    <a ui-sref="blog.entry({slug: post.slug, id: post.ID})" ui-sref-opts="{reload: true}" ><div ng-bind-html="post.title"></div></a>
-			                </h2>
+			                </h4>
 			                <p>
 			                    by {{post.author.username}}&nbsp;&nbsp;<span class="glyphicon glyphicon-time"></span> Posted on {{post.date_created}}
 			                </p>
@@ -29,7 +29,7 @@
 							<hr>	
 						</div>
 						
-						<pagination boundary-links="true" total-items="pagination.totalItems" ng-model="pagination.currentPage" class="pagination-sm" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;" ng-change="pageChanged()"></pagination>
+						<pagination boundary-links="true" total-items="pagination.totalItems" ng-model="pagination.currentPage" class="pagination-sm" max-size="pagination.maxSize" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;" ng-change="pageChanged()"></pagination>
 					</div>
 				
 				</div>

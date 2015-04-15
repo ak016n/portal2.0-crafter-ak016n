@@ -330,8 +330,8 @@
     "@thumbnail-border-radius": "@border-radius-base",
     "@thumbnail-caption-color": "@text-color",
     "@thumbnail-caption-padding": "9px",
-    "@well-bg": "#eeeeee",
-    "@well-border": "darken(@well-bg, 6%)",
+    "@well-bg": "#ffffff",
+    "@well-border": "#E9E9E9",
     "@badge-color": "#fff",
     "@badge-link-hover-color": "#fff",
     "@badge-bg": "@gray-light",
@@ -426,5 +426,5 @@
     "scrollspy.js",
     "transition.js"
   ],
-  "customizerUrl": "http://getbootstrap.com/customize/?id=407caf37188eb526fb15"
+  "customizerUrl": "http://getbootstrap.com/customize/?id=504fe93e72c7e99b512e"
 }
