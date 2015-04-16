@@ -1,5 +1,8 @@
 package com.att.developer.advice;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasItem;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,9 +30,9 @@ public class ServerSideExceptionHandlerTest {
 		serverSideErrors.add(error);
 		ServerSideException e = new ServerSideException(serverSideErrors);
 		
-		ResponseEntity<String> errorResponse = serverSideExceptionHandler.handleServerSideException(e);
+		ResponseEntity<ServerSideErrors> errorResponse = serverSideExceptionHandler.handleServerSideException(e);
 		
-		Assert.assertEquals("{\"errors\":[{\"id\":\"error-101\",\"message\":\"things sometimes don't work\"}]}", errorResponse.getBody());
+		assertThat(errorResponse.getBody().getErrorColl(), hasItem(error));
 		Assert.assertEquals(HttpStatus.BAD_REQUEST, errorResponse.getStatusCode());
 	}
 
