@@ -1,5 +1,8 @@
 package com.att.developer.bean;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 public class ServerSideError {
 
 	private String id;
@@ -45,4 +48,21 @@ public class ServerSideError {
 		this.message = builder.message;
 	}
 
+	public boolean equals(Object object) {
+		if (!(object instanceof ServerSideError)) {
+			return false;
+		}
+		ServerSideError rhs = (ServerSideError) object;
+		return new EqualsBuilder()
+				.append(this.id, rhs.id).append(this.message, rhs.message)
+				.isEquals();
+	}
+
+	public int hashCode() {
+		return new HashCodeBuilder(2086184833, -49553065)
+				.append(this.id)
+				.append(this.message).toHashCode();
+	}
+
+	
 }
