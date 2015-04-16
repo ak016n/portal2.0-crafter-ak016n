@@ -61,12 +61,12 @@ import org.springframework.security.web.access.intercept.FilterSecurityIntercept
 import com.att.developer.bean.Role;
 import com.att.developer.bean.SessionUser;
 import com.att.developer.bean.wrapper.Principal;
-import com.att.developer.security.AttPasswordEncoder;
-import com.att.developer.security.AuthenticationEnhancementFilter;
-import com.att.developer.security.CustomAclLookupStrategy;
-import com.att.developer.security.CustomPermissionGrantingStrategy;
-import com.att.developer.security.EventLogAuditLogger;
-import com.att.developer.security.Oauth2UserApprovalHandler;
+import com.att.developer.security.impl.AttPasswordEncoder;
+import com.att.developer.security.impl.AuthenticationEnhancementFilter;
+import com.att.developer.security.impl.CustomAclLookupStrategy;
+import com.att.developer.security.impl.CustomPermissionGrantingStrategy;
+import com.att.developer.security.impl.EventLogAuditLogger;
+import com.att.developer.security.impl.Oauth2UserApprovalHandler;
 
 
 @Configuration

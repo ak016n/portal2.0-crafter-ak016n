@@ -1,8 +1,10 @@
-package com.att.developer.security;
+package com.att.developer.security.impl;
 
 import org.apache.commons.codec.binary.Base64;
 import org.junit.Assert;
 import org.junit.Test;
+
+import com.att.developer.security.impl.AESCrypt;
 
 public class AESCryptTest {
 

@@ -8,7 +8,7 @@ import javax.servlet.http.Cookie;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.att.developer.security.DesCrypt;
+import com.att.developer.security.impl.DesCrypt;
 
 @Component
 public class CookieUtil {

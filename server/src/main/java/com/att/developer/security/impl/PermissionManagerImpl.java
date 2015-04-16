@@ -1,4 +1,4 @@
-package com.att.developer.security;
+package com.att.developer.security.impl;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -29,6 +29,7 @@ import org.springframework.util.Assert;
 
 import com.att.developer.bean.Organization;
 import com.att.developer.bean.User;
+import com.att.developer.security.PermissionManager;
 import com.att.developer.service.GlobalScopedParamService;
 import com.att.developer.service.OrganizationService;
 import com.att.developer.service.UserService;

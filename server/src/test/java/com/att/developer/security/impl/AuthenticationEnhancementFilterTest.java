@@ -1,4 +1,4 @@
-package com.att.developer.security;
+package com.att.developer.security.impl;
 
 import java.io.Serializable;
 import java.util.Collections;
@@ -32,6 +32,7 @@ import com.att.developer.bean.SessionUser;
 import com.att.developer.bean.User;
 import com.att.developer.bean.builder.RoleBuilder;
 import com.att.developer.bean.builder.UserBuilder;
+import com.att.developer.security.impl.AuthenticationEnhancementFilter;
 import com.att.developer.service.UserCreator;
 import com.att.developer.service.UserService;
 

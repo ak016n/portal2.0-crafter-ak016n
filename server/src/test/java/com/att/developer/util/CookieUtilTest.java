@@ -10,7 +10,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
-import com.att.developer.security.DesCrypt;
+import com.att.developer.security.impl.DesCrypt;
 
 public class CookieUtilTest {
 

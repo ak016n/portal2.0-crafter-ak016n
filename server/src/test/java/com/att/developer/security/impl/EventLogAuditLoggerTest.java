@@ -1,4 +1,4 @@
-package com.att.developer.security;
+package com.att.developer.security.impl;
 
 
 import java.util.ArrayList;
@@ -26,6 +26,7 @@ import com.att.developer.bean.EventLog;
 import com.att.developer.bean.SessionUser;
 import com.att.developer.bean.User;
 import com.att.developer.bean.builder.UserBuilder;
+import com.att.developer.security.impl.EventLogAuditLogger;
 import com.att.developer.service.EventTrackingService;
 import com.att.developer.typelist.EventType;
 

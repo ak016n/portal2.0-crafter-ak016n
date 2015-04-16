@@ -1,4 +1,4 @@
-package com.att.developer.security;
+package com.att.developer.security.impl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +42,7 @@ import com.att.developer.bean.User;
 import com.att.developer.bean.builder.OrganizationBuilder;
 import com.att.developer.bean.builder.RoleBuilder;
 import com.att.developer.bean.builder.UserBuilder;
+import com.att.developer.security.impl.PermissionManagerImpl;
 import com.att.developer.service.GlobalScopedParamService;
 import com.att.developer.service.OrganizationService;
 import com.att.developer.service.UserService;

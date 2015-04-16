@@ -1,7 +1,9 @@
-package com.att.developer.security;
+package com.att.developer.security.impl;
 
 import org.junit.Assert;
 import org.junit.Test;
+
+import com.att.developer.security.impl.AttPasswordEncoder;
 
 public class AttPasswordEncoderTest {
 

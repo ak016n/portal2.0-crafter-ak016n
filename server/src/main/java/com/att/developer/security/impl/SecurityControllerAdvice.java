@@ -1,4 +1,4 @@
-package com.att.developer.security;
+package com.att.developer.security.impl;
 
 import javax.servlet.DispatcherType;
 import javax.servlet.http.HttpServletRequest;

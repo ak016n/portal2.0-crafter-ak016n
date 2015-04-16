@@ -1,4 +1,4 @@
-package com.att.developer.security;
+package com.att.developer.security.impl;
 
 
 
@@ -23,6 +23,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
+
+import com.att.developer.security.impl.CustomPermissionGrantingStrategy;
+import com.att.developer.security.impl.EventLogAuditLogger;
 
 
 
