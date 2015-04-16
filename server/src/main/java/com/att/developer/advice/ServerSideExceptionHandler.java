@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.att.developer.bean.ServerSideErrors;
 import com.att.developer.exception.ServerSideException;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 @ControllerAdvice
 @Order(Ordered.HIGHEST_PRECEDENCE)
@@ -18,7 +17,7 @@ public class ServerSideExceptionHandler {
 
 	@ExceptionHandler(ServerSideException.class)
 	@ResponseBody
-	public ResponseEntity<String> handleServerSideException(ServerSideException e) throws JsonProcessingException {
+	public ResponseEntity<ServerSideErrors> handleServerSideException(ServerSideException e) throws JsonProcessingException {
 		
 		ServerSideErrors errors = e.getServerSideErrors();
 		
@@ -26,7 +25,6 @@ public class ServerSideExceptionHandler {
 			errors = new ServerSideErrors();
 		}
 		
-		ObjectMapper jsonMapper = new ObjectMapper();
-		return new ResponseEntity<String>(jsonMapper.writeValueAsString(errors), errors.getHttpStatus());
+		return new ResponseEntity<ServerSideErrors>(errors, errors.getHttpStatus());
 	}
 }
