@@ -1,0 +1,359 @@
+#att-header {
+    padding: 0;
+    position: relative;
+    margin: 0 auto;
+  	
+  	font-weight: normal;
+	font-size:85.7%;
+	width:960px;
+}
+#att-header:before, #att-header:after {
+    content: "";
+    display: table;
+}
+#att-header:after {
+    clear: both;
+}
+#att-header .logo {
+    float: left;
+	padding: 17px 12px 17px 0px;
+}
+
+#att-header nav {
+    float: right;
+	display: inline-block;
+	position: relative;
+	padding: 18px 5px 10px;
+}
+
+#att-header nav a {
+    color: #808080;
+    font-weight: bold;
+    line-height: normal;
+    padding: 10px 12px;
+}
+#att-header nav a:hover, #att-header nav a.active {
+    color: #1C92CA;
+}
+
+#att-header a.login {
+    margin-left: 5px;
+    padding-left: 19px;
+}
+#att-header a.login:after {
+    background-position: 0 0;
+}
+#att-header a.login:hover:after {
+    background-position: 0 -6px !important;
+}
+#att-header a.login:first-child {
+    border-left: 1px solid #E2E2E2;
+}
+#att-header #quick-search {
+    box-shadow: 1px 0 0 #E2E2E2 inset;
+    height: 20px;
+    padding: 24px 0 25px 0;
+	float: left;
+	margin-bottom: 0;
+}
+#att-header #quick-search:after {
+    border-left: 1px solid #E2E2E2;
+    bottom: -20px;
+    content: "";
+    height: 20px;
+    left: 0;
+    position: absolute;
+    width: 20px;
+}
+#att-header #quick-search.hide-border:after {
+    display: none;
+}
+#att-header #quick-search .magnifying-glass {
+    background: url("/developer/resources/images/layout/form-icons-sprite.png") no-repeat scroll left -368px transparent;
+    border: medium none !important;
+    cursor: pointer;
+    display: inline-block;
+	width: 22px;
+    height: 22px;
+	padding:0;
+    margin: 0 0 0 15px;
+    vertical-align: middle;
+}
+#att-header #quick-search input[type="text"], #att-header #quick-search input[type="text"]:focus {
+    background: none repeat scroll 0 0 transparent;
+    border: 0 none;
+    box-shadow: none;
+    display: inline;
+	outline: none;
+    margin: 0;
+    padding: 4px;
+    vertical-align: middle;
+    width: 130px;
+	font-size:14px;
+}
+
+/* ------------- IE 8 or less ----------------------- */
+
+.ie #att-header .logo .att-logo {
+    margin: 3px 18px 0 0;
+	width: auto;
+}
+
+.ie #att-header form#quick-search {width:auto;}
+
+.ie a, a:visited {
+	text-decoration: none !important;
+}
+
+.ie #att-header, .ie #att-header nav .dropdown-menu ul li{
+    white-space: nowrap;
+}
+
+/* ------------- Top navmenu dropdown ----------------------- */
+#att-header nav .dropdown .expands {
+	margin-right: 15px;
+	padding: 10px 12px;
+}
+
+#att-header nav .dropdown .expands:hover:after {
+	background-position: 0 -6px;
+}
+#att-header nav .dropdown:hover > a {
+	color: #1C92CA;
+}
+#att-header nav .dropdown:hover > a:after {
+	background-position: 0 -6px;
+}
+#att-header nav.menuComponent .dropdown ul.menuDepth_1 {
+	vertical-align: top;
+}	
+#att-header nav.menuComponent .dropdown ul li a {
+	padding: 10px 12px;
+	line-height:normal;
+}
+#att-header nav.menuComponent .dropdown ul ul li a {
+	line-height:normal;
+	padding:0;
+	vertical-align: middle;
+	width: 100%;
+}
+#att-header nav.menuComponent .dropdown ul ul li a img {
+	vertical-align: middle;
+	margin-right: 5px;
+}
+	
+#att-header nav.menuComponent .dropdown ul li a.expands {
+	margin-right: 15px;
+	padding: 10px 12px;
+}
+
+#att-header nav.menuComponent .dropdown ul li a.expands:after {
+	background: url("/developer/resources/images/layout/icon-plus.png") no-repeat scroll 0 0 transparent;
+	content: "";
+	height: 6px;
+	pointer-events: none;
+	position: absolute;
+	right: auto;
+	top: 16px;
+	width: 6px;
+	margin-left: 8px;
+}
+#att-header nav.menuComponent .dropdown ul li a.expands:hover:after {
+	background-position: 0 -6px;
+}
+
+/* ------------- Top navmenu login dropdown ----------------------- */	
+#att-header .login-nav {
+	display: inline-block;
+	height: 36px;
+}
+#att-header .login-nav ul ul {
+	display: none;
+}
+
+#att-header .login-nav ul li:hover > ul {
+	display: block;
+}
+
+#att-header .login-nav a {
+	line-height:normal;
+}
+
+#att-header nav .login-nav a.button {
+	margin-top: 3px;
+}
+
+#att-header .login-nav .button.myapps {
+	min-width: auto;
+	max-width: auto;
+	background-image: none;
+}
+
+#att-header .login-nav .button.getstarted {
+	min-width: initial;
+	max-width: initial;
+	background-image: none;
+}
+
+#att-header .login-nav ul {
+	list-style: none;
+	position: relative;
+	display: inline-block;
+}
+	#att-header .login-nav ul:after {
+		content: ""; 
+		clear: both; 
+		display: block;
+	}
+
+	#att-header .login-nav ul li {
+		float: left;
+		line-height: normal;
+		margin: 0;
+		padding:0;
+	}
+		#att-header .login-nav ul li > a{
+			display: block;
+			text-decoration: none;
+			color: #808080;
+			font-weight: bold;
+			padding: 10px 12px;
+			line-height: normal;
+		}
+		#att-header .login-nav ul li:hover > a {
+			color: #1C92CA;
+		}
+		
+		#att-header .login-nav ul li a.button{
+			display: block;
+			color: #FFFFFF;
+			padding: 7px 10px;
+		}
+		#att-header .login-nav ul li a.button:hover {
+			color:#FFFFFF;
+			background-color: #FEA72E;
+			background-image: -moz-linear-gradient(center top , #FEAB2F, #FEA12C);
+			background-repeat: repeat-x;
+			border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+		}
+		
+	#att-header .login-nav ul ul {
+		border-radius: 0px;
+		padding: 0;
+		position: absolute;
+		top: 35px;
+		background: none repeat scroll 0 0 #FFFFFF;
+		border: 1px solid #D1D1D1;
+		border-radius: 3px 3px 3px 3px;
+		box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+		width: 200px;
+		z-index: 9999;
+	}
+	
+	
+		#att-header .login-nav ul ul:after, #att-header .login-nav ul ul:before {
+			border: medium solid transparent;
+			bottom: 100%;
+			content: " ";
+			height: 0;
+			pointer-events: none;
+			position: absolute;
+			width: 0;
+			}
+		#att-header .login-nav ul ul:before {
+			border-color: rgba(209, 209, 209, 0) rgba(209, 209, 209, 0) #D1D1D1;
+			border-width: 9px;
+			left: 15%;
+			margin-left: -9px;
+			}
+		#att-header .login-nav ul ul:after {
+			border-color: rgba(255, 255, 255, 0) rgba(255, 255, 255, 0) #FFFFFF;
+			border-width: 8px;
+			left: 15%;
+			margin-left: -8px;
+			}
+		#att-header .login-nav ul ul li {
+			float: none; 
+			position: relative;
+			border-bottom: 1px solid #E2E2E2;
+			margin: 0;
+			padding: 10px;
+			text-align: left;
+		}
+			#att-header .login-nav ul ul li a {
+				color: #4B5C66;
+				display: inline-block;
+				font-size: 13px;
+				padding: 0;
+				text-align:left;
+				vertical-align: middle;
+			}
+				#att-header .login-nav ul ul li a:hover {
+					color: #1C92CA;
+				}
+		
+	#att-header .login-nav ul ul ul {
+		position: absolute;
+		left: 100%;
+		top:0;
+		
+		border-radius: 0px;
+		padding: 0;
+		background: none repeat scroll 0 0 #FFFFFF;
+		border: 1px solid #D1D1D1;
+		border-radius: 3px 3px 3px 3px;
+		box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+		
+	}
+		#att-header .login-nav ul ul ul:before {
+			border-color: transparent;
+			border-width: 0;
+			left: 0;
+			top: 0;
+			margin-left: 0;
+			}
+		#att-header .login-nav ul ul ul:after {
+			border-color: transparent;
+			border-width: 0;
+			left: 0;
+			top: 0;
+			margin-left: 0;
+			}
+	#att-header .login-nav ul {
+		position: relative;
+		left: 0;
+		top:0;
+		border-radius: 0px;
+		padding: 0;
+		background: none;
+		border: none;
+		border-radius: 0;
+		box-shadow: none;
+		
+	}
+	#att-header .login-nav ul li {
+		border:none;
+	}
+	
+	#att-header .login-nav ul li a.expands {
+		margin-right: 15px;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		max-width: 100px;
+		min-width: 35px;
+	}
+	
+	#att-header .login-nav ul li a.expands:before { 
+		background: url("/developer/resources/images/layout/icon-plus.png") no-repeat scroll 0 0 transparent; 
+		content: ""; 
+		height: 6px; 
+		pointer-events: none; 
+		width: 6px; 
+		float: right; 
+		margin: 5px 0 0 5px; 
+	}
+	#att-header .login-nav ul li a.expands:hover:before {
+		background-position: 0 -6px;
+	}
+    

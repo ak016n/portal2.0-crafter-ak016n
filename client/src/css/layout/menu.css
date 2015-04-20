@@ -1,0 +1,339 @@
+/* should be in responsive if we keep the current menu dom. */
+body.responsive div.menu.dropdown ul ul li { display: table; }
+
+
+/*start menutype:dropdown */
+
+div.menu.dropdown {
+	cursor: pointer;
+	display: inline-block;
+	position: relative;
+	float: left;
+}
+
+div.menu.dropdown ul ul {
+	display: none;
+}
+
+div.menu.dropdown ul li:hover > ul {
+	display: block;
+}
+
+div.menu.dropdown a {
+	line-height:normal;
+}
+
+
+div.menu.dropdown ul {
+	list-style: none;
+	position: relative;
+	display: inline-block;
+}
+	div.menu.dropdown ul:after {
+		content: ""; 
+		clear: both; 
+		display: block;
+	}
+
+	div.menu.dropdown ul li {
+		float: left;
+		line-height: normal;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+		div.menu.dropdown ul li > a{
+			display: block;
+			text-decoration: none;
+			color: #808080;
+			font-weight: bold;
+			padding: 10px 12px;
+			line-height: normal;
+		}
+		div.menu.dropdown ul li:hover > a {
+			color: #1C92CA;
+		}
+		
+	div.menu.dropdown ul ul {
+		border-radius: 0px;
+		padding: 0;
+		position: absolute;
+		top: 35px;
+		background: none repeat scroll 0 0 #FFFFFF;
+		border: 1px solid #D1D1D1;
+		border-radius: 3px 3px 3px 3px;
+		box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+		width: 200px;
+		z-index: 9999;
+	}
+	
+	
+		div.menu.dropdown ul ul:after, div.menu.dropdown ul ul:before {
+			border: medium solid transparent;
+			bottom: 100%;
+			content: " ";
+			height: 0;
+			pointer-events: none;
+			position: absolute;
+			width: 0;
+			}
+		div.menu.dropdown ul ul:before {
+			border-color: rgba(209, 209, 209, 0) rgba(209, 209, 209, 0) #D1D1D1;
+			border-width: 9px;
+			left: 15%;
+			margin-left: -9px;
+			}
+		div.menu.dropdown ul ul:after {
+			border-color: rgba(255, 255, 255, 0) rgba(255, 255, 255, 0) #FFFFFF;
+			border-width: 8px;
+			left: 15%;
+			margin-left: -8px;
+			}
+		div.menu.dropdown ul ul li {
+			float: none;
+			position: relative;
+			border-bottom: 1px solid #E2E2E2;
+			margin: 0;
+			padding: 8px 10px;
+			text-align: left;
+			list-style: none;
+			display: block;
+			width: 100%;
+			-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+			-moz-box-sizing: border-box;    /* Firefox, other Gecko */
+			box-sizing: border-box;         /* Opera/IE 8+ */
+		}
+			div.menu.dropdown ul ul li a {
+				color: #4B5C66;
+				font-size: 13px;
+				padding: 0;
+				text-align:left;
+				vertical-align: middle;
+				display: inline-block;
+			}
+				div.menu.dropdown ul ul li a:hover {
+					color: #1C92CA;
+				}
+		
+	div.menu.dropdown ul ul ul {
+		position: absolute;
+		left: 100%;
+		top:0;
+		
+		border-radius: 0px;
+		padding: 0;
+		background: none repeat scroll 0 0 #FFFFFF;
+		border: 1px solid #D1D1D1;
+		border-radius: 3px 3px 3px 3px;
+		box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+		
+	}
+		div.menu.dropdown ul ul ul:before {
+			border-color: transparent;
+			border-width: 0;
+			left: 0;
+			top: 0;
+			margin-left: 0;
+			}
+		div.menu.dropdown ul ul ul:after {
+			border-color: transparent;
+			border-width: 0;
+			left: 0;
+			top: 0;
+			margin-left: 0;
+			}
+	
+	div.menu.dropdown ul li a.expands {
+		margin-right: 15px;
+	}
+	div.menu.dropdown ul li a.expands:after {
+		background: url("/developer/resources/images/layout/icon-plus.png") no-repeat scroll 0 0 transparent;
+		content: "";
+		height: 6px;
+		pointer-events: none;
+		position: absolute;
+		right: auto;
+		top: 16px;
+		width: 6px;
+		margin-left: 8px;
+	}
+	div.menu.dropdown ul li a.expands:hover:after {
+		background-position: 0 -6px;
+	}
+/*end menutype:dropdown */
+
+
+
+	
+/*start menutype:panel */
+
+div.menu.panel {
+	display: inline-block;
+	position: relative;
+	float: left;
+}
+div.menu.panel ul.menuDepth_2 { display: none; }
+
+/*div.menu.panel ul.menuDepth_1 li > ul, */
+div.menu.panel ul.menuDepth_1 li:hover > ul { display: block; }
+
+div.menu.panel a { line-height:normal; }
+
+div.menu.panel ul {
+	list-style: none;
+}
+	div.menu.panel ul:after {
+		content: ""; 
+		clear: both; 
+		display: block;
+	}
+	div.menu.panel ul li {
+			float: left;
+			line-height: normal;
+			margin: 0;
+			padding: 0;
+			list-style: none;
+		}
+
+		div.menu.panel ul ul li { 
+			float: none; 
+		}
+	
+		div.menu.panel ul li > a{
+			display: block;
+			text-decoration: none;
+			color: #808080;
+			font-weight: bold;
+			padding: 10px 12px;
+			line-height: normal;
+		}
+		div.menu.panel ul li:hover > a {
+			color: #1C92CA;
+		}
+		div.menu.panel ul li > a.button.small {font-weight:normal!important;} /* header-common overwrite */
+		
+		div.menu.panel .menuDepth_1 li:hover > a.expands {
+			background-color: #0577b2;
+			color: #ffffff!important;
+		}
+
+	div.menu.panel ul.menuDepth_1 li a.expands {
+		margin-right: 0px;
+		padding: 10px 27px 10px 12px!important;
+	}
+	
+	div.menu.panel .menuDepth_1 li a.expands:after {
+		background: url("/developer/resources/images/layout/icon-plus.png") no-repeat scroll 0 0 transparent;
+		content: "";
+		height: 6px;
+		pointer-events: none;
+		position: absolute;
+		right: auto;
+		top: 16px;
+		width: 6px;
+		margin-left: 8px;
+	}
+		
+		
+		
+
+		
+			div.menu.panel ul ul li a {
+				color: #4B5C66;
+				font-size: 13px;
+				padding: 0;
+			}
+				div.menu.panel ul ul li a:hover {
+					color: #1C92CA;
+				}
+		
+
+		div.menu.panel ul ul ul:before {
+			border-color: transparent;
+			border-width: 0;
+			left: 0;
+			top: 0;
+			margin-left: 0;
+			}
+		div.menu.panel ul ul ul:after {
+			border-color: transparent;
+			border-width: 0;
+			left: 0;
+			top: 0;
+			margin-left: 0;
+			}
+	div.menu.panel ul .apis-nav ul ul {
+		position: relative;
+		left: 0;
+		top:0;
+		border-radius: 0px;
+		padding: 0;
+		background: none;
+		border: none;
+		border-radius: 0;
+		box-shadow: none;
+		
+	}
+	div.menu.panel ul .apis-nav ul ul li {
+		border:none;
+	}
+
+div.menu.panel ul.menuDepth_1 { display:block; }
+div.menu.panel ul.menuDepth_2 { 
+	padding: 10px 12px;
+	position: absolute;
+	top: 35px;
+	background: none repeat scroll 0 0 #f6f6f6;
+	border: 3px solid #dadada;
+	border-radius: 3px 3px 3px 3px;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+	width: auto;
+	z-index: 9999;
+}
+div.menu.panel ul.menuDepth_2  li span {
+	color: #0577b2;
+	font-size: 18px;
+	display: block;
+	padding-bottom: 10px;
+	white-space: nowrap;
+}
+div.menu.panel ul.menuDepth_2  li {
+	display: table-cell;
+	vertical-align: top;
+	width: auto;
+	margin: 0;
+	padding: 8px 10px;
+	text-align: left;
+	-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+	-moz-box-sizing: border-box;    /* Firefox, other Gecko */
+	box-sizing: border-box;         /* Opera/IE 8+ */
+}
+
+div.menu.panel ul.menuDepth_3 li { width: 100%; display: table-row; }
+div.menu.panel ul.menuDepth_3 li a { display: table-cell; vertical-align: middle; border-bottom: 1px solid #e2e2e2; white-space: nowrap; }
+div.menu.panel ul.menuDepth_3 li a li a{ display: inline-block; }
+div.menu.panel ul.menuDepth_4 li { display: table-cell; width: auto; border-bottom: none;}
+
+div.menu.panel ul.menuDepth_3 { 
+	border-top: 1px solid #e2e2e2;
+	border-left: 1px solid #e2e2e2;
+	border-right: 1px solid #e2e2e2;
+	width: auto;
+	padding: 0px;
+	display: table!important;
+	background-color: #ffffff;
+}
+div.menu.panel ul.menuDepth_4 { 
+	display: table-cell!important;
+	padding: 0px;
+	border-bottom: 1px solid #e2e2e2;
+ }
+
+ div.menu.panel ul.menuDepth_4 li a {
+	border-bottom: none; 
+	}
+ 
+div.menu.panel ul.menuDepth_5 {
+	display: inline-block;
+	position: relative;
+}
