@@ -8,11 +8,13 @@ END;
 /
 
 CREATE TABLE devcore.att_user (
-  id VARCHAR2(40) NOT NULL PRIMARY KEY,
+  id VARCHAR2(40) NOT NULL,
   login VARCHAR2(50) NOT NULL,
   password VARCHAR2(100),
   email VARCHAR2(100) NOT NULL,
-  last_updated TIMESTAMP
+  last_updated TIMESTAMP,
+  
+  CONSTRAINT att_user_pk PRIMARY KEY (id)
 );
 
 GRANT INSERT, UPDATE, SELECT, DELETE ON devcore.att_user TO appdevcore;
@@ -28,13 +30,15 @@ END;
 /
 
 CREATE TABLE devcore.att_properties (
-    id VARCHAR2(40) NOT NULL PRIMARY KEY,
+    id VARCHAR2(40) NOT NULL,
 	item_key VARCHAR2(50) NOT NULL,
 	field_key VARCHAR2(50) NOT NULL,
 	description CLOB,
 	version NUMBER(19, 0) NOT NULL,
 	is_deleted NUMBER(3, 0),
-	date_created TIMESTAMP
+	date_created TIMESTAMP,
+	
+	CONSTRAINT att_properties_pk PRIMARY KEY (id)
 );
 
 ALTER TABLE devcore.att_properties ADD CONSTRAINT ik_fk_version_unique UNIQUE (item_key, field_key, version);
@@ -52,7 +56,7 @@ END;
 /
 
 CREATE TABLE  devcore.att_event_log (
-	id 					VARCHAR2(40) NOT NULL PRIMARY KEY,
+	id 					VARCHAR2(40) NOT NULL,
 	actor_id 			VARCHAR2(40) NOT NULL,
 	impacted_user_id	VARCHAR2(40),
 	org_id	 			VARCHAR2(40),
@@ -60,7 +64,9 @@ CREATE TABLE  devcore.att_event_log (
 	info				VARCHAR2(4000),
 	actor_type			INT NOT NULL,
 	transaction_id      VARCHAR2(40),
-	created_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
+	created_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	
+	CONSTRAINT att_event_log_pk PRIMARY KEY (id)
 );
 
 GRANT INSERT, UPDATE, SELECT, DELETE ON devcore.att_event_log TO appdevcore;
@@ -76,13 +82,15 @@ END;
 /
 
 CREATE TABLE  devcore.att_organization (
-    id VARCHAR2(40) NOT NULL PRIMARY KEY,
+    id VARCHAR2(40) NOT NULL,
 	name VARCHAR2(500) NOT NULL UNIQUE,
 	description VARCHAR2(4000),
 	parent_id VARCHAR2(40),
 	relationship_type NUMBER(10, 0) DEFAULT 3 NOT NULL,
 	created_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-	last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+	last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	
+	CONSTRAINT att_organization_pk PRIMARY KEY (id)
 );
 
 GRANT INSERT, UPDATE, SELECT, DELETE ON devcore.att_organization TO appdevcore;
@@ -119,12 +127,15 @@ END;
 /
 
 CREATE TABLE  devcore.att_state (
-    id VARCHAR2(40) NOT NULL PRIMARY KEY,
+    id VARCHAR2(40) NOT NULL,
 	user_id VARCHAR2(40),
 	org_id VARCHAR2(40),
 	state_id NUMBER(10, 0) NOT NULL,
 	created_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	
+	CONSTRAINT att_state_pk PRIMARY KEY (id),
+	
 	CONSTRAINT att_state_user_fk FOREIGN KEY (user_id) REFERENCES devcore.att_user(id),
 	CONSTRAINT att_state_org_fk  FOREIGN KEY (org_id) REFERENCES devcore.att_organization(id)
 );
@@ -140,14 +151,16 @@ EXCEPTION
 END;
 /
 
-  CREATE TABLE  devcore.att_api_bundle(
-  	id VARCHAR2(40) NOT NULL PRIMARY KEY, 
+  CREATE TABLE  devcore.att_api_bundle (
+  	id VARCHAR2(40) NOT NULL, 
 	name VARCHAR2(40) NOT NULL, 
 	start_date TIMESTAMP NOT NULL, 
 	end_date TIMESTAMP NOT NULL, 
 	comments VARCHAR2(4000) NOT NULL, 
 	created_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL, 
-	last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+	last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	
+	CONSTRAINT att_api_bundle_pk PRIMARY KEY (id),
 );
 
 GRANT INSERT, UPDATE, SELECT, DELETE ON devcore.att_api_bundle TO appdevcore;
@@ -163,11 +176,13 @@ END;
 /
 
 CREATE TABLE  devcore.att_role (
-    id VARCHAR2(40) NOT NULL PRIMARY KEY,
+    id VARCHAR2(40) NOT NULL,
     name VARCHAR2(100) NOT NULL,
 	description VARCHAR2(4000) NOT NULL,
 	created_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-	last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+	last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	
+	CONSTRAINT att_role_pk PRIMARY KEY (id)
 );
 
 GRANT INSERT, UPDATE, SELECT, DELETE ON devcore.att_role TO appdevcore;
