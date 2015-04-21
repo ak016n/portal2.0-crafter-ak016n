@@ -209,13 +209,9 @@ buildscript {
 	}
 }
 
-println project.buildscript.configurations.classpath.asPath
-
 apply plugin: "org.flywaydb.flyway"
 
-//println sourceSets.main.runtimeClasspath.asPath
 println "flyway.url = $env.flyway.${db}.url"
-println "flyway.url = $env.flyway.${db}.schemas"
 
 flyway {
 	url = env.flyway."${db}".url
