@@ -21,6 +21,7 @@ ext {
  	httpClientVersion = "4.3.5"
  	jamonVersion = "2.81"
  	jacksonVersion = "2.5.2"
+ 	db = "oracle"
 }
 
 jacoco {
@@ -102,6 +103,7 @@ dependencies {
 	}
 	
 	compile "org.apache.httpcomponents:httpclient:${httpClientVersion}"
+	compile files('lib/oracle/ojdbc6.jar')
 	
 	providedCompile "javax.transaction:javax.transaction-api:1.2"
 	providedCompile "com.atomikos:transactions-hibernate3:${atomikosVersion}" 
@@ -196,25 +198,32 @@ buildscript {
 	
 	repositories {
 		mavenCentral()
+		flatDir name: 'localRepository', dirs: 'lib/oracle'
 	}
+	
 	dependencies {
 		// TODO - fix it after groovy support for 1.8 is available
 		classpath "org.flywaydb:flyway-gradle-plugin:${flywayVersion_ext}"
 		classpath "mysql:mysql-connector-java:${mysqlVersion_ext}"
+		classpath name:"ojdbc6"
 	}
 }
 
+println project.buildscript.configurations.classpath.asPath
+
 apply plugin: "org.flywaydb.flyway"
 
-println "flyway.url = $env.flyway.url"
-println "flyway.url = $env.flyway.schemas"
+//println sourceSets.main.runtimeClasspath.asPath
+println "flyway.url = $env.flyway.${db}.url"
+println "flyway.url = $env.flyway.${db}.schemas"
 
 flyway {
-	url = env.flyway.url
-	user = env.flyway.user
-	password = env.flyway.password
-	schemas = env.flyway.schemas
-	baselineVersion = env.flyway.version
+	url = env.flyway."${db}".url
+	user = env.flyway."${db}".user
+	password = env.flyway."${db}".password
+	schemas = env.flyway."${db}".schemas
+	baselineVersion = env.flyway."${db}".version
+	locations = env.flyway."${db}".locations
 }
 
 /** Tomcat settings */
