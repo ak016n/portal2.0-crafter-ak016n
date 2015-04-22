@@ -22,8 +22,8 @@ public class JpaOrganizationDAOImpl extends JpaDAO<Organization> implements Orga
 			tempOrganization = super.create(organization);
 		} catch (PersistenceException e) {
 			if(e.getCause() != null && e.getCause().getCause() != null 
-					&& e.getCause().getCause() instanceof com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException
-					&& e.getCause().getCause().getMessage().contains("Duplicate entry")) {
+					&& e.getCause().getCause() instanceof java.sql.SQLIntegrityConstraintViolationException//com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException
+					&& e.getCause().getCause().getMessage().contains("ORA-00001: unique constraint")) {
 				throw new DuplicateDataException("Organization name already exists.");
 			} else {
 				throw new DAOException(e);

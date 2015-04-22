@@ -109,8 +109,8 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
     public JdbcMutableAclService aclService() {
         JdbcMutableAclService aclService = new JdbcMutableAclService(dataSource, basicLookupStrategy(), aclCache());
 
-        aclService.setClassIdentityQuery("SELECT LAST_INSERT_ID()");
-        aclService.setSidIdentityQuery("SELECT LAST_INSERT_ID()");
+        aclService.setClassIdentityQuery("SELECT ACL_CLASS_SEQUENCE.NEXTVAL FROM DUAL");
+        aclService.setSidIdentityQuery("SELECT ACL_SID_SEQUENCE.NEXTVAL FROM DUAL");
 
         return aclService;
     }
