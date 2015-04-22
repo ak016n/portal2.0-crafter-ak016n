@@ -26,7 +26,7 @@ CREATE TABLE dev_core.users (
   login VARCHAR2(50) NOT NULL,
   password VARCHAR2(100),
   email VARCHAR2(100) NOT NULL,
-  last_updated TIMESTAMP,
+  last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
   
   CONSTRAINT user_pk PRIMARY KEY (id)
 );
