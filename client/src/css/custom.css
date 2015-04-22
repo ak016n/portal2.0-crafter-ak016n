@@ -30,7 +30,7 @@
 
 /* #Typography
 ============================== */
-	h1, h2, h3, h4, h5, h6 { display: inline-block; }
+	h1, h2, h3, h4, h5, h6 { display: inline-block;font-weight:bold; }
 	p { margin: 0 0 10px 0; }
 	p img { margin: 0; }
 	sup, sub { font-size: 65%; }
@@ -539,12 +539,10 @@
 	margin:5px 10px 10px 10px;
 }
 
-.community_well h5 {
+.community_well h6 {
 	padding: 5px 10px 10px 10px;
 	border-bottom: 1px solid #cccccc;
 	display:block;
-	font-size:14px;
-	font-weight:bold;
 }
 
 
