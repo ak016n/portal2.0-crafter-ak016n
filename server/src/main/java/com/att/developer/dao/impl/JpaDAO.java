@@ -2,6 +2,7 @@ package com.att.developer.dao.impl;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Date;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -28,11 +29,16 @@ public class JpaDAO<T> implements GenericDAO<T> {
 	@PersistenceContext
 	protected EntityManager entityManager;
 
+	public void setEntityManager(EntityManager entityManager) {
+		this.entityManager = entityManager;
+	}
+
 	public JpaDAO(Class<T> c) {
 		beanClass = c;
 	}
 
 	public T update(T entityBean) {
+		updateLastUpdated(entityBean);
 		entityManager.merge(entityBean);
 		entityManager.flush();
 		return entityBean;
@@ -63,6 +69,22 @@ public class JpaDAO<T> implements GenericDAO<T> {
 		entityManager.flush();
 	}
 
+	private void updateLastUpdated(T entityBean) {
+		Field[] fields = entityBean.getClass().getDeclaredFields();
+		
+		for (Field eachField : fields) {
+			Object id = eachField.getAnnotation(com.att.developer.annotations.ManageLastDateUpdated.class);
+			if (id != null) {
+				try {
+					eachField.setAccessible(true); // needed to access private field
+					eachField.set(entityBean, new Date());
+				} catch (Exception e) {
+					throwException(null, entityBean, e);
+				}
+			}
+		}
+	}
+	
 	protected Object findIdValue(T entityBean) {
 
 		Field[] fields = entityBean.getClass().getDeclaredFields();

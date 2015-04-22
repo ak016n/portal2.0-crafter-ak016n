@@ -23,6 +23,7 @@ import javax.persistence.UniqueConstraint;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import com.att.developer.annotations.ManageLastDateUpdated;
 import com.att.developer.typelist.OrgRelationshipType;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
@@ -43,14 +44,15 @@ public class Organization implements Serializable {
     @Column(name = "relationship_type")
     private Integer relationshipType;
 
-    @Column(name = "created_on")
-    private Date createdOn;
-
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "org_id")
     private Set<OrganizationState> organizationStates;
 
-    @Column(name = "last_updated")
+    @Column(name = "created_on", insertable = false, updatable = false)
+    private Date createdOn;
+    
+	@ManageLastDateUpdated
+	@Column(name = "last_updated", insertable = false)
     private Date lastUpdated;
 
     @OrderColumn(name = "sequence_number")

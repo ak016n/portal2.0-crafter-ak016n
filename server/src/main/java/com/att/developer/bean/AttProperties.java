@@ -52,7 +52,7 @@ public class AttProperties {
 	
 	private int version;
 	
-	@Column(name = "date_created")
+	@Column(name = "date_created", insertable = false, updatable = false)
 	private Date dateCreated;
 	
 	@Column(name = "is_deleted")

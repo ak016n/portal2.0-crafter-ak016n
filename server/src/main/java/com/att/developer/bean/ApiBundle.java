@@ -16,6 +16,8 @@ import javax.persistence.Transient;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.springframework.security.acls.model.AccessControlEntry;
 
+import com.att.developer.annotations.ManageLastDateUpdated;
+
 
 /**
  * Internally the Dates are still the old java.util.Date class.  We will not change this until JPA 
@@ -24,9 +26,8 @@ import org.springframework.security.acls.model.AccessControlEntry;
  */
 @Entity
 @Table(name = "api_bundle")
-public class ApiBundle implements Serializable{
+public class ApiBundle implements Serializable {
 	
-
 	private static final long serialVersionUID = 5819138290519388791L;
 
 	@Id	
@@ -42,10 +43,11 @@ public class ApiBundle implements Serializable{
 
 	private String comments;
 	
-	@Column(name = "created_on")
+	@Column(name = "created_on", insertable = false, updatable = false)
 	private Date createdOn;
 	
-	@Column(name = "last_updated")
+	@ManageLastDateUpdated
+	@Column(name = "last_updated", insertable = false)
 	private Date lastUpdated;
 
 	@Transient

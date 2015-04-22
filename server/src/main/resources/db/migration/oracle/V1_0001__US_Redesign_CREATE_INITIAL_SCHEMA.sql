@@ -63,7 +63,7 @@ CREATE TABLE  dev_core.event_log (
 	info				VARCHAR2(4000),
 	actor_type			INT NOT NULL,
 	transaction_id      VARCHAR2(40),
-	created_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	created_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	
 	CONSTRAINT event_log_pk PRIMARY KEY (id)
 );

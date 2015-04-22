@@ -16,10 +16,8 @@ import com.att.developer.typelist.UserStateType;
 @Table(name="state")
 public class UserState implements Serializable {
 	
-	
 	private static final long serialVersionUID = 6665638242150942277L;
 
-	
 	@Id
 	private String id;
 	
@@ -63,12 +61,10 @@ public class UserState implements Serializable {
 			.append("userId", this.userId).append("id", this.id).toString();
 	}
 	
-	
 	@Override
 	public int hashCode() {
 		return Objects.hash(this.id);
 	}
-
 	
 	@Override
 	public boolean equals(Object obj) {
