@@ -29,9 +29,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
-@Table(name = "user")
+@Table(name = "users")
 @JsonIgnoreProperties(ignoreUnknown = true)
-//@JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class)
 public class User implements Serializable {
 
     private static final long serialVersionUID = -4130170797253136478L;

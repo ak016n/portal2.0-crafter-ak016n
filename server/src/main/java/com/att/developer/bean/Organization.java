@@ -28,7 +28,6 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name="organization", uniqueConstraints= @UniqueConstraint(columnNames = {"name"}))
-//@JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class)
 public class Organization implements Serializable {
 	
     private static final long serialVersionUID = 2117541682366680664L;
