@@ -40,7 +40,7 @@
        inactiveConnectionTimeout="20"
        user="dev_core"
        password="dev_core"
-       url="jdbc:oracle:thin:@localhost:1521:xe:dev_core"
+       url="jdbc:oracle:thin:@localhost:1521:xe"
        connectionPoolName="devcore"
        validateConnectionOnBorrow="true"
        sqlForValidateConnection="select 1 from DUAL" />

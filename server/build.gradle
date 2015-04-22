@@ -83,7 +83,7 @@ dependencies {
 		exclude group: "org.eclipse.jdt.core.compiler", module: "ecj"
 	}
 	
-	tomcat files("lib/oracle/*.jar")
+	tomcat files("lib/oracle/ojdbc6.jar", "lib/oracle/ucp.jar")
 	
 	compile "commons-io:commons-io:2.4"
 	compile "org.springframework:spring-context:${springVersion}"
