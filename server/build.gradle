@@ -83,6 +83,8 @@ dependencies {
 		exclude group: "org.eclipse.jdt.core.compiler", module: "ecj"
 	}
 	
+	tomcat files("lib/oracle/*.jar")
+	
 	compile "commons-io:commons-io:2.4"
 	compile "org.springframework:spring-context:${springVersion}"
 	compile "org.springframework:spring-orm:${springVersion}"
@@ -103,7 +105,7 @@ dependencies {
 	}
 	
 	compile "org.apache.httpcomponents:httpclient:${httpClientVersion}"
-	compile files('lib/oracle/ojdbc6.jar')
+
 	
 	providedCompile "javax.transaction:javax.transaction-api:1.2"
 	providedCompile "com.atomikos:transactions-hibernate3:${atomikosVersion}" 
