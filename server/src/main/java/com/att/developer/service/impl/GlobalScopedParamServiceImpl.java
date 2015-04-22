@@ -86,7 +86,7 @@ public class GlobalScopedParamServiceImpl implements GlobalScopedParamService {
 		Map<String, Object> map = null;
 		try {
 			map = getPropertiesMapFromText(attProperties.getDescription());
-			map.put("x_date_created", attProperties.getDateCreated());
+			map.put("x_date_created", attProperties.getCreatedOn());
 			map.put("x_version", attProperties.getVersion());
 		} catch (IOException e) {
 			logger.error("Error while reading property: ItemKey : " + itemKey + " , FieldKey : " + fieldKey , e);

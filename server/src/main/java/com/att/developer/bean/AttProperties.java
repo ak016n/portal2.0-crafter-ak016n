@@ -25,7 +25,6 @@ public class AttProperties {
 
 	public AttProperties() {
 		this.setId(java.util.UUID.randomUUID().toString());
-		this.setDateCreated(new Date());
 	}
 
 	public AttProperties(String itemKey, String fieldKey,
@@ -52,8 +51,8 @@ public class AttProperties {
 	
 	private int version;
 	
-	@Column(name = "date_created", insertable = false, updatable = false)
-	private Date dateCreated;
+	@Column(name = "created_on", insertable = false, updatable = false)
+	private Date createdOn;
 	
 	@Column(name = "is_deleted")
 	private boolean deleted;
@@ -98,12 +97,12 @@ public class AttProperties {
 		this.version = version;
 	}
 
-	public Date getDateCreated() {
-		return dateCreated;
+	public Date getCreatedOn() {
+		return createdOn;
 	}
 
-	public void setDateCreated(Date dateCreated) {
-		this.dateCreated = dateCreated;
+	public void setCreatedOn(Date dateCreated) {
+		this.createdOn = dateCreated;
 	}
 
 	public boolean isDeleted() {
@@ -118,7 +117,7 @@ public class AttProperties {
 		return new ToStringBuilder(this).append("version", this.version)
 				.append("description", this.description)
 				.append("fieldKey", this.fieldKey)
-				.append("dateCreated", this.dateCreated)
+				.append("createdOn", this.createdOn)
 				.append("itemKey", this.itemKey).append("id", this.id)
 				.append("deleted", this.deleted)
 				.toString();
