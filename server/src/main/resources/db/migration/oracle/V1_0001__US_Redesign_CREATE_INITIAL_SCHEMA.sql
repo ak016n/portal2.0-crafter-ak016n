@@ -1,35 +1,41 @@
+DECLARE
+v_code  NUMBER;
+v_errm  VARCHAR2(64);
 BEGIN
-  EXECUTE IMMEDIATE 'DROP TABLE devcore.att_user';
-  EXECUTE IMMEDIATE 'DROP TABLE devcore.att_user_org_membership';
+  EXECUTE IMMEDIATE 'DROP TABLE dev_core.user_role_relationship';
+  EXECUTE IMMEDIATE 'DROP TABLE dev_core.org_role_relationship';
+  EXECUTE IMMEDIATE 'DROP TABLE dev_core.api_bundle';
+  EXECUTE IMMEDIATE 'DROP TABLE dev_core.user_org_membership';
+  EXECUTE IMMEDIATE 'DROP TABLE dev_core.att_properties';
+  EXECUTE IMMEDIATE 'DROP TABLE dev_core.event_log';
+  EXECUTE IMMEDIATE 'DROP TABLE dev_core.role';
+  EXECUTE IMMEDIATE 'DROP TABLE dev_core.state';
+  EXECUTE IMMEDIATE 'DROP TABLE dev_core.users';
+  EXECUTE IMMEDIATE 'DROP TABLE dev_core.organization';
 EXCEPTION
   WHEN OTHERS THEN
+  v_code := SQLCODE;
+  v_errm := SUBSTR(SQLERRM, 1, 64);
+  DBMS_OUTPUT.PUT_LINE (v_code || ' ' || v_errm);
   IF sqlcode != -0942 THEN RAISE; END IF;
 END;
 /
 
-CREATE TABLE devcore.att_user (
+CREATE TABLE dev_core.users (
   id VARCHAR2(40) NOT NULL,
   login VARCHAR2(50) NOT NULL,
   password VARCHAR2(100),
   email VARCHAR2(100) NOT NULL,
   last_updated TIMESTAMP,
   
-  CONSTRAINT att_user_pk PRIMARY KEY (id)
+  CONSTRAINT user_pk PRIMARY KEY (id)
 );
 
-GRANT INSERT, UPDATE, SELECT, DELETE ON devcore.att_user TO appdevcore;
+GRANT INSERT, UPDATE, SELECT, DELETE ON dev_core.users TO appdev_core;
 
 COMMIT;
 
-BEGIN
-  EXECUTE IMMEDIATE 'DROP TABLE devcore.att_properties';
-EXCEPTION
-  WHEN OTHERS THEN
-  IF sqlcode != -0942 THEN RAISE; END IF;
-END;
-/
-
-CREATE TABLE devcore.att_properties (
+CREATE TABLE dev_core.att_properties (
     id VARCHAR2(40) NOT NULL,
 	item_key VARCHAR2(50) NOT NULL,
 	field_key VARCHAR2(50) NOT NULL,
@@ -41,21 +47,14 @@ CREATE TABLE devcore.att_properties (
 	CONSTRAINT att_properties_pk PRIMARY KEY (id)
 );
 
-ALTER TABLE devcore.att_properties ADD CONSTRAINT ik_fk_version_unique UNIQUE (item_key, field_key, version);
+ALTER TABLE dev_core.att_properties ADD CONSTRAINT ik_fk_version_unique UNIQUE (item_key, field_key, version);
 
-GRANT INSERT, UPDATE, SELECT, DELETE ON devcore.att_properties TO appdevcore;
+GRANT INSERT, UPDATE, SELECT, DELETE ON dev_core.att_properties TO appdev_core;
 
 COMMIT;
 
-BEGIN
-  EXECUTE IMMEDIATE 'DROP TABLE devcore.att_event_log';
-EXCEPTION
-  WHEN OTHERS THEN
-  IF sqlcode != -0942 THEN RAISE; END IF;
-END;
-/
 
-CREATE TABLE  devcore.att_event_log (
+CREATE TABLE  dev_core.event_log (
 	id 					VARCHAR2(40) NOT NULL,
 	actor_id 			VARCHAR2(40) NOT NULL,
 	impacted_user_id	VARCHAR2(40),
@@ -66,22 +65,14 @@ CREATE TABLE  devcore.att_event_log (
 	transaction_id      VARCHAR2(40),
 	created_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
 	
-	CONSTRAINT att_event_log_pk PRIMARY KEY (id)
+	CONSTRAINT event_log_pk PRIMARY KEY (id)
 );
 
-GRANT INSERT, UPDATE, SELECT, DELETE ON devcore.att_event_log TO appdevcore;
+GRANT INSERT, UPDATE, SELECT, DELETE ON dev_core.event_log TO appdev_core;
 
 COMMIT;
 
-BEGIN
-  EXECUTE IMMEDIATE 'DROP TABLE devcore.att_organization';
-EXCEPTION
-  WHEN OTHERS THEN
-  IF sqlcode != -0942 THEN RAISE; END IF;
-END;
-/
-
-CREATE TABLE  devcore.att_organization (
+CREATE TABLE  dev_core.organization (
     id VARCHAR2(40) NOT NULL,
 	name VARCHAR2(500) NOT NULL UNIQUE,
 	description VARCHAR2(4000),
@@ -90,43 +81,29 @@ CREATE TABLE  devcore.att_organization (
 	created_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	
-	CONSTRAINT att_organization_pk PRIMARY KEY (id)
+	CONSTRAINT organization_pk PRIMARY KEY (id)
 );
 
-GRANT INSERT, UPDATE, SELECT, DELETE ON devcore.att_organization TO appdevcore;
+GRANT INSERT, UPDATE, SELECT, DELETE ON dev_core.organization TO appdev_core;
 
 COMMIT;
 
-BEGIN
-  EXECUTE IMMEDIATE 'DROP TABLE devcore.att_user_org_membership';
-EXCEPTION
-  WHEN OTHERS THEN
-  IF sqlcode != -0942 THEN RAISE; END IF;
-END;
-/
 
-CREATE TABLE  devcore.att_user_org_membership (
+CREATE TABLE  dev_core.user_org_membership (
 	org_id VARCHAR2(40) NOT NULL,
 	user_id VARCHAR2(40) NOT NULL,
 	sequence_number NUMBER(10, 0) DEFAULT 0 NOT NULL,
-	CONSTRAINT att_user_org_membership_pk PRIMARY KEY(org_id, user_id),
-	CONSTRAINT att_membership_org_fk FOREIGN KEY (org_id) REFERENCES devcore.att_organization(id),
-	CONSTRAINT att_membership_user_fk FOREIGN KEY (user_id) REFERENCES devcore.att_user(id)
+	CONSTRAINT user_org_membership_pk PRIMARY KEY(org_id, user_id),
+	CONSTRAINT membership_org_fk FOREIGN KEY (org_id) REFERENCES dev_core.organization(id),
+	CONSTRAINT membership_user_fk FOREIGN KEY (user_id) REFERENCES dev_core.users(id)
 );
 
-GRANT INSERT, UPDATE, SELECT, DELETE ON devcore.att_user_org_membership TO appdevcore;
+GRANT INSERT, UPDATE, SELECT, DELETE ON dev_core.user_org_membership TO appdev_core;
 
 COMMIT;
 
-BEGIN
-  EXECUTE IMMEDIATE 'DROP TABLE devcore.att_state';
-EXCEPTION
-  WHEN OTHERS THEN
-  IF sqlcode != -0942 THEN RAISE; END IF;
-END;
-/
 
-CREATE TABLE  devcore.att_state (
+CREATE TABLE  dev_core.state (
     id VARCHAR2(40) NOT NULL,
 	user_id VARCHAR2(40),
 	org_id VARCHAR2(40),
@@ -134,24 +111,16 @@ CREATE TABLE  devcore.att_state (
 	created_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	
-	CONSTRAINT att_state_pk PRIMARY KEY (id),
+	CONSTRAINT state_pk PRIMARY KEY (id),
 	
-	CONSTRAINT att_state_user_fk FOREIGN KEY (user_id) REFERENCES devcore.att_user(id),
-	CONSTRAINT att_state_org_fk  FOREIGN KEY (org_id) REFERENCES devcore.att_organization(id)
+	CONSTRAINT state_user_fk FOREIGN KEY (user_id) REFERENCES dev_core.users(id),
+	CONSTRAINT state_org_fk  FOREIGN KEY (org_id) REFERENCES dev_core.organization(id)
 );
-GRANT INSERT, UPDATE, SELECT, DELETE ON devcore.att_state TO appdevcore;
+GRANT INSERT, UPDATE, SELECT, DELETE ON dev_core.state TO appdev_core;
 
 COMMIT;
 
-BEGIN
-  EXECUTE IMMEDIATE 'DROP TABLE devcore.att_api_bundle';
-EXCEPTION
-  WHEN OTHERS THEN
-  IF sqlcode != -0942 THEN RAISE; END IF;
-END;
-/
-
-  CREATE TABLE  devcore.att_api_bundle (
+  CREATE TABLE  dev_core.api_bundle (
   	id VARCHAR2(40) NOT NULL, 
 	name VARCHAR2(40) NOT NULL, 
 	start_date TIMESTAMP NOT NULL, 
@@ -160,77 +129,53 @@ END;
 	created_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL, 
 	last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	
-	CONSTRAINT att_api_bundle_pk PRIMARY KEY (id),
+	CONSTRAINT api_bundle_pk PRIMARY KEY (id)
 );
 
-GRANT INSERT, UPDATE, SELECT, DELETE ON devcore.att_api_bundle TO appdevcore;
+GRANT INSERT, UPDATE, SELECT, DELETE ON dev_core.api_bundle TO appdev_core;
 
 COMMIT;
 
-BEGIN
-  EXECUTE IMMEDIATE 'DROP TABLE devcore.att_role';
-EXCEPTION
-  WHEN OTHERS THEN
-  IF sqlcode != -0942 THEN RAISE; END IF;
-END;
-/
-
-CREATE TABLE  devcore.att_role (
+CREATE TABLE  dev_core.role (
     id VARCHAR2(40) NOT NULL,
     name VARCHAR2(100) NOT NULL,
 	description VARCHAR2(4000) NOT NULL,
 	created_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	
-	CONSTRAINT att_role_pk PRIMARY KEY (id)
+	CONSTRAINT role_pk PRIMARY KEY (id)
 );
 
-GRANT INSERT, UPDATE, SELECT, DELETE ON devcore.att_role TO appdevcore;
+GRANT INSERT, UPDATE, SELECT, DELETE ON dev_core.role TO appdev_core;
 
 COMMIT;
 
 
-BEGIN
-  EXECUTE IMMEDIATE 'DROP TABLE devcore.att_user_role_relationship';
-EXCEPTION
-  WHEN OTHERS THEN
-  IF sqlcode != -0942 THEN RAISE; END IF;
-END;
-/
-
-CREATE TABLE  devcore.att_user_role_relationship (
+CREATE TABLE  dev_core.user_role_relationship (
 	user_id VARCHAR2(40) NOT NULL,
 	role_id VARCHAR2(40) NOT NULL,
 	created_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-	CONSTRAINT att_user_role_pk  PRIMARY KEY(user_id, role_id),
-	CONSTRAINT att_rship_role_fk  FOREIGN KEY (role_id) REFERENCES devcore.att_role(id),
-	CONSTRAINT att_rship_user_fk  FOREIGN KEY (user_id) REFERENCES devcore.att_user(id)
+	CONSTRAINT user_role_pk  PRIMARY KEY(user_id, role_id),
+	CONSTRAINT rship_role_fk  FOREIGN KEY (role_id) REFERENCES dev_core.role(id),
+	CONSTRAINT rship_user_fk  FOREIGN KEY (user_id) REFERENCES dev_core.users(id)
 );
 
-GRANT INSERT, UPDATE, SELECT, DELETE ON devcore.att_user_role_relationship TO appdevcore;
+GRANT INSERT, UPDATE, SELECT, DELETE ON dev_core.user_role_relationship TO appdev_core;
 
 COMMIT;
 
 
-BEGIN
-  EXECUTE IMMEDIATE 'DROP TABLE devcore.att_org_role_relationship';
-EXCEPTION
-  WHEN OTHERS THEN
-  IF sqlcode != -0942 THEN RAISE; END IF;
-END;
-/
-
-CREATE TABLE  devcore.att_org_role_relationship (
+CREATE TABLE  dev_core.org_role_relationship (
 	org_id VARCHAR2(40) NOT NULL,
 	role_id VARCHAR2(40) NOT NULL,
 	created_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-	CONSTRAINT att_org_role_pk PRIMARY KEY(org_id, role_id),
-	CONSTRAINT att_rship_role_pk FOREIGN KEY (role_id) REFERENCES devcore.att_role(id),
-	CONSTRAINT att_rship_org_pk FOREIGN KEY (org_id) REFERENCES devcore.att_organization(id)
+	CONSTRAINT org_role_pk PRIMARY KEY(org_id, role_id),
+	CONSTRAINT rship_role_pk FOREIGN KEY (role_id) REFERENCES dev_core.role(id),
+	CONSTRAINT rship_org_pk FOREIGN KEY (org_id) REFERENCES dev_core.organization(id)
 );
 
-GRANT INSERT, UPDATE, SELECT, DELETE ON devcore.att_org_role_relationship TO appdevcore;
+GRANT INSERT, UPDATE, SELECT, DELETE ON dev_core.org_role_relationship TO appdev_core;
 
 COMMIT;
