@@ -46,7 +46,7 @@ public class JpaDAO<T> implements GenericDAO<T> {
 
 	public T load(T entityBean) {
 		logger.info("inside load method");
-		entityManager.flush();
+		//entityManager.flush();
 		Object idValue = findIdValue(entityBean);
 		if (idValue == null) {
 			throwException(null, entityBean, new DAOException("Missing Id attribute, you might want to override custom behavior in case of using composite keys"));
