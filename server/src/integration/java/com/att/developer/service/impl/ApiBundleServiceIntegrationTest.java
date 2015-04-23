@@ -39,7 +39,7 @@ import com.att.developer.service.ApiBundleService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes={IntegrationContext.class, IntegrationSecurityContext.class}, loader=AnnotationConfigContextLoader.class)
-@TransactionConfiguration(transactionManager="txManager", defaultRollback = false)
+@TransactionConfiguration(transactionManager="txManager", defaultRollback = true)
 @Transactional
 public class ApiBundleServiceIntegrationTest {
 
