@@ -8,8 +8,3 @@ Bean Creation Guideline
 ```
 
 2. Last Updated Timestamp naming convention - lastUpdated
-```
-	@ManageLastDateUpdated
-	@Column(name = "last_updated", insertable = false)
-    private Date lastUpdated;
-```

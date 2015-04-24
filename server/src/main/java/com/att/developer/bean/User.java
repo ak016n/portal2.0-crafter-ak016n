@@ -24,7 +24,6 @@ import javax.persistence.Transient;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-import com.att.developer.annotations.ManageLastDateUpdated;
 import com.att.developer.typelist.UserStateType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -57,7 +56,6 @@ public class User implements Serializable {
     @Transient
     private String lastName;
 
-	@ManageLastDateUpdated
 	@Column(name = "last_updated", insertable = false)
     private Date lastUpdated;
 

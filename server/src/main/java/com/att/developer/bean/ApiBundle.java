@@ -16,8 +16,6 @@ import javax.persistence.Transient;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.springframework.security.acls.model.AccessControlEntry;
 
-import com.att.developer.annotations.ManageLastDateUpdated;
-
 
 /**
  * Internally the Dates are still the old java.util.Date class.  We will not change this until JPA 
@@ -46,7 +44,6 @@ public class ApiBundle implements Serializable {
 	@Column(name = "created_on", insertable = false, updatable = false)
 	private Date createdOn;
 	
-	@ManageLastDateUpdated
 	@Column(name = "last_updated", insertable = false)
 	private Date lastUpdated;
 
