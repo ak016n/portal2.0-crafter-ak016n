@@ -26,7 +26,10 @@ extent management local;
 -----
 
 SQL> create user dev_core identified by dev_core;
-SQL> GRANT ALL PRIVILEGES TO dev_core; 
+SQL> GRANT ALL PRIVILEGES TO dev_core;
+
+SQL> create user appdev_core identified by appdev_core;
+SQL> GRANT ALL PRIVILEGES TO appdev_core;
 ```
 
 Step 3: Install STS or Eclipse for IDE
@@ -55,7 +58,7 @@ git config --global https.proxy http://one.proxy.att.com:8080
 Step 6: Validate the project setup with
 ``` gradle
 Command Prompt
-cmd> gradlew cleanEclipse eclipse flywayMigrate -i npmInstall build
+cmd> gradlew cleanEclipse eclipse flywayRepair flywayMigrate -i npmInstall build
  
 Environment is set to local
 config [flyway:[password:dev_core, driver:com.mysql.jdbc.Driver, schemas:[dev_core], user:dev_core, version:1.0, url:jdbc:mysql://localhost:3306/]]
