@@ -5,11 +5,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link type="text/css" rel="stylesheet" href="/developer/resources/css/ext/bootstrap/bootstrap.min.css?@@TIMESTAMP@@"/>
 <link type="text/css" rel="stylesheet" href="/developer/resources/css/ext/bootstrap/bootstrap-theme-devportal.css?@@TIMESTAMP@@"/>
+<link type="text/css" rel="stylesheet" href="/developer/resources/css/ext/layout/font.css?@@TIMESTAMP@@"/>
 <link type="text/css" rel="stylesheet" href="/developer/resources/css/ext/custom.css?@@TIMESTAMP@@"/>
+<link type="text/css" rel="stylesheet" href="/developer/resources/css/ext/layout/menu.css?@@TIMESTAMP@@"/>
+<link type="text/css" rel="stylesheet" href="/developer/resources/css/ext/layout/header-common.css?@@TIMESTAMP@@"/>
+<link type="text/css" rel="stylesheet" href="/developer/resources/css/ext/layout/footer-common.css?@@TIMESTAMP@@"/>
 </head>
 
 <body ng-app="portalApp">
     <div class="container" id="content-area">
+   	<section id="header-common" ng-include="'resources/layout/header.html'"></section>
 		<section class="sub-header hMarginBoth">
 			<h1><a href="/community">Community</a></h1>
 			<nav ng-controller="NavigationCtrl">
@@ -24,10 +29,8 @@
 		<section ui-view class="hMarginBoth vMarginTop30"></section>
 
 
-		<section class="footer">
-			<p>&copy; Company 2015</p>
-		</section>
-
+		
+	<section id="footer-common" ng-include="'resources/layout/footer.html'"></section>
     </div> <!-- /container -->
 	<!-- Best practice to load scripts at the end of body tag -->
 	<script type="text/javascript" src="/developer/resources/script/vendor/jquery/jquery.js?@@TIMESTAMP@@"></script>
