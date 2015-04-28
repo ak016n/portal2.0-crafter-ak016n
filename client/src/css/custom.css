@@ -424,32 +424,14 @@
 		box-shadow: 0 -3px 100px #E2E2E2;
 	}
 
-	.sub-header {
-		border-bottom: 1px solid #eaeaea;
-		border-top: 1px solid #dadada;
-		background-color: #f6f6f6;
-		height: 90px;
-		overflow: hidden;
-	}
-	.sub-header h1 { float: left; }
-	.sub-header h1 a {
-		color: #666;
-		font-size: 83.33%;
-		line-height: 90px;
-	}
-	.sub-header nav { float:right; margin:0; }
-	.sub-header nav ul,
-	.sub-header nav ul li { float:left; margin:0; }
-	.sub-header nav ul li a {
-		border-left: 1px solid #eaeaea;
-		color: #fff;
-		display: inline-block;
-		font-size: 92.85%;
-		font-weight: bold;
-		line-height: 90px;
-		padding: 0 30px;
-	}
-	.sub-header nav ul li.active a { background-color: #fff; color: #067ab4;}
+	/* gray header bar styles for desktop */
+	.container .sub-header { border-bottom: 1px solid #eaeaea; border-top: 1px solid #dadada; background-color: #f6f6f6; height: 90px; position: relative; }
+	.container .sub-header h1 { position: absolute; left: 120px; overflow: hidden; max-height: 90px; max-width: 960px; }
+	.container .sub-header h1 a { color: #666; font-size: 83.33%; line-height: 90px; font-weight: normal; }
+	.container .sub-header nav { position: absolute; right: 120px; margin:0; }
+	.container .sub-header nav ul, .sub-header nav ul li { float:left; margin:0; }
+	.container .sub-header nav ul li a { border-left: 1px solid #eaeaea; color: #fff; display: inline-block; font-size: 92.85%; font-weight: bold; line-height: 88px; padding: 0 30px; }
+	.container .sub-header nav ul li.active a { background-color: #fff; color: #067ab4;}
 
 /* content-group.css Styles Brought In
 ============================== */
@@ -532,8 +514,12 @@
 	section.vMarginBoth section.vMarginBoth {padding-top:0;padding-bottom:0;}
 	
 	
-/* Community section Styles 
+/* Community Section Styles 
 ============================== */
+
+img { display: block; max-width: 100%; height: auto; }
+img[align="left"], .video-embed-left { float:left; margin:0 10px 10px 0; }
+img[align="right"], .video-embed-right { float:right; margin:0 0 10px 30px; }
 
 .community_well .row {
 	margin:5px 10px 10px 10px;
@@ -547,13 +533,12 @@
 	font-weight:bold;
 }
 
-
 .community_well ul.list-unstyled {
-  margin:0;
+	margin:0;
 }
 .community_well ul.list-unstyled li{
-  margin-bottom:5px;
-  font-size:85.7%;
+	margin-bottom:5px;
+	font-size:85.7%;
 }
 
 /* Responsive Styles Brought In
@@ -568,17 +553,25 @@
 /* Small Screen (screen-sm) */
 @media (min-width: 768px) {}
 
-/* Keep container width at 1200 even if viewport is 480+ */
-@media (min-width: 480px) {
+/* Keep container width at 1200 when viewport is greater than 480 */
+@media (min-width: 481px) {
 	.container { width: 1200px; }
 }
 
 /* Xtra-Small Screen (screen-xs) */
 @media (max-width: 480px) {
-	.sub-header { height: auto; }
-	.sub-header nav, .sub-header nav ul { float: none; width:100%;}
-	.sub-header nav ul li  { float: none; border-top: 1px solid #eaeaea;}
-	.sub-header nav ul li a { width:100%; line-height: 45px;}
+
+	.container section { margin: 10px; float: left; }
+	.container section section { margin: 0px; }
+	
+	/* gray header bar styles for mobile */
+	.container .sub-header { height: auto; float:left; width: 100%; margin: 0; }
+	.container .sub-header h1 { width:100%; position: relative; display: table; min-height: 90px; padding: 10px; table-layout:fixed; left: 0; }
+	.container .sub-header h1 a { line-height: 1.285; display: table-cell; vertical-align: middle; overflow: hidden; text-overflow: ellipsis;}
+	.container .sub-header nav, .sub-header nav ul { float: none; width:100%; position: relative; right: 0;}
+	.container .sub-header nav ul li  { border-top: 1px solid #eaeaea; width: 50%; display: table;}
+	.container .sub-header nav ul li a { width:100%; line-height: 1.285; height: 90px; text-align: center; vertical-align: middle; display: table-cell;}
+	
 
 	/* content-group.css Styles Brought In
 	============================== */
