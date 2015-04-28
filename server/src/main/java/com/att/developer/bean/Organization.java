@@ -1,6 +1,7 @@
 package com.att.developer.bean;
 
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Objects;
@@ -102,22 +103,22 @@ public class Organization implements Serializable {
         this.relationshipType = (relationshipType != null) ? relationshipType.getId() : null;
     }
 
-    public Date getCreatedOn() {
-        return createdOn;
-    }
+	public Instant getCreatedOn() {
+		return this.createdOn != null ? createdOn.toInstant() : null;
+	}
 
-    public void setCreatedOn(Date createdOn) {
-        this.createdOn = createdOn;
-    }
+	public void setCreatedOn(Instant created) {
+		this.createdOn = Date.from(created);
+	}
 
-    public Date getLastUpdated() {
-        return lastUpdated;
-    }
+	public Instant getLastUpdated() {
+		return this.lastUpdated != null ? lastUpdated.toInstant() : null;
+	}
 
-    public void setLastUpdated(Date lastUpdated) {
-        this.lastUpdated = lastUpdated;
-    }
-
+	public void setLastUpdated(Instant lastUpdated) {
+		this.lastUpdated = Date.from(lastUpdated);
+	}
+	
     public Set<User> getUsers() {
         return users;
     }

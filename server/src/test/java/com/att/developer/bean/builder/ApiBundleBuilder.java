@@ -17,6 +17,7 @@ public class ApiBundleBuilder {
         apiBundle.setName("n_" + apiBundle.getId());
         apiBundle.setComments("some comments");
         apiBundle.setCreatedOn(now);
+        apiBundle.setLastUpdated(now);
     }
     
     public ApiBundle build(){

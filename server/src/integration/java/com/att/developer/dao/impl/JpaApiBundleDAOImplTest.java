@@ -43,12 +43,14 @@ public class JpaApiBundleDAOImplTest {
 		apiBundle.setComments("something nice");
 		Instant nowStartDateCreate = Instant.now();
 		apiBundle.setStartDate(nowStartDateCreate);
+		apiBundle.setLastUpdated(nowStartDateCreate);
 		apiBundleDAO.create(apiBundle);
 		
 		// read
 		ApiBundle afterCreateApiBundle = new ApiBundle(userId);
 		afterCreateApiBundle = apiBundleDAO.load(afterCreateApiBundle);
 		MatcherAssert.assertThat(afterCreateApiBundle.getCreatedOn(), CoreMatchers.equalTo(apiBundle.getCreatedOn()));
+		MatcherAssert.assertThat(afterCreateApiBundle.getLastUpdated(), CoreMatchers.equalTo(apiBundle.getLastUpdated()));
 		MatcherAssert.assertThat(afterCreateApiBundle.getStartDate(), CoreMatchers.equalTo(apiBundle.getStartDate()));
 		MatcherAssert.assertThat(afterCreateApiBundle.getName(), CoreMatchers.equalTo(apiBundle.getName()));
 		
