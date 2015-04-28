@@ -30,7 +30,7 @@
 
 /* #Typography
 ============================== */
-	h1, h2, h3, h4, h5, h6 { display: inline-block;font-weight:bold; }
+	h1, h2, h3, h4, h5, h6 { display: inline-block; }
 	p { margin: 0 0 10px 0; }
 	p img { margin: 0; }
 	sup, sub { font-size: 65%; }
