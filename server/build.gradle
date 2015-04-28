@@ -214,8 +214,6 @@ buildscript {
 
 apply plugin: "org.flywaydb.flyway"
 
-println "flyway.url = $env.flyway.${db}.url"
-
 flyway {
 	url = env.flyway."${db}".url
 	user = env.flyway."${db}".user

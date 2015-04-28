@@ -26,7 +26,10 @@ extent management local;
 -----
 
 SQL> create user dev_core identified by dev_core;
-SQL> GRANT ALL PRIVILEGES TO dev_core; 
+SQL> GRANT ALL PRIVILEGES TO dev_core;
+
+SQL> create user appdev_core identified by appdev_core;
+SQL> GRANT ALL PRIVILEGES TO appdev_core;
 ```
 
 Step 3: Install STS or Eclipse for IDE
@@ -55,12 +58,10 @@ git config --global https.proxy http://one.proxy.att.com:8080
 Step 6: Validate the project setup with
 ``` gradle
 Command Prompt
-cmd> gradlew cleanEclipse eclipse flywayMigrate -i npmInstall build
+cmd> gradlew cleanEclipse eclipse flywayRepair flywayMigrate -i npmInstall build
  
 Environment is set to local
-config [flyway:[password:dev_core, driver:com.mysql.jdbc.Driver, schemas:[dev_core], user:dev_core, version:1.0, url:jdbc:mysql://localhost:3306/]]
-flyway.url = jdbc:mysql://localhost:3306/
-flyway.url = [dev_core]
+config [flyway:[mysql:[driver:com.mysql.jdbc.Driver, locations:[db.migration.mysql], password:dev_core, schemas:[dev_core], url:jdbc:mysql://localhost:3306, user:dev_core, version:1.0], oracle:[driver:oracle.jdbc.driver.OracleDriver, locations:[db/migration/oracle], password:dev_core, schemas:[dev_core], url:jdbc:oracle:thin:@localhost:1521:XE, user:dev_core, version:1.0]]]
 :compileJava
 :compileGroovy UP-TO-DATE
 :processResources UP-TO-DATE
@@ -92,8 +93,7 @@ Command Prompt
 cmd> gradlew tomcatStop war tomcatRun
  
 Environment is set to local
-config [flyway:[password:dev_core, driver:com.mysql.jdbc.Driver, schemas:[dev_core], user:dev_core, version:1.0, url:jdbc:mysql://localhost:3306/]]
-flyway.url = jdbc:mysql://localhost:3306/
+config [flyway:[mysql:[driver:com.mysql.jdbc.Driver, locations:[db.migration.mysql], password:dev_core, schemas:[dev_core], url:jdbc:mysql://localhost:3306, user:dev_core, version:1.0], oracle:[driver:oracle.jdbc.driver.OracleDriver, locations:[db/migration/oracle], password:dev_core, schemas:[dev_core], url:jdbc:oracle:thin:@localhost:1521:XE, user:dev_core, version:1.0]]]
 flyway.url = [dev_core]
 :tomcatStop
 :compileJava UP-TO-DATE

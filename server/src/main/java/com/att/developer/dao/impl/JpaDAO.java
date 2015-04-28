@@ -2,14 +2,11 @@ package com.att.developer.dao.impl;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.Date;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import com.att.developer.dao.GenericDAO;
 import com.att.developer.exception.DAOException;
@@ -24,8 +21,6 @@ public class JpaDAO<T> implements GenericDAO<T> {
 
 	Class<T> beanClass;
 
-	private final Logger logger = LogManager.getLogger();
-	
 	@PersistenceContext
 	protected EntityManager entityManager;
 
@@ -38,15 +33,12 @@ public class JpaDAO<T> implements GenericDAO<T> {
 	}
 
 	public T update(T entityBean) {
-		updateLastUpdated(entityBean);
 		entityManager.merge(entityBean);
 		entityManager.flush();
 		return entityBean;
 	}
 
 	public T load(T entityBean) {
-		logger.info("inside load method");
-		//entityManager.flush();
 		Object idValue = findIdValue(entityBean);
 		if (idValue == null) {
 			throwException(null, entityBean, new DAOException("Missing Id attribute, you might want to override custom behavior in case of using composite keys"));
@@ -69,22 +61,6 @@ public class JpaDAO<T> implements GenericDAO<T> {
 		entityManager.flush();
 	}
 
-	private void updateLastUpdated(T entityBean) {
-		Field[] fields = entityBean.getClass().getDeclaredFields();
-		
-		for (Field eachField : fields) {
-			Object id = eachField.getAnnotation(com.att.developer.annotations.ManageLastDateUpdated.class);
-			if (id != null) {
-				try {
-					eachField.setAccessible(true); // needed to access private field
-					eachField.set(entityBean, new Date());
-				} catch (Exception e) {
-					throwException(null, entityBean, e);
-				}
-			}
-		}
-	}
-	
 	protected Object findIdValue(T entityBean) {
 
 		Field[] fields = entityBean.getClass().getDeclaredFields();
