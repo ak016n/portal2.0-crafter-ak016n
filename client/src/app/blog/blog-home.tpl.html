@@ -1,37 +1,70 @@
-            <!-- Blog Entries Column -->
-            <div class="col-md-8">
+<!-- Blog Entries Column -->
+<div class="col-sm-8 col-xs-12">
 
-                <h1 class="page-header">
-                    Community
-                    <small>Blog</small>
-                </h1>
-                <div class="col-lg-12">
-					<div ng-class="{'alert alert-success padded' : !flashMessages.isError(), 'alert alert-danger padded' : flashMessages.isError()}" ng-repeat="flashMessage in flashMessages.getMessage()">
-					 {{flashMessage}}
+	<div ng-class="{'alert alert-success padded' : !flashMessages.isError(), 'alert alert-danger padded' : flashMessages.isError()}" ng-repeat="flashMessage in flashMessages.getMessage()">
+	 {{flashMessage}}
+	</div>
+	
+	<img src="/developer/resources/images/ajax-loader.gif" class="center-block margin" ng-show="loading"/>
+	
+	<div ng-hide="flashMessages.isError()">
+		<div ng-repeat="post in blog.posts" ui-sref-opts="{reload: true}">
+			<h4>
+				<a ui-sref="blog.entry({slug: post.slug, id: post.ID})" ui-sref-opts="{reload: true}" ><div ng-bind-html="post.title"></div></a>
+			</h4>
+			<p>
+				by {{post.author.username}}&nbsp;&nbsp;<span class="glyphicon glyphicon-time"></span> Posted on {{post.date_created}}
+			</p>
+			<p>
+				<img style="float: right; padding: 10px 10px;" ng-show="post.image_url" ng-src="/blog{{post.image_url}}" />
+				<div ng-bind-html="post.excerpt"></div><a ui-sref="blog.entry({slug: post.slug, id: post.ID})" ui-sref-opts="{reload: true}">Read more....</a>
+		
+				<br style="clear: both;" />    
+			</p>
+			<hr>	
+		</div>
+		
+		<pagination boundary-links="true" total-items="pagination.totalItems" ng-model="pagination.currentPage" class="pagination-sm" max-size="pagination.maxSize" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;" ng-change="pageChanged()"></pagination>
+	</div>
+
+</div>
+
+<!-- Blog Sidebar Widgets Column -->
+<div class="col-sm-4 hidden-xs">
+
+	<div class="row">
+
+		<div class="col-sm-2"></div>
+
+		<div class="col-sm-10">
+
+			<!-- Blog Categories Well -->
+			<div class="well community_well">
+				<h5>Categories</h4>
+				<div class="row">
+					<div class="col-xs-12">
+						<ul class="list-unstyled">
+							<li ng-repeat="item in blog.categories"><a ng-href="#/blog/categories/{{item}}" ng-bind-html="item"></a></li>
+						</ul>
+						<pagination total-items="pager.totalItems" ng-model="pager.currentPage" items-per-page="pager.itemsPerPage" max-size="0" class="pagination-sm" boundary-links="true" rotate="false" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"  ng-change="pagerChanged()"></pagination>
 					</div>
-					
-					<img src="/developer/resources/images/ajax-loader.gif" class="center-block margin" ng-show="loading"/>
-					
-					<div ng-hide="flashMessages.isError()">
-						<div ng-repeat="post in blog.posts" ui-sref-opts="{reload: true}">
-			                <h4>
-			                    <a ui-sref="blog.entry({slug: post.slug, id: post.ID})" ui-sref-opts="{reload: true}" ><div ng-bind-html="post.title"></div></a>
-			                </h4>
-			                <p>
-			                    by {{post.author.username}}&nbsp;&nbsp;<span class="glyphicon glyphicon-time"></span> Posted on {{post.date_created}}
-			                </p>
-			                <p>
-			                	<img style="float: right; padding: 10px 10px;" ng-show="post.image_url" ng-src="http://devpgm-wcm-stage.eng.mobilephone.net/blog{{post.image_url}}" />
-			                	<div ng-bind-html="post.excerpt"></div><a ui-sref="blog.entry({slug: post.slug, id: post.ID})" ui-sref-opts="{reload: true}">Read more....</a>
-			            
-			            		<br style="clear: both;" />    
-							</p>
-							<hr>	
-						</div>
-						
-						<pagination boundary-links="true" total-items="pagination.totalItems" ng-model="pagination.currentPage" class="pagination-sm" max-size="pagination.maxSize" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;" ng-change="pageChanged()"></pagination>
-					</div>
-				
 				</div>
+			</div>
 
-            </div>
+			<!-- Side Widget Well -->
+			<div class="well community_well">
+				 <h5>Tags</h5>
+				<div class="row">
+					<div class="col-xs-12">
+						<ul class="list-unstyled" ng-repeat="arrays in blog.tags">
+							<li ng-repeat="item in arrays"><a ng-href="#/blog/tags/{{item}}" ng-bind-html="item"></a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		
+		</div>
+
+	</div>
+
+</div>
