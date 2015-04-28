@@ -106,8 +106,9 @@
 			function(success) {
 				var pager_begin = (($scope.pager.currentPage - 1) * $scope.pager.itemsPerPage);
 				var pager_end = pager_begin + $scope.pager.itemsPerPage;
-				if(success.length < pager_end)
+				if(success.length < pager_end) {
 					pager_end = success.length;
+				}
 
 				$scope.blog.categories = success.slice(pager_begin,pager_end);
 				$scope.pager.totalItems = success.length;
