@@ -93,8 +93,7 @@ Command Prompt
 cmd> gradlew tomcatStop war tomcatRun
  
 Environment is set to local
-config [flyway:[password:dev_core, driver:com.mysql.jdbc.Driver, schemas:[dev_core], user:dev_core, version:1.0, url:jdbc:mysql://localhost:3306/]]
-flyway.url = jdbc:mysql://localhost:3306/
+config [flyway:[mysql:[driver:com.mysql.jdbc.Driver, locations:[db.migration.mysql], password:dev_core, schemas:[dev_core], url:jdbc:mysql://localhost:3306, user:dev_core, version:1.0], oracle:[driver:oracle.jdbc.driver.OracleDriver, locations:[db/migration/oracle], password:dev_core, schemas:[dev_core], url:jdbc:oracle:thin:@localhost:1521:XE, user:dev_core, version:1.0]]]
 flyway.url = [dev_core]
 :tomcatStop
 :compileJava UP-TO-DATE
