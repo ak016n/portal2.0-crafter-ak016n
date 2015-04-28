@@ -1,6 +1,6 @@
 package com.att.developer.bean.builder;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -21,6 +21,7 @@ public class OrganizationBuilder {
 			organization.setRelationshipType(OrgRelationshipType.FIRST_PARTY);
 			organizationStates.add(new OrganizationStateBuilder().withState(OrganizationStateType.PLAYGROUND).build());
 			organization.setOrganizationStates(organizationStates);
+			organization.setLastUpdated(Instant.now());
 		}
 		
 		/**
@@ -46,7 +47,7 @@ public class OrganizationBuilder {
 			return this;
 		}
 
-		public OrganizationBuilder withLastUpdated(Date lastUpdated) {
+		public OrganizationBuilder withLastUpdated(Instant lastUpdated) {
 			organization.setLastUpdated(lastUpdated);
 			return this;
 		}
