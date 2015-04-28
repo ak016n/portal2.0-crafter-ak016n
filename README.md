@@ -9,7 +9,28 @@ Step 1: Install Java JDK 1.8 and above *
     Those can be found on the shared server 
     \\WABOTH9CDFILE05.itservices.sbc.com\DPGM_ONBOARD\Third Party App Installation Files\Java\jce_policy-8.zip
 
-Step 2: Install Mysql 5.6 and above *, create an user with dev_core/dev_core
+Step 2: Install oracle 11g and create an user with dev_core/dev_core
+
+```
+C:\>sqlplus / as sysdba;
+
+After fresh installation:
+
+SQL> create tablespace DATA01
+logging
+datafile 'C:/ORACLEXE/app/oracle/ORADATA/XE/DATA01.DBF'
+size 32m
+autoextend on
+next 32m maxsize 2048m
+extent management local;
+-----
+
+SQL> create user dev_core identified by dev_core;
+SQL> GRANT ALL PRIVILEGES TO dev_core;
+
+SQL> create user appdev_core identified by appdev_core;
+SQL> GRANT ALL PRIVILEGES TO appdev_core;
+```
 
 Step 3: Install STS or Eclipse for IDE
 
@@ -37,7 +58,7 @@ git config --global https.proxy http://one.proxy.att.com:8080
 Step 6: Validate the project setup with
 ``` gradle
 Command Prompt
-cmd> gradlew cleanEclipse eclipse flywayMigrate -i npmInstall build
+cmd> gradlew cleanEclipse eclipse flywayRepair flywayMigrate -i npmInstall build
  
 Environment is set to local
 config [flyway:[password:dev_core, driver:com.mysql.jdbc.Driver, schemas:[dev_core], user:dev_core, version:1.0, url:jdbc:mysql://localhost:3306/]]

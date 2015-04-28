@@ -28,7 +28,6 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name="organization", uniqueConstraints= @UniqueConstraint(columnNames = {"name"}))
-//@JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class)
 public class Organization implements Serializable {
 	
     private static final long serialVersionUID = 2117541682366680664L;
@@ -44,14 +43,14 @@ public class Organization implements Serializable {
     @Column(name = "relationship_type")
     private Integer relationshipType;
 
-    @Column(name = "created_on")
-    private Date createdOn;
-
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "org_id")
     private Set<OrganizationState> organizationStates;
 
-    @Column(name = "last_updated")
+    @Column(name = "created_on", insertable = false, updatable = false)
+    private Date createdOn;
+    
+	@Column(name = "last_updated", insertable = false)
     private Date lastUpdated;
 
     @OrderColumn(name = "sequence_number")

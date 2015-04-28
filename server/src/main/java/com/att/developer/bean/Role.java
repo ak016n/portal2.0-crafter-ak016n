@@ -13,9 +13,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 @Table(name="role")
 public class Role implements Serializable{
 	
-	
 	private static final long serialVersionUID = 595161116378001109L;
-	
 	
 	@Id
 	private String id;
@@ -61,12 +59,10 @@ public class Role implements Serializable{
 			.append("id", this.id).toString();
 	}
 
-
 	@Override
 	public int hashCode() {
 		return Objects.hash(id);
 	}
-	
 
 	@Override
 	public boolean equals(Object obj) {

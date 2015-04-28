@@ -44,7 +44,7 @@ public class EventLog implements Serializable {
 	@Column(name = "transaction_id")
 	private String transactionId;
 
-	@Column(name = "created_on")
+	@Column(name = "created_on", insertable = false, updatable = false)
 	private Date createdOn;
 
 	public EventLog() {

@@ -133,7 +133,8 @@ public class AppContext {
 
             private static final long serialVersionUID = 4240657154170582110L;
             {
-                setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL5Dialect");
+                //setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL5Dialect");
+            	setProperty("hibernate.dialect","org.hibernate.dialect.Oracle10gDialect");
                 setProperty("hibernate.transaction.jta.platform", "com.att.developer.config.AtomikosJtaPlatform");
                 setProperty("hibernate.transaction.factory_class", "org.hibernate.transaction.CMTTransactionFactory");
                 setProperty("hibernate.current_session_context_class", "jta");

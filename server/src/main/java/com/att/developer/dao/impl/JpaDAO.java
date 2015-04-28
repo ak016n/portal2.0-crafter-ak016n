@@ -7,8 +7,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import com.att.developer.dao.GenericDAO;
 import com.att.developer.exception.DAOException;
@@ -23,10 +21,12 @@ public class JpaDAO<T> implements GenericDAO<T> {
 
 	Class<T> beanClass;
 
-	private final Logger logger = LogManager.getLogger();
-	
 	@PersistenceContext
 	protected EntityManager entityManager;
+
+	public void setEntityManager(EntityManager entityManager) {
+		this.entityManager = entityManager;
+	}
 
 	public JpaDAO(Class<T> c) {
 		beanClass = c;
@@ -39,8 +39,6 @@ public class JpaDAO<T> implements GenericDAO<T> {
 	}
 
 	public T load(T entityBean) {
-		logger.info("inside load method");
-		entityManager.flush();
 		Object idValue = findIdValue(entityBean);
 		if (idValue == null) {
 			throwException(null, entityBean, new DAOException("Missing Id attribute, you might want to override custom behavior in case of using composite keys"));

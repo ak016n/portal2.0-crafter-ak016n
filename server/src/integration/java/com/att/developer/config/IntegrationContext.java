@@ -23,8 +23,8 @@ public class IntegrationContext {
 	@Bean
 	public DataSource dataSource() {
 		DriverManagerDataSource dataSource = new DriverManagerDataSource();
-		dataSource.setUrl("jdbc:mysql://localhost:3306/dev_core");
-		dataSource.setDriverClassName("com.mysql.jdbc.Driver");
+		dataSource.setUrl("jdbc:oracle:thin:@localhost:1521:xe");
+		dataSource.setDriverClassName("oracle.jdbc.driver.OracleDriver");
 		dataSource.setUsername("dev_core");
 		dataSource.setPassword("dev_core");
 		return dataSource;
@@ -59,7 +59,8 @@ public class IntegrationContext {
 		return new Properties() {
 			private static final long serialVersionUID = 4240657154170582110L;
 			{ // Hibernate Specific:
-				setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL5Dialect");
+				//setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL5Dialect");
+            	setProperty("hibernate.dialect","org.hibernate.dialect.Oracle10gDialect");
 				setProperty("hibernate.show_sql", "true");
 			}
 		};

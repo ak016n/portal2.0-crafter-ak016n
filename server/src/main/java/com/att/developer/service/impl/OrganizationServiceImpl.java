@@ -1,6 +1,7 @@
 package com.att.developer.service.impl;
 
 import javax.annotation.Resource;
+import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Component;
 
@@ -16,6 +17,14 @@ public class OrganizationServiceImpl implements OrganizationService {
 
 	@Override
 	public Organization getOrganization(Organization org) {
-		return orgDAO.load(org);
+		Organization organization = orgDAO.load(org);
+		organization.getUsers();
+		return organization;
+	}
+
+	@Override
+	@Transactional
+	public Organization createOrganization(Organization organization) {
+		return orgDAO.create(organization);
 	}
 }

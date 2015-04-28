@@ -103,8 +103,8 @@ public class IntegrationSecurityContext extends WebSecurityConfigurerAdapter{
     public JdbcMutableAclService aclService(DataSource dataSource) {
         JdbcMutableAclService aclService = new JdbcMutableAclService(dataSource, basicLookupStrategy(dataSource), aclCache());
 
-        aclService.setClassIdentityQuery("SELECT LAST_INSERT_ID()");
-        aclService.setSidIdentityQuery("SELECT LAST_INSERT_ID()");
+        aclService.setClassIdentityQuery("SELECT acl_class_sequence.CURRVAL FROM DUAL");
+        aclService.setSidIdentityQuery("SELECT acl_sid_sequence.CURRVAL FROM DUAL");
 
         return aclService;
     }

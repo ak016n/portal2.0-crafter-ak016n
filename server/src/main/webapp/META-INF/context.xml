@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Context sessionCookieName="DEV_PORTAL_SESSION_SID">
-	<Resource name="jdbc/devcore" auth="Container"
+<!-- 	<Resource name="jdbc/devcore" auth="Container"
 		driverClassName="com.mysql.jdbc.Driver" 
 		username="dev_core"
 		password="dev_core"
@@ -26,7 +26,24 @@
         jdbcInterceptors="org.apache.tomcat.jdbc.pool.interceptor.ConnectionState;
             org.apache.tomcat.jdbc.pool.interceptor.StatementFinalizer"
 		pinGlobalTxToPhysicalConnection="true" >
-	</Resource>
+	</Resource> -->
+	
+	<Resource 
+       name="jdbc/devcore"
+       auth="Container"
+       factory="oracle.ucp.jdbc.PoolDataSourceImpl"
+       type="oracle.ucp.jdbc.PoolDataSource"
+       description="Pas testing UCP Pool in Tomcat"
+       connectionFactoryClassName="oracle.jdbc.pool.OracleDataSource"
+       minPoolSize="2"
+       maxPoolSize="5"
+       inactiveConnectionTimeout="20"
+       user="dev_core"
+       password="dev_core"
+       url="jdbc:oracle:thin:@localhost:1521:xe"
+       connectionPoolName="devcore"
+       validateConnectionOnBorrow="true"
+       sqlForValidateConnection="select 1 from DUAL" />
 	
 	<Resource name="jms/ConnectionFactory" auth="Container"
 		type="org.apache.activemq.ActiveMQConnectionFactory" description="JMS Connection Factory"
