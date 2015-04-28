@@ -46,7 +46,7 @@
 						<ul class="list-unstyled">
 							<li ng-repeat="item in blog.categories"><a ng-href="#/blog/categories/{{item}}" ng-bind-html="item"></a></li>
 						</ul>
-						<pagination total-items="pager.totalItems" ng-model="pager.currentPage" items-per-page="pager.itemsPerPage" max-size="0" class="pagination-sm" boundary-links="true" rotate="false"  ng-change="pagerChanged()"></pagination>
+						<pagination total-items="pager.totalItems" ng-model="pager.currentPage" items-per-page="pager.itemsPerPage" max-size="0" class="pagination-sm" boundary-links="true" rotate="false" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"  ng-change="pagerChanged()"></pagination>
 					</div>
 				</div>
 			</div>
