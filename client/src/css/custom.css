@@ -517,20 +517,18 @@
 /* Community Section Styles 
 ============================== */
 
-img { display: block; max-width: 100%; height: auto; }
-img[align="left"], .video-embed-left { float:left; margin:0 10px 10px 0; }
-img[align="right"], .video-embed-right { float:right; margin:0 0 10px 30px; }
+#content-sections img { display: block; max-width: 100%; height: auto; }
+#content-sections img[align="left"], #content-sections .video-embed-left { float:left; margin:0 10px 10px 0; }
+#content-sections img[align="right"], #content-sections .video-embed-right { float:right; margin:0 0 10px 30px; }
 
 .community_well .row {
 	margin:5px 10px 10px 10px;
 }
 
-.community_well h5 {
+.community_well h6 {
 	padding: 5px 10px 10px 10px;
 	border-bottom: 1px solid #cccccc;
 	display:block;
-	font-size:14px;
-	font-weight:bold;
 }
 
 .community_well ul.list-unstyled {
@@ -561,16 +559,19 @@ img[align="right"], .video-embed-right { float:right; margin:0 0 10px 30px; }
 /* Xtra-Small Screen (screen-xs) */
 @media (max-width: 480px) {
 
-	.container section { margin: 10px; float: left; }
-	.container section section { margin: 0px; }
+	/* display none on header and footer until responsive is done */
+	#header-common, #footer-common { display: none; }
+
+	#content-sections section { margin: 10px; float: left; }
+	#content-sections section section { margin: 0px; }
 	
 	/* gray header bar styles for mobile */
-	.container .sub-header { height: auto; float:left; width: 100%; margin: 0; }
-	.container .sub-header h1 { width:100%; position: relative; display: table; min-height: 90px; padding: 10px; table-layout:fixed; left: 0; }
-	.container .sub-header h1 a { line-height: 1.285; display: table-cell; vertical-align: middle; overflow: hidden; text-overflow: ellipsis;}
-	.container .sub-header nav, .sub-header nav ul { float: none; width:100%; position: relative; right: 0;}
-	.container .sub-header nav ul li  { border-top: 1px solid #eaeaea; width: 50%; display: table;}
-	.container .sub-header nav ul li a { width:100%; line-height: 1.285; height: 90px; text-align: center; vertical-align: middle; display: table-cell;}
+	#content-sections  .sub-header { height: auto; float:left; width: 100%; margin: 0; }
+	#content-sections  .sub-header h1 { width:100%; position: relative; display: table; min-height: 90px; padding: 10px; table-layout:fixed; left: 0; }
+	#content-sections  .sub-header h1 a { line-height: 1.285; display: table-cell; vertical-align: middle; overflow: hidden; text-overflow: ellipsis;}
+	#content-sections .sub-header nav, .sub-header nav ul { float: none; width:100%; position: relative; right: 0;}
+	#content-sections  .sub-header nav ul li  { border-top: 1px solid #eaeaea; width: 50%; display: table;}
+	#content-sections .sub-header nav ul li a { width:100%; line-height: 1.285; height: 90px; text-align: center; vertical-align: middle; display: table-cell;}
 	
 
 	/* content-group.css Styles Brought In
