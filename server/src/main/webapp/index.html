@@ -10,9 +10,17 @@
 <link type="text/css" rel="stylesheet" href="/developer/resources/css/ext/layout/menu.css?@@TIMESTAMP@@"/>
 <link type="text/css" rel="stylesheet" href="/developer/resources/css/ext/layout/header-common.css?@@TIMESTAMP@@"/>
 <link type="text/css" rel="stylesheet" href="/developer/resources/css/ext/layout/footer-common.css?@@TIMESTAMP@@"/>
+
+<!-- jquery and jquery UI call -->
+<script type="text/javascript"> var enable_ga_eventtracking=false; </script>
+<script type="text/javascript" src="/developer/resources/script/vendor/jquery/jquery.js?@@TIMESTAMP@@"></script>
+<script type="text/javascript" src="/developer/resources/script/vendor/jquery-ui/jquery-ui.js?@@TIMESTAMP@@"></script>
+<!-- Dynamic Tag Manager (DTM) Required code - must be placed immediately after jquery call -->
+<script type="text/javascript" src="http://developer.att.com/static-assets/js/dynamic-tag-manager-header.js"></script>
 </head>
 
 <body ng-app="portalApp">
+<script type="text/javascript" src="/developer/resources/script/vendor/googletagmanager/googletagmanager.js?@@TIMESTAMP@@"></script>
     <div class="container" id="content-area">
    	<section id="header-common" ng-include="'resources/layout/header.html'"></section>
 		<section class="sub-header hMarginBoth">
@@ -33,7 +41,6 @@
 	<section id="footer-common" ng-include="'resources/layout/footer.html'"></section>
     </div> <!-- /container -->
 	<!-- Best practice to load scripts at the end of body tag -->
-	<script type="text/javascript" src="/developer/resources/script/vendor/jquery/jquery.js?@@TIMESTAMP@@"></script>
 	<script type="text/javascript" src="/developer/resources/script/vendor/angular/angular.js"></script>
 	<script type="text/javascript" src="/developer/resources/script/vendor/angular-resource/angular-resource.js"></script>
 	<script type="text/javascript" src="/developer/resources/script/vendor/angular-translate/angular-translate.js?@@TIMESTAMP@@"></script>
@@ -44,6 +51,8 @@
 	<script type="text/javascript" src="/developer/resources/script/vendor/google-diff-match-patch-js/diff_match_patch.js?@@TIMESTAMP@@"></script>
 	<script type="text/javascript" src="/developer/resources/script/vendor/ngstorage/ngStorage.js?@@TIMESTAMP@@"></script>
 	<script type="text/javascript" src="/developer/resources/script/vendor/angular-sanitize/angular-sanitize.js?@@TIMESTAMP@@"></script>
+	<!-- Dynamic Tag Manager (DTM) for footer -->
+	<script type="text/javascript" src="http://developer.att.com/static-assets/js/dynamic-tag-manager-footer.js" ></script>
 </body>
 
 </html>
