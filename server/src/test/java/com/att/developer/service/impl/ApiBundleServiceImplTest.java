@@ -17,11 +17,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import com.att.developer.bean.ApiBundle;
 import com.att.developer.bean.EventLog;
 import com.att.developer.bean.Organization;
 import com.att.developer.bean.Role;
 import com.att.developer.bean.User;
+import com.att.developer.bean.api.ApiBundle;
 import com.att.developer.bean.builder.OrganizationBuilder;
 import com.att.developer.bean.builder.UserBuilder;
 import com.att.developer.dao.ApiBundleDAO;

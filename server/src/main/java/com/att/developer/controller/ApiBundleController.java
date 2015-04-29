@@ -19,10 +19,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.att.developer.bean.ApiBundle;
 import com.att.developer.bean.Organization;
 import com.att.developer.bean.SessionUser;
 import com.att.developer.bean.User;
+import com.att.developer.bean.api.ApiBundle;
 import com.att.developer.security.PermissionManager;
 import com.att.developer.service.ApiBundleService;
 import com.wordnik.swagger.annotations.Api;

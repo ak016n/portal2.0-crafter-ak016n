@@ -6,9 +6,9 @@ import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.access.prepost.PreAuthorize;
 
-import com.att.developer.bean.ApiBundle;
 import com.att.developer.bean.Organization;
 import com.att.developer.bean.User;
+import com.att.developer.bean.api.ApiBundle;
 
 public interface ApiBundleService {
 

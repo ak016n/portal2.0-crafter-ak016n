@@ -21,7 +21,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 
-import com.att.developer.bean.ApiBundle;
+import com.att.developer.bean.api.ApiBundle;
 import com.att.developer.config.IntegrationContext;
 import com.att.developer.dao.ApiBundleDAO;
 
