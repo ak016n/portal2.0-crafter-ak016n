@@ -9,25 +9,25 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
-import com.att.developer.bean.api.ApiBundle;
-import com.att.developer.dao.ApiBundleDAO;
+import com.att.developer.bean.api.ApiWrapper;
+import com.att.developer.dao.ApiWrapperDAO;
 
 @Component
-public class JpaApiBundleDAOImpl extends JpaDAO<ApiBundle> implements ApiBundleDAO {
+public class JpaApiWrapperDAOImpl extends JpaDAO<ApiWrapper> implements ApiWrapperDAO {
 
     private static final String QUERY_ALL_BUNDLES = "from ApiBundle as a";
 
     private final Logger logger = LogManager.getLogger();
 
-    public JpaApiBundleDAOImpl() {
-        super(ApiBundle.class);
+    public JpaApiWrapperDAOImpl() {
+        super(ApiWrapper.class);
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<ApiBundle> getAll() {
+    public List<ApiWrapper> getAll() {
         Query query = entityManager.createQuery(QUERY_ALL_BUNDLES);
-        List<ApiBundle> allBundles = null;
+        List<ApiWrapper> allBundles = null;
         try {
             allBundles = query.getResultList();
         } catch (NoResultException e) {
