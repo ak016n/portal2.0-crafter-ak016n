@@ -2,8 +2,11 @@ package com.att.developer.bean.builder;
 
 
 import java.time.Instant;
+import java.util.HashSet;
+import java.util.Set;
 
-import com.att.developer.bean.ApiBundle;
+import com.att.developer.bean.api.ApiBundle;
+import com.att.developer.bean.api.ApiWrapper;
 
 
 public class ApiBundleBuilder {
@@ -16,6 +19,9 @@ public class ApiBundleBuilder {
         apiBundle.setEndDate(now.plusSeconds(15000));
         apiBundle.setName("n_" + apiBundle.getId());
         apiBundle.setComments("some comments");
+        Set<ApiWrapper> apiWrappers = new HashSet<ApiWrapper>();
+        apiWrappers.add(new ApiWrapperBuilder().build());
+        apiBundle.setApiWrappers(apiWrappers);
         apiBundle.setCreatedOn(now);
         apiBundle.setLastUpdated(now);
     }
