@@ -35,10 +35,10 @@ import org.springframework.transaction.support.SimpleTransactionStatus;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import com.att.developer.bean.ApiBundle;
 import com.att.developer.bean.Organization;
 import com.att.developer.bean.Role;
 import com.att.developer.bean.User;
+import com.att.developer.bean.api.ApiBundle;
 import com.att.developer.bean.builder.OrganizationBuilder;
 import com.att.developer.bean.builder.RoleBuilder;
 import com.att.developer.bean.builder.UserBuilder;
@@ -80,7 +80,6 @@ public class PermissionManagerImplTest {
     public void before() {
         MockitoAnnotations.initMocks(this);
         permissionMgr = new PermissionManagerImpl(mockMutableAclService, 
-                                                  mockTransactionTemplate, 
                                                   mockOrganizationService, 
                                                   mockUserService, 
                                                   mockGlobalScopedParamService);

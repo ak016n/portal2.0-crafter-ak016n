@@ -15,16 +15,12 @@ import org.springframework.security.acls.domain.ObjectIdentityImpl;
 import org.springframework.security.acls.domain.PrincipalSid;
 import org.springframework.security.acls.model.AccessControlEntry;
 import org.springframework.security.acls.model.Acl;
-import org.springframework.security.acls.model.MutableAcl;
 import org.springframework.security.acls.model.MutableAclService;
 import org.springframework.security.acls.model.NotFoundException;
 import org.springframework.security.acls.model.ObjectIdentity;
 import org.springframework.security.acls.model.Permission;
 import org.springframework.security.acls.model.Sid;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.util.Assert;
 
 import com.att.developer.bean.Organization;
@@ -35,22 +31,11 @@ import com.att.developer.service.OrganizationService;
 import com.att.developer.service.UserService;
 
 @Service
-@Transactional
 public class PermissionManagerImpl implements PermissionManager {
 
     private final Logger logger = LogManager.getLogger();
 
-
-    
-//    private PlatformTransactionManager txManager;
-
     private MutableAclService mutableAclService;
-
-    private TransactionTemplate transactionTemplate;
-
-//    private DataSource dataSource;
-
-//    private JdbcTemplate template;
 
     private OrganizationService organizationService;
 
@@ -59,31 +44,25 @@ public class PermissionManagerImpl implements PermissionManager {
     private GlobalScopedParamService globalScopedParamService;
 
     @Autowired
-    public PermissionManagerImpl(MutableAclService mutableAclSvc,
-            TransactionTemplate txTemplate, OrganizationService orgSvc,
-            UserService userSvc, GlobalScopedParamService globalScopedParamSvc) {
-
-        this.mutableAclService = mutableAclSvc;
-        this.transactionTemplate = txTemplate;
-        this.organizationService = orgSvc;
-        this.userService = userSvc;
-        this.globalScopedParamService = globalScopedParamSvc;
+    public PermissionManagerImpl(MutableAclService mutualAclService, OrganizationService organizationService, UserService userService, GlobalScopedParamService globalScopedParamService) {
+        this.mutableAclService = mutualAclService;
+        this.organizationService = organizationService;
+        this.userService = userService;
+        this.globalScopedParamService = globalScopedParamService;
     }
 
-    @Override
+    @Transactional
     public void createAcl(Class<?> type, Serializable identifier) {
         logger.debug("creating an ACL for this objectIdentity id (a.k.a. primary key) ********************* " + identifier);
         ObjectIdentity objId = new ObjectIdentityImpl(type, identifier);
-        transactionTemplate.execute(new TransactionCallback<Object>() {
-
-            public Object doInTransaction(TransactionStatus arg0) {
-                mutableAclService.createAcl(objId);
-                return null;
-            }
-        });
+        mutableAclService.createAcl(objId);
     }
 
-    @Override
+    /**
+     * a) Find if object exists in ACL_OBJECT_IDENTIFY table
+     * b) 
+     */
+    @Transactional
     public void grantPermissions(Class<?> type, String identifier, User user, Permission permission) {
         // load User to make sure it really exists in database
         if(isStrictChecking()){
@@ -93,7 +72,7 @@ public class PermissionManagerImpl implements PermissionManager {
         this.grantPermissions(type, identifier, new PrincipalSid(user.getId()), permission);
     }
 
-    @Override
+    @Transactional
     public void grantPermissions(Class<?> type, String identifier, Organization org, Permission permission) {
         // load Organization to make sure it really exists in database
         if(isStrictChecking()){
@@ -112,15 +91,15 @@ public class PermissionManagerImpl implements PermissionManager {
             }
         }
         acl.insertAce(acl.getEntries().size(), permission, sid, true);
-        updateAclInTransaction(acl);
+        mutableAclService.updateAcl(acl);
     }
 
-    @Override
+    @Transactional
     public void changeOwner(Class<?> type, String identifier, User newOwnerUser) {
         this.changeOwner(type, identifier, new PrincipalSid(newOwnerUser.getId()));
     }
 
-    @Override
+    @Transactional
     public void changeOwner(Class<?> type, String identifier, Organization newOwningOrg) {
         this.changeOwner(type, identifier, new GrantedAuthoritySid(newOwningOrg.getId()));
     }
@@ -128,23 +107,17 @@ public class PermissionManagerImpl implements PermissionManager {
     private void changeOwner(Class<?> type, String identifier, Sid newOwner) {
         AclImpl acl = (AclImpl) mutableAclService.readAclById(new ObjectIdentityImpl(type, identifier));
         acl.setOwner(newOwner);
-        updateAclInTransaction(acl);
+        mutableAclService.updateAcl(acl);
     }
 
-    @Override
+    @Transactional
     public void deleteAllPermissionsForObject(Class<?> type, String identifier) {
         logger.info("deleting this objectIdentity id (a.k.a. primary key) ********************* " + identifier);
         ObjectIdentity objId = new ObjectIdentityImpl(type, identifier);
-        transactionTemplate.execute(new TransactionCallback<Object>() {
-
-            public Object doInTransaction(TransactionStatus arg0) {
-                mutableAclService.deleteAcl(objId, false);
-                return null;
-            }
-        });
+        mutableAclService.deleteAcl(objId, false);
     }
 
-    @Override
+    @Transactional
     public void removeAllPermissionForObjectForOrganization(Class<?> type, String identifier, Organization org) {
         if(isStrictChecking()){
             Assert.notNull(organizationService.getOrganization(org), "organization passed in is not found in our database. id : "+ org.getId());
@@ -162,7 +135,7 @@ public class PermissionManagerImpl implements PermissionManager {
                 acl.deleteAce(i);
             }
         }
-        updateAclInTransaction(acl);
+        mutableAclService.updateAcl(acl);
     }
 
     /**
@@ -171,7 +144,7 @@ public class PermissionManagerImpl implements PermissionManager {
      * @param identifier
      * @return null if there is no Acl entry.
      */
-    @Override
+    @Transactional
     public List<AccessControlEntry> getAccessControlEntries(Class<?> type, String identifier) {
         try {
             Acl acl = (AclImpl) mutableAclService.readAclById(new ObjectIdentityImpl(type, identifier));
@@ -183,13 +156,13 @@ public class PermissionManagerImpl implements PermissionManager {
         }
     }
 
-    @Override
+    @Transactional
     public void createAclWithPermissionsAndOwner(Class<?> type, String identifier, User ownerAndPermissionHolder, Permission permission) {
         PrincipalSid sid = new PrincipalSid(ownerAndPermissionHolder.getId());
         this.createAclWithPermissionsAndOwner(type, identifier, sid, permission, sid);
     }
 
-    @Override
+    @Transactional
     public void createAclWithPermissionsAndOwner(Class<?> type, String identifier, Organization ownerAndPermissionHolder, Permission permission) {
         PrincipalSid sid = new PrincipalSid(ownerAndPermissionHolder.getId());
         this.createAclWithPermissionsAndOwner(type, identifier, sid, permission, sid);
@@ -201,16 +174,6 @@ public class PermissionManagerImpl implements PermissionManager {
         this.changeOwner(type, identifier, owner);
     }
 
-    private void updateAclInTransaction(final MutableAcl acl) {
-        transactionTemplate.execute(new TransactionCallback<Object>() {
-            public Object doInTransaction(TransactionStatus arg0) {
-                mutableAclService.updateAcl(acl);
-                return null;
-
-            }
-        });
-    }
-    
     private boolean isStrictChecking(){
         String aclStrictParameterChecking  = globalScopedParamService.get("aclStrictParameterChecking");
         return Boolean.TRUE.equals(Boolean.valueOf(aclStrictParameterChecking));    
