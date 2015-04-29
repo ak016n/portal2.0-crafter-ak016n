@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.List;
 
 import org.springframework.security.acls.model.AccessControlEntry;
+import org.springframework.security.acls.model.MutableAcl;
+import org.springframework.security.acls.model.ObjectIdentity;
 import org.springframework.security.acls.model.Permission;
 import org.springframework.security.acls.model.Sid;
 
@@ -13,7 +15,7 @@ import com.att.developer.bean.User;
 
  public interface PermissionManager {
 
-	void createAcl(Class<?> type, Serializable identifier);
+	MutableAcl createAcl(Class<?> type, Serializable identifier);
 
 	void grantPermissions(Class<?> type, String identifier, Organization org, Permission permission);
 
@@ -40,5 +42,7 @@ import com.att.developer.bean.User;
 	void createAclWithDenyPermissionsAndOwner(Class<?> type, String identifier, SessionUser ownerAndPermissionHolder, Permission permission);
 
 	void createAclWithDenyPermissionsAndOwner(Class<?> type, String identifier, Sid grantedAuthoritiesSid, Permission permission);
+
+	void createAclWithParents(Class<?> type, String identifier, Sid owner, Permission permission, Sid permissionRecipient, ObjectIdentity parentOI);
 
 }

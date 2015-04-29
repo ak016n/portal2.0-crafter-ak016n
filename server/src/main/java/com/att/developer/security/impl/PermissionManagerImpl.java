@@ -15,6 +15,7 @@ import org.springframework.security.acls.domain.ObjectIdentityImpl;
 import org.springframework.security.acls.domain.PrincipalSid;
 import org.springframework.security.acls.model.AccessControlEntry;
 import org.springframework.security.acls.model.Acl;
+import org.springframework.security.acls.model.MutableAcl;
 import org.springframework.security.acls.model.MutableAclService;
 import org.springframework.security.acls.model.NotFoundException;
 import org.springframework.security.acls.model.ObjectIdentity;
@@ -53,10 +54,10 @@ public class PermissionManagerImpl implements PermissionManager {
     }
 
     @Transactional
-    public void createAcl(Class<?> type, Serializable identifier) {
+    public MutableAcl createAcl(Class<?> type, Serializable identifier) {
         logger.debug("creating an ACL for this objectIdentity id (a.k.a. primary key) ********************* " + identifier);
         ObjectIdentity objId = new ObjectIdentityImpl(type, identifier);
-        mutableAclService.createAcl(objId);
+        return mutableAclService.createAcl(objId);
     }
 
     /**
@@ -158,7 +159,6 @@ public class PermissionManagerImpl implements PermissionManager {
     }
     
 	@Override
-    @Transactional
     public void denyPermissions(Class<?> type, String identifier, User user, Permission permission) {
         // load User to make sure it really exists in database
         if(isStrictChecking()){
@@ -221,6 +221,17 @@ public class PermissionManagerImpl implements PermissionManager {
 	
     private void createAclWithDenyPermissionsAndOwner(Class<?> type, String identifier, Sid owner, Permission permission, Sid permissionRecipient) {
         this.denyPermissions(type, identifier, permissionRecipient, permission);
+    }
+    
+    @Override
+    @Transactional
+    public void createAclWithParents(Class<?> type, String identifier, Sid owner, Permission permission, Sid permissionRecipient, ObjectIdentity parentOI) {
+        MutableAcl mutableAcl = this.createAcl(type, identifier);
+        Acl parentAcl = mutableAclService.readAclById(parentOI);
+        mutableAcl.setParent(parentAcl);
+        mutableAclService.updateAcl(mutableAcl);
+        this.grantPermissions(type, identifier, permissionRecipient, permission);
+        this.changeOwner(type, identifier, owner);
     }
 
     private boolean isStrictChecking(){
