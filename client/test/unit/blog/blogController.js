@@ -161,7 +161,7 @@ describe('test BlogController', function() {
     	categoriesDeferred.resolve(response);
     	scope.$digest();
     	
-    	expect(scope.blog.categories).toEqual([['X', 'Y'], ['Z']]); // slicing to fit the
+    	expect(scope.blog.categories).toEqual(['X', 'Y', 'Z']); // slicing to fit the
     	expect(mockBlogService.categories).toHaveBeenCalled();
     });
     

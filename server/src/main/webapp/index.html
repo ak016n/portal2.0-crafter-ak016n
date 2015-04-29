@@ -2,44 +2,47 @@
 <html>
 
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link type="text/css" rel="stylesheet" href="/developer/resources/css/ext/bootstrap/bootstrap.min.css?@@TIMESTAMP@@"/>
-<link type="text/css" rel="stylesheet" href="/developer/resources/css/ext/bootstrap/bootstrap-theme-devportal.css?@@TIMESTAMP@@"/>
-<link type="text/css" rel="stylesheet" href="/developer/resources/css/ext/layout/font.css?@@TIMESTAMP@@"/>
-<link type="text/css" rel="stylesheet" href="/developer/resources/css/ext/custom.css?@@TIMESTAMP@@"/>
-<link type="text/css" rel="stylesheet" href="/developer/resources/css/ext/layout/menu.css?@@TIMESTAMP@@"/>
-<link type="text/css" rel="stylesheet" href="/developer/resources/css/ext/layout/header-common.css?@@TIMESTAMP@@"/>
-<link type="text/css" rel="stylesheet" href="/developer/resources/css/ext/layout/footer-common.css?@@TIMESTAMP@@"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link type="text/css" rel="stylesheet" href="/developer/resources/css/ext/bootstrap/bootstrap.min.css?@@TIMESTAMP@@"/>
+	<link type="text/css" rel="stylesheet" href="/developer/resources/css/ext/bootstrap/bootstrap-theme-devportal.css?@@TIMESTAMP@@"/>
+	<link type="text/css" rel="stylesheet" href="/developer/resources/css/ext/layout/font.css?@@TIMESTAMP@@"/>
+	<link type="text/css" rel="stylesheet" href="/developer/resources/css/ext/custom.css?@@TIMESTAMP@@"/>
+	<link type="text/css" rel="stylesheet" href="/developer/resources/css/ext/layout/menu.css?@@TIMESTAMP@@"/>
+	<link type="text/css" rel="stylesheet" href="/developer/resources/css/ext/layout/header-common.css?@@TIMESTAMP@@"/>
+	<link type="text/css" rel="stylesheet" href="/developer/resources/css/ext/layout/footer-common.css?@@TIMESTAMP@@"/>
 
-<!-- jquery and jquery UI call -->
-<script type="text/javascript"> var enable_ga_eventtracking=false; </script>
-<script type="text/javascript" src="/developer/resources/script/vendor/jquery/jquery.js?@@TIMESTAMP@@"></script>
-<script type="text/javascript" src="/developer/resources/script/vendor/jquery-ui/jquery-ui.js?@@TIMESTAMP@@"></script>
-<!-- Dynamic Tag Manager (DTM) Required code - must be placed immediately after jquery call -->
-<script type="text/javascript" src="http://developer.att.com/static-assets/js/dynamic-tag-manager-header.js"></script>
+	<!-- jquery and jquery UI call -->
+	<script type="text/javascript"> var enable_ga_eventtracking=false; </script>
+	<script type="text/javascript" src="/developer/resources/script/vendor/jquery/jquery.js?@@TIMESTAMP@@"></script>
+	<script type="text/javascript" src="/developer/resources/script/vendor/jquery-ui/jquery-ui.js?@@TIMESTAMP@@"></script>
+	<!-- Dynamic Tag Manager (DTM) Required code - must be placed immediately after jquery call -->
+	<script type="text/javascript" src="http://developer.att.com/static-assets/js/dynamic-tag-manager-header.js"></script>
 </head>
 
 <body ng-app="portalApp">
-<script type="text/javascript" src="/developer/resources/script/vendor/googletagmanager/googletagmanager.js?@@TIMESTAMP@@"></script>
-    <div class="container" id="content-area">
-   	<section id="header-common" ng-include="'resources/layout/header.html'"></section>
-		<section class="sub-header hMarginBoth">
-			<h1><a href="/community">Community</a></h1>
-			<nav ng-controller="NavigationCtrl">
-				<ul>
-					<li><a href="/community/events" title="Take a look at AT&amp;T Community Events" class="inactive bg-blue-dark">Hackathons &amp; Events</a></li>
-					<li><a href="http://developerboards.att.lithium.com/t5/Forums/ct-p/FURM" title="Be part of our AT&amp;T Community Forums" class="inactive bg-blue-dark">Forums</a></li>
-					<li ng-class="{active: isActive('/blog')}"><a ui-sref="blog.list" ui-sref-opts="{reload: true}" title="Explore the AT&amp;T Community Blog" class="active bg-blue-dark">Blog</a></li>
-				</ul>
-			</nav>
+	<div class="container" id="content-area">
+		<section id="header-common" ng-include="'resources/layout/header.html'"></section>
+		
+		<section id="content-sections">
+
+			<section class="sub-header">
+				<h1><a href="/community">Community</a></h1>
+				<nav ng-controller="NavigationCtrl">
+					<ul>
+						<li><a href="/community/events" title="Take a look at AT&amp;T Community Events" class="inactive bg-blue-dark">Hackathons &amp; Events</a></li>
+						<li><a href="http://developerboards.att.lithium.com/t5/Forums/ct-p/FURM" title="Be part of our AT&amp;T Community Forums" class="inactive bg-blue-dark">Forums</a></li>
+						<li ng-class="{active: isActive('/blog')}"><a ui-sref="blog.list" ui-sref-opts="{reload: true}" title="Explore the AT&amp;T Community Blog" class="active bg-blue-dark">Blog</a></li>
+					</ul>
+				</nav>
+			</section>
+
+			<section ui-view class="hMarginBoth vMarginTop30"></section>
+		
 		</section>
 
-		<section ui-view class="hMarginBoth vMarginTop30"></section>
 
-
-		
-	<section id="footer-common" ng-include="'resources/layout/footer.html'"></section>
-    </div> <!-- /container -->
+		<section id="footer-common" ng-include="'resources/layout/footer.html'"></section>
+	</div> <!-- /container -->
 	<!-- Best practice to load scripts at the end of body tag -->
 	<script type="text/javascript" src="/developer/resources/script/vendor/angular/angular.js"></script>
 	<script type="text/javascript" src="/developer/resources/script/vendor/angular-resource/angular-resource.js"></script>

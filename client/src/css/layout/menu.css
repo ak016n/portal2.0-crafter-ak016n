@@ -186,6 +186,8 @@ div.menu.panel {
 	position: relative;
 	float: left;
 	margin: 0;
+	box-shadow: none;
+	border: none;
 }
 div.menu.panel ul.menuDepth_2 { display: none; }
 
