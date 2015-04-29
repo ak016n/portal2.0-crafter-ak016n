@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
@@ -56,6 +57,16 @@ public class SessionUser extends org.springframework.security.core.userdetails.U
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+	
+	public String getId() {
+		String userId = user.getId();
+		List<Organization> orgs = user.getOrganizations();
+
+		if (!CollectionUtils.isEmpty(orgs)) {
+			userId = userId + "_" + orgs.get(0).getId();
+		}
+		return userId;
 	}
 
     /*

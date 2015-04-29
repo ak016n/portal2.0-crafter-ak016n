@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import com.att.developer.bean.Organization;
+import com.att.developer.bean.SessionUser;
 import com.att.developer.bean.User;
 import com.att.developer.security.PermissionManager;
 import com.att.developer.service.GlobalScopedParamService;
@@ -155,6 +156,29 @@ public class PermissionManagerImpl implements PermissionManager {
             return null;
         }
     }
+    
+	@Override
+    @Transactional
+    public void denyPermissions(Class<?> type, String identifier, User user, Permission permission) {
+        // load User to make sure it really exists in database
+        if(isStrictChecking()){
+            Assert.notNull(userService.getUser(user), "user passed in is not found in our database. id : " + user.getId());
+        }
+
+        this.denyPermissions(type, identifier, new PrincipalSid(user.getId()), permission);
+    }
+    
+    private void denyPermissions(Class<?> type, String identifier, Sid sid, Permission permission) {
+        AclImpl acl = (AclImpl) mutableAclService.readAclById(new ObjectIdentityImpl(type, identifier));
+        for (AccessControlEntry ace : acl.getEntries()) {
+            if (ace.getSid().equals(sid) && ace.getPermission().equals(permission)) {
+                logger.info("trying to create a duplicate ace entry, don't bother");
+                return;
+            }
+        }
+        acl.insertAce(acl.getEntries().size(), permission, sid, false);
+        mutableAclService.updateAcl(acl);
+    }
 
     @Transactional
     public void createAclWithPermissionsAndOwner(Class<?> type, String identifier, User ownerAndPermissionHolder, Permission permission) {
@@ -172,6 +196,31 @@ public class PermissionManagerImpl implements PermissionManager {
         this.createAcl(type, identifier);
         this.grantPermissions(type, identifier, permissionRecipient, permission);
         this.changeOwner(type, identifier, owner);
+    }
+    
+	@Override
+	@Transactional
+	public void createAclWithDenyPermissionsAndOwner(Class<?> type,	String identifier, User ownerAndPermissionHolder, Permission permission) {
+		PrincipalSid sid = new PrincipalSid(ownerAndPermissionHolder.getId());
+		createAclWithDenyPermissionsAndOwner(type, identifier, sid, permission, sid);
+	}
+	
+
+	@Override
+	@Transactional
+	public void createAclWithDenyPermissionsAndOwner(Class<?> type,	String identifier, SessionUser ownerAndPermissionHolder, Permission permission) {
+		PrincipalSid sid = new PrincipalSid(ownerAndPermissionHolder.getId());
+		createAclWithDenyPermissionsAndOwner(type, identifier, sid, permission, sid);
+	}
+
+	@Override
+	@Transactional
+	public void createAclWithDenyPermissionsAndOwner(Class<?> type,	String identifier, Sid grantedAuthoritiesSid, Permission permission) {
+		createAclWithDenyPermissionsAndOwner(type, identifier, grantedAuthoritiesSid, permission, grantedAuthoritiesSid);
+	}
+	
+    private void createAclWithDenyPermissionsAndOwner(Class<?> type, String identifier, Sid owner, Permission permission, Sid permissionRecipient) {
+        this.denyPermissions(type, identifier, permissionRecipient, permission);
     }
 
     private boolean isStrictChecking(){
