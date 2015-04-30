@@ -1,0 +1,277 @@
+<script>
+$(document).ready(function() {
+
+	/////////////////////////////////////////////////////////////////////////
+	// mobile menu toggle button
+	$mobileMenu = $('#section_nav');
+	$mobileMenuTrigger = $('#mobile-menu');
+	$mobileMenuTrigger.click(function(){
+		if($mobileMenu.hasClass('hidden')){
+			$("#section_content").css("position","fixed");
+			$mobileMenu.removeClass('hidden');
+		}
+		else {
+			$("#section_content").css("position","static");
+			$mobileMenu.addClass('hidden');
+		}
+	});
+
+	/////////////////////////////////////////////////////////////////////////
+	// responsive screen display query
+	var getDisplayType = function() {
+		if ($(".display_phone").css("display") == "block" )
+			return '.display_phone';
+		else if ($(".display_tablet").css("display") == "block" )
+			return '.display_tablet';
+		else
+			return '.display_desktop';
+	}
+
+	/////////////////////////////////////////////////////////////////////////
+	// updateDisplay: location for event handling when screen is updated to a new type of display
+	var updateDisplay = function() {
+		// if display is for a mobile device and the mobile menu is open set main content to be fixed, else let it be free.
+		if( visibleDisplay==='.display_phone' && !$('#section_nav').hasClass('hidden') )
+			$("#section_content").css("position","fixed");
+		else
+			$("#section_content").css("position","initial");
+	}
+
+	/////////////////////////////////////////////////////////////////////////
+	// resizing events
+	$(window).resize(function(){
+		var newVisibleDisplay = getDisplayType();
+		if(newVisibleDisplay !== visibleDisplay)
+		{
+			visibleDisplay = newVisibleDisplay;
+			updateDisplay();
+		}
+	});
+	
+	/////////////////////////////////////////////////////////////////////////
+	// mobile menu events
+	function getCookie(cname)
+	{
+		var name = cname + "=";
+		var ca = document.cookie.split(';');
+		for(var i=0; i<ca.length; i++) 
+		{
+		  var c = ca[i].trim();
+		  if (c.indexOf(name)==0) return c.substring(name.length,c.length);
+		}
+		return "";
+	}
+
+	var resCookie = 'isResponsive';
+	try {
+		if(getCookie(resCookie) !== 'no' && $('.non_responsive_page_js').length === 0) {
+			$('body').addClass('responsive');
+			generateMenu();
+		}
+	}
+	catch(ex){
+		$('body').addClass('responsive');	
+		generateMenu();
+	}
+	// function to bind plus/minus events
+	function generateMenu() {
+	var $responsiveMenu = $('body.responsive #section_nav'),
+	$expandLinks = $responsiveMenu.find('a.expands');
+
+		(function() {
+			$expandLinks.attr('href', null).unbind('click').bind('click', function() {
+				
+				var $current = $(this),
+					$parent = $current.parents('li'),
+					$currentMenu = $parent.find('.menuDepth_2'),
+					$currentPlus_minus = $parent.find('.plus_minus'),
+					cssName = 'exxxxx',
+					animationTime = 0;
+
+				if($currentPlus_minus.text() === '-') {
+					$currentMenu.slideUp(animationTime, function() {
+						$currentPlus_minus.text('+');
+						$currentMenu.removeClass(cssName);	
+					});
+				}
+				else {
+					$currentMenu.slideDown(animationTime, function() {
+						$currentPlus_minus.text('-');
+					});
+				}
+
+			});
+
+		})();
+	
+	}
+	
+	/* to be removed later if not needed */
+	$('.js-api-header').click(function(){
+		var $collapse = $(this).find('.collapse'),
+			openCss = 'open',
+			$subMenu = $('.sidr ul ul.sub-menu');
+
+		if($collapse.hasClass(openCss)){
+			$collapse.removeClass(openCss);
+			$subMenu.hide();
+		}
+		else {
+			$collapse.addClass(openCss);
+			$subMenu.show();
+		}
+	});
+	
+	$('.remove-responsive').click(function(){
+		try{
+			document.cookie = resCookie + '=no';
+		}
+		catch(ex){
+		}
+		window.location.href = window.location.href;
+	});
+	
+	/////////////////////////////////////////////////////////////////////////
+	// this is when there is no resizing - such as opening in phone or tablet
+	var visibleDisplay = getDisplayType();
+	updateDisplay();
+
+});
+</script>
+
+<div id="section_nav" class="sidr">
+	<div class="menu dropdown top-nav">
+		<ul class="menuDepth_1">
+			<li class="mega-menu">
+				<a target="_self" class="expands">APIs<span class="plus_minus">+</span></a>
+				<ul class="menuDepth_2" style="display: none;">
+					<li>
+						<span>AT&amp;T API Platform</span>
+						<ul class="menuDepth_3">
+							<li>
+								<a target="_self" href="/apis/enhanced-webrtc">Enhanced WebRTC</a> 
+								<ul class="menuDepth_4">
+									<li><a class="button blue small" target="_self" href="/apis/enhanced-webrtc">Tour</a></li>
+									<li><a class="button blue small" target="_self" href="/apis/enhanced-webrtc/docs">Docs</a></li>
+								</ul>
+							</li>
+							<li>
+								<a href="/apis/advertising" target="_self">Advertising</a>
+								<ul class="menuDepth_4">
+									<li><a href="/apis/advertising" target="_self" class="button blue small">Tour</a></li>
+									<li><a href="/apis/advertising/docs" target="_self" class="button blue small">Docs</a></li>
+								</ul>
+							</li>
+							<li>
+								<a href="/apis/speech" target="_self">Speech</a>
+								<ul class="menuDepth_4">
+									<li><a href="/apis/speech" target="_self" class="button blue small">Tour</a></li>
+									<li><a href="/apis/speech/docs" target="_self" class="button blue small">Docs</a></li>
+								</ul>
+							</li>
+							<li>
+								<a href="/apis/in-app-messaging" target="_self">In-App Messaging</a>
+								<ul class="menuDepth_4">
+									<li><a href="/apis/in-app-messaging" target="_self" class="button blue small">Tour</a></li>
+									<li><a href="/apis/in-app-messaging/docs" target="_self" class="button blue small">Docs</a></li>
+								</ul>
+							</li>
+							<li>
+								<a href="/apis/sms-mms" target="_self"  id="footer-block-_10_SMS/MMS">SMS/MMS</a>
+								<ul class="menuDepth_4">
+									<li><a href="/apis/sms-mms" target="_self" class="button blue small">Tour</a></li>
+									<li><a href="/apis/sms/docs" target="_self" class="button blue small">Docs</a></li>
+								</ul>
+							</li>
+							<li>
+								<a href="/apis/address-book" target="_self">Address Book</a>
+								<ul class="menuDepth_4">
+									<li><a href="/apis/address-book" target="_self" class="button blue small">Tour</a></li>
+									<li><a href="/apis/address-book/docs" target="_self" class="button blue small">Docs</a> </li>
+								</ul>
+							</li>
+							<li>
+								<a href="/apis/device-capabilities" target="_self">Device Capabilities</a>
+								<ul class="menuDepth_4">
+									<li><a href="/apis/device-capabilities" target="_self" class="button blue small">Tour</a></li>
+									<li><a href="/apis/device-capabilities/docs" target="_self" class="button blue small">Docs</a></li>
+								</ul>
+							</li>
+						</ul>
+					</li>
+					<li>
+						<span>AT&amp;T Specialized API Solutions</span>
+						<ul class="menuDepth_3">
+							<li>
+								<a href="/apis/mobile-identity-toolkit" target="_self">Mobile Identity Toolkit</a>
+								<ul class="menuDepth_4">
+									<li><a href="/apis/mobile-identity-toolkit" target="_self" class="button blue small" style="width:224px; max-width:none; min-width:224px; text-align:center;">Visit Tour</a></li>
+								</ul>
+							</li>
+							<li>
+								<a href="https://m2x.att.com" target="_blank">M2X</a>
+								<ul class="menuDepth_4">
+									<li><a href="https://m2x.att.com/" target="_blank" class="button blue small" style="width:224px; max-width:none; min-width:224px; text-align:center;">Visit Site</a></li>
+								</ul>
+							</li>
+							<li>
+								<a href="/apis/sponsored-data" target="_self">Sponsored Data</a>
+								<ul class="menuDepth_4">
+									<li><a href="/apis/sponsored-data" target="_self" class="button blue small" style="width:224px; max-width:none; min-width:224px; text-align:center;">Visit Tour</a></li>
+								</ul>
+							</li>
+							<li>
+								<a href="http://developer.att.com/developer/legalAgreementPage.jsp?passedItemId=10100309" target="_self">U-verse® Enabled</a>
+								<ul class="menuDepth_4">
+									<li><a href="http://developer.att.com/developer/legalAgreementPage.jsp?passedItemId=10100309" target="_self" class="button blue small" style="width:224px; max-width:none; min-width:224px; text-align:center;">Visit Tour</a></li>
+								</ul>
+							</li>
+							<li>
+								<a target="_blank" href="http://www.business.att.com/enterprise/Service/mobility-services/near-field-communications/verify-connect/#tab3">Verify Connect</a> 
+								<ul class="menuDepth_4">
+									<li><a class="button blue small" target="_blank" href="http://www.business.att.com/enterprise/Service/mobility-services/near-field-communications/verify-connect/#tab3">Visit Site</a></li>
+								</ul>
+							</li>
+						</ul>
+					</li>
+				</ul>
+			</li>
+			<li>
+				<a target="_self" class="expands">App Optimizer<span class="plus_minus">+</span></a>
+				<ul class="menuDepth_2">
+					<li>
+						<a href="/application-resource-optimizer" target="_self">Tour</a>
+					</li>
+					<li>
+						<a href="/application-resource-optimizer/docs" target="_self">Documentation</a>
+					</li>
+					<li>
+						<a href="/application-resource-optimizer/news" target="_self">News</a>
+					</li>
+					<li>
+						<a href="/application-resource-optimizer/docs/best-practices" target="_self">Best Practices</a>
+					</li>
+					<li>
+						<a href="http://developerboards.att.lithium.com/t5/AT-T-Application-Resource/bd-p/ARO" target="_blank">Forum</a>
+					</li>
+				</ul>
+			</li>
+			<li>
+				<a target="_self" class="expands">Community<span class="plus_minus">+</span></a>
+				<ul class="menuDepth_2">
+					<li><a href="/community/events" target="_self">Hackathons &amp; Events</a></li>
+					<li><a href="http://developerboards.att.lithium.com/t5/Forums/ct-p/FURM" target="_self">Forums</a></li> <li><a href="http://developerboards.att.lithium.com/t5/AT-T-Developer-Program-Blogs/bg-p/Blogs" target="_self">Blog</a></li>
+				</ul>
+			</li>
+			<li><a href="/pricing" target="_self">Pricing</a></li>
+			<li><a href="javascript:void(0);" class="remove-responsive">View Full Website</a></li>
+		</ul>
+	</div>
+</div>
+
+<div id="header-mobile" class="display_phone">
+	<div id="header-mobile-container">
+		<a id="mobile-menu" href="javascript: void(0);"><img title="Touch to see menu" alt="Mobile Menu" src="/developer/resources/images/layout/responsive/dropdown-menu.png" width="49" /></a>
+		<a class="logo" href="/" id="home-_2_"><img class="att-logo" title="AT&amp;T Developer" alt="AT&amp;T Developer" src="/developer/resources/images/layout/responsive/logo-developer.png" width="212" /></a>
+	</div>
+</div>

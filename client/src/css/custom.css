@@ -560,7 +560,7 @@
 @media (max-width: 480px) {
 
 	/* display none on header and footer until responsive is done */
-	#header-common, #footer-common { display: none; }
+	#footer-common { display: none; }
 
 	#content-sections section { margin: 10px; float: left; }
 	#content-sections section section { margin: 0px; }
