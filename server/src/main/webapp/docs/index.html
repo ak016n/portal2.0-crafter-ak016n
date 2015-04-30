@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="/developer/resources/css/ext/swagger/swagger-ui.min.css">
   </head>
   <body>
-    <div ng-controller="MyCtrl" class="container" style="margin-bottom:100px">
+    <div ng-controller="SwaggerCtrl" class="container" style="margin-bottom:100px">
         <h1>Portal 2.0 API doc</h1>
         <form name="urlForm" ng-submit="urlForm.$valid&&(swaggerUrl=url)" class="form-inline">
             <input type="url" placeholder="swagger URL" class="form-control" id="url" name="url" ng-model="url" required style="width:400px">
@@ -20,7 +20,7 @@
     <script type="text/javascript">
         angular
             .module('myApp', ['swaggerUi'])
-            .controller('MyCtrl', function($scope){
+            .controller('SwaggerCtrl', function($scope){
                 // init form
                 $scope.url = '/developer/v2/api-docs';
                 // error management

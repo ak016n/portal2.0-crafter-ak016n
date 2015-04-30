@@ -1,5 +1,8 @@
 package com.att.developer.config;
 
+import static springfox.documentation.builders.PathSelectors.regex;
+
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -21,11 +24,22 @@ import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
+import springfox.documentation.service.ApiInfo;
+import springfox.documentation.service.AuthorizationScope;
+import springfox.documentation.service.GrantType;
+import springfox.documentation.service.OAuth;
+import springfox.documentation.service.SecurityScheme;
+import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
+import springfox.documentation.spi.service.contexts.SecurityContext;
 
 import com.att.developer.exception.TimeoutDeferredResultProcessingInterceptor;
 import com.att.developer.service.impl.LocaleAwareResourceBundleMessageSource;
 import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
+import com.google.common.base.Predicate;
+
+import static com.google.common.base.Predicates.or;
 
 @Configuration
 @EnableWebMvc
@@ -89,64 +103,44 @@ public class WebContext extends WebMvcConfigurerAdapter {
 	 * SWAGGER - API Doc Tool
 	 */
 	
-	/*private SpringSwaggerConfig springSwaggerConfig;
+	 @Bean
+	  public Docket swaggerSpringMvcPlugin() {
+	    return new Docket(DocumentationType.SWAGGER_2)
+	          //  .groupName("business-api")
+	            .select() 
+	              .paths(paths()) // and by paths
+	              .build()
+	            .apiInfo(apiInfo())
+	            .securitySchemes(securitySchemes())
+	           .securityContexts(securityContext());
+	  }
 
-	@Autowired
-	public void setSpringSwaggerConfig(SpringSwaggerConfig springSwaggerConfig) {
-		this.springSwaggerConfig = springSwaggerConfig;
+	  private List<SecurityContext> securityContext() {
+		  
+		return null;
 	}
 
-	@Bean
-	public SwaggerSpringMvcPlugin generalServices() {
-		return new SwaggerSpringMvcPlugin(this.springSwaggerConfig).apiInfo(
-				apiInfo()).includePatterns("/comgw/.*","/uauth/.*").swaggerGroup("apis").authorizationTypes(authorizationTypes());
+	private List<? extends SecurityScheme> securitySchemes() {
+		return Arrays.asList(new OAuth("oauth2", Arrays.<AuthorizationScope>asList(new AuthorizationScope("read", "ability to read")), Arrays.<GrantType>asList(new GrantType("password"))));
 	}
-	
-	private List<AuthorizationType> authorizationTypes() {
-		List<AuthorizationType> authorizationTypes = new ArrayList<>();
-
-		List<GrantType> grantTypes = new ArrayList<>();
-	    TokenEndpoint tokenEndpoint = new TokenEndpoint("/developer/oauth/token", "access_token");
-
-	    ClientCredentialGrant authorizationCodeGrant = new ClientCredentialGrant(tokenEndpoint);
-	    grantTypes.add(authorizationCodeGrant);
-
-	    OAuth oAuth = new OAuthBuilder()
-	            //.scopes(authorizationScopeList)
-	            .grantTypes(grantTypes)
-	            .build();
-
-	    authorizationTypes.add(oAuth);
-	    return authorizationTypes;
-		
-	}
-	
-	
-	 * Alternate Swagger initialization
- 
-	    @Bean
-		public SwaggerSpringMvcPlugin restrictedServices() {
-			return new SwaggerSpringMvcPlugin(this.springSwaggerConfig).apiInfo(
-					apiInfo()).includePatterns("/uauth/.*").swaggerGroup("restricted").authorizationContext(authorizationContext());
-		}
-	
-	
-		
-	    private AuthorizationContext authorizationContext() {
-	    	Authorization authorization = new Authorization("oauth2", new AuthorizationScope[]{ new AuthorizationScope("read", "ability to read")});
-			return new AuthorizationContextBuilder(Arrays.asList(new Authorization[] {authorization})).build();
-		}
-   
-
-	private ApiInfo apiInfo() {
-        ApiInfo apiInfo = new ApiInfo(
-                "Portal 2.0 APIs",
-                "APIs that are exposed by developer portal",
-                "Portal 2.0 terms of service",
-                "ss380m@att.com",
-                "Portal 2.0 Licence Type",
-                "Portal 2.0 License URL"
-          );
-        return apiInfo;
-   }*/
+	  
+	private Predicate<String> paths() {
+	    return or(
+	        regex("/uauth/.*"),
+	        regex("/comgw/.*")
+	    	);
+	  }
+	  
+		private ApiInfo apiInfo() {
+	        ApiInfo apiInfo = new ApiInfo(
+	                "Portal 2.0 APIs",
+	                "APIs that are exposed by developer portal",
+	                "1.0",
+	                "Portal 2.0 terms of service",
+	                "ss380m@att.com",
+	                "Portal 2.0",
+	                ""
+	          );
+	        return apiInfo;
+	   }
 }
