@@ -45,6 +45,7 @@
 			};
 	
 			$scope.blog = {
+				user : {},
 				posts : [],
 				postPerPage : 5,
 				inProgress : true
@@ -52,6 +53,7 @@
 		
 			getCategories($scope, blogService.categories(), flashMessageService);
 			getTags($scope, blogService.tags(), flashMessageService);
+			getUsers($scope, blogService.users());
 	
 			switch(blogService.getView()) {
 				case "blog.list":
@@ -165,6 +167,16 @@
 				  }, 
 				  function(error) {
 					  //flashMessageService.setError(true); Not setting because we still want to show the post even if there are comment issues
+					  flashMessageService.setMessage(error.data.errors);
+				  });
+	}
+	
+	function getUsers($scope, blogUserService) {
+		blogUserService.get({}).$promise.then(
+				  function(success) {
+					  $scope.blog.user =  success;
+				  }, 
+				  function(error) {
 					  flashMessageService.setMessage(error.data.errors);
 				  });
 	}

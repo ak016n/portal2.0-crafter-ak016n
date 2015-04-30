@@ -26,6 +26,11 @@
 		    });
 		};
 		
+		service.users = function() {
+			return $resource('/developer/comgw/users', {}, {
+		    });
+		};
+		
 		service.setView = function(view) {
 			this.view = view;
 		};
@@ -33,7 +38,7 @@
 		service.getView = function() {
 			return this.view;
 		};
-		
+
 		return service;
 	}]);
 
