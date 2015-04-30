@@ -1,5 +1,6 @@
 package com.att.developer.config;
 
+import static com.google.common.base.Predicates.or;
 import static springfox.documentation.builders.PathSelectors.regex;
 
 import java.util.Arrays;
@@ -32,14 +33,11 @@ import springfox.documentation.service.SecurityScheme;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
-import springfox.documentation.spi.service.contexts.SecurityContext;
 
 import com.att.developer.exception.TimeoutDeferredResultProcessingInterceptor;
 import com.att.developer.service.impl.LocaleAwareResourceBundleMessageSource;
 import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import com.google.common.base.Predicate;
-
-import static com.google.common.base.Predicates.or;
 
 @Configuration
 @EnableWebMvc
@@ -111,14 +109,10 @@ public class WebContext extends WebMvcConfigurerAdapter {
 	              .paths(paths()) // and by paths
 	              .build()
 	            .apiInfo(apiInfo())
-	            .securitySchemes(securitySchemes())
-	           .securityContexts(securityContext());
+	            .securitySchemes(securitySchemes());
+	          //.securityContexts(securityContext());
 	  }
 
-	  private List<SecurityContext> securityContext() {
-		  
-		return null;
-	}
 
 	private List<? extends SecurityScheme> securitySchemes() {
 		return Arrays.asList(new OAuth("oauth2", Arrays.<AuthorizationScope>asList(new AuthorizationScope("read", "ability to read")), Arrays.<GrantType>asList(new GrantType("password"))));
