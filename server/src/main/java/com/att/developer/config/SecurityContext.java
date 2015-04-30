@@ -224,7 +224,7 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
 	                .antMatchers("/css/**").permitAll()
 	                .antMatchers("/js/**").permitAll()
 	                .antMatchers("/swagger-ui.js").permitAll()
-	                .antMatchers("/spring-java-swagger/**").permitAll()
+	                .antMatchers("/docs/**").permitAll()
                     .anyRequest().authenticated()
             .and()
                 .csrf().disable()
