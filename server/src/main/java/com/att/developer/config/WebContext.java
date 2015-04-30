@@ -1,9 +1,8 @@
 package com.att.developer.config;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -21,23 +20,16 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
-import com.att.developer.docs.ClientCredentialGrant;
+
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
+
 import com.att.developer.exception.TimeoutDeferredResultProcessingInterceptor;
 import com.att.developer.service.impl.LocaleAwareResourceBundleMessageSource;
 import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
-import com.mangofactory.swagger.configuration.SpringSwaggerConfig;
-import com.mangofactory.swagger.models.dto.ApiInfo;
-import com.mangofactory.swagger.models.dto.AuthorizationType;
-import com.mangofactory.swagger.models.dto.GrantType;
-import com.mangofactory.swagger.models.dto.OAuth;
-import com.mangofactory.swagger.models.dto.TokenEndpoint;
-import com.mangofactory.swagger.models.dto.builder.OAuthBuilder;
-import com.mangofactory.swagger.plugin.EnableSwagger;
-import com.mangofactory.swagger.plugin.SwaggerSpringMvcPlugin;
 
 @Configuration
 @EnableWebMvc
-@EnableSwagger
+@EnableSwagger2
 @ComponentScan({ "com.att.developer.controller" })
 public class WebContext extends WebMvcConfigurerAdapter {
 	
@@ -97,7 +89,7 @@ public class WebContext extends WebMvcConfigurerAdapter {
 	 * SWAGGER - API Doc Tool
 	 */
 	
-	private SpringSwaggerConfig springSwaggerConfig;
+	/*private SpringSwaggerConfig springSwaggerConfig;
 
 	@Autowired
 	public void setSpringSwaggerConfig(SpringSwaggerConfig springSwaggerConfig) {
@@ -129,7 +121,7 @@ public class WebContext extends WebMvcConfigurerAdapter {
 		
 	}
 	
-	/*
+	
 	 * Alternate Swagger initialization
  
 	    @Bean
@@ -144,7 +136,7 @@ public class WebContext extends WebMvcConfigurerAdapter {
 	    	Authorization authorization = new Authorization("oauth2", new AuthorizationScope[]{ new AuthorizationScope("read", "ability to read")});
 			return new AuthorizationContextBuilder(Arrays.asList(new Authorization[] {authorization})).build();
 		}
-   */
+   
 
 	private ApiInfo apiInfo() {
         ApiInfo apiInfo = new ApiInfo(
@@ -156,5 +148,5 @@ public class WebContext extends WebMvcConfigurerAdapter {
                 "Portal 2.0 License URL"
           );
         return apiInfo;
-   }
+   }*/
 }

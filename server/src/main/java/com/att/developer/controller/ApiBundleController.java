@@ -43,10 +43,6 @@ public class ApiBundleController {
     @Resource
     private PermissionManager permissionManager;
 
-    @ApiOperation(value="Get edit blog entries",authorizations = { @Authorization(value = "oauth2", scopes = {
-		@AuthorizationScope(scope = "read", description = "Read permission"),
-		@AuthorizationScope(scope = "write", description = "Write permission") 
-		})})
     @RequestMapping(value = "/edit", method = RequestMethod.GET)
     public String getEdit(@RequestParam(value = "id", required = true) String id, Model model, @ModelAttribute SessionUser sessionUser) {
         logger.debug("Received request to show edit page");
