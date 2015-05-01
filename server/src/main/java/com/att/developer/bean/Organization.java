@@ -25,6 +25,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import com.att.developer.typelist.OrgRelationshipType;
+import com.att.developer.typelist.OrganizationType;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
@@ -44,9 +45,16 @@ public class Organization implements Serializable {
     @Column(name = "relationship_type")
     private Integer relationshipType;
 
+    @Column(name = "organization_type")
+    private Integer organizationType;
+    
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "org_id")
     private Set<OrganizationState> organizationStates;
+    
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
+    @JoinTable(name = "org_role_relationship", joinColumns = {@JoinColumn(name = "org_id", referencedColumnName = "id")}, inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")})
+    private Set<Role> roles;
 
     @Column(name = "created_on", insertable = false, updatable = false)
     private Date createdOn;
@@ -63,7 +71,11 @@ public class Organization implements Serializable {
         this.setId(java.util.UUID.randomUUID().toString());
     }
 
-    public String getId() {
+    public Organization(String orgId) {
+    	this.setId(orgId);
+    }
+
+	public String getId() {
         return id;
     }
 
@@ -103,6 +115,14 @@ public class Organization implements Serializable {
         this.relationshipType = (relationshipType != null) ? relationshipType.getId() : null;
     }
 
+    public OrganizationType getOrganizationType() {
+        return OrganizationType.getEnumValue(organizationType);
+    }
+
+    public void setOrganizationType(OrganizationType organizationType) {
+        this.organizationType = (organizationType != null) ? organizationType.getId() : null;
+    }
+    
 	public Instant getCreatedOn() {
 		return this.createdOn != null ? createdOn.toInstant() : null;
 	}
@@ -177,6 +197,27 @@ public class Organization implements Serializable {
             }
         }
         return null;
+    }
+    
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
+
+    public void addRole(final Role role) {
+        if (roles == null) {
+            roles = new HashSet<>();
+        }
+        roles.add(role);
+    }
+
+    public void removeRole(Role role) {
+        if (roles != null) {
+            roles.remove(role);
+        }
     }
 
     @Override
