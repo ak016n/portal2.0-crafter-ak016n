@@ -8,7 +8,7 @@ import com.att.developer.bean.Organization;
 import com.att.developer.bean.OrganizationState;
 import com.att.developer.bean.User;
 import com.att.developer.typelist.OrgRelationshipType;
-import com.att.developer.typelist.OrganizationStateType;
+import com.att.developer.typelist.OrganizationType;
 
 public class OrganizationBuilder {
 		private Organization organization = new Organization();
@@ -19,7 +19,7 @@ public class OrganizationBuilder {
 			organization.setName("Big Bang Theory");
 			organization.setDescription("serious show");
 			organization.setRelationshipType(OrgRelationshipType.FIRST_PARTY);
-			organizationStates.add(new OrganizationStateBuilder().withState(OrganizationStateType.PLAYGROUND).build());
+			organizationStates.add(new OrganizationStateBuilder().withState(OrganizationType.PLAYGROUND).build());
 			organization.setOrganizationStates(organizationStates);
 			organization.setLastUpdated(Instant.now());
 		}
@@ -64,7 +64,7 @@ public class OrganizationBuilder {
 			return this;
 		}
 
-		public OrganizationBuilder withState(OrganizationStateType organizationStateType) {
+		public OrganizationBuilder withState(OrganizationType organizationStateType) {
 			OrganizationState tempOrganizationState = new OrganizationState();
 			tempOrganizationState.setState(organizationStateType);
 			organizationStates.add(tempOrganizationState);

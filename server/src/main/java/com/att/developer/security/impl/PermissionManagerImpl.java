@@ -60,10 +60,6 @@ public class PermissionManagerImpl implements PermissionManager {
         return mutableAclService.createAcl(objId);
     }
 
-    /**
-     * a) Find if object exists in ACL_OBJECT_IDENTIFY table
-     * b) 
-     */
     @Transactional
     public void grantPermissions(Class<?> type, String identifier, User user, Permission permission) {
         // load User to make sure it really exists in database

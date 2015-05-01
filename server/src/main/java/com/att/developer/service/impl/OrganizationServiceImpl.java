@@ -21,6 +21,12 @@ public class OrganizationServiceImpl implements OrganizationService {
 		organization.getUsers();
 		return organization;
 	}
+	
+	@Override
+	public Organization getOrganization(String orgId) {
+		Organization organization = new Organization(orgId);
+		return getOrganization(organization);
+	}
 
 	@Override
 	@Transactional
