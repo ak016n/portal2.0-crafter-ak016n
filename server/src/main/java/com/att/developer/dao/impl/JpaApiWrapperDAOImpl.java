@@ -15,7 +15,7 @@ import com.att.developer.dao.ApiWrapperDAO;
 @Component
 public class JpaApiWrapperDAOImpl extends JpaDAO<ApiWrapper> implements ApiWrapperDAO {
 
-    private static final String QUERY_ALL_BUNDLES = "from ApiBundle as a";
+    private static final String QUERY_ALL_BUNDLES = "from ApiWrapper as a";
 
     private final Logger logger = LogManager.getLogger();
 
