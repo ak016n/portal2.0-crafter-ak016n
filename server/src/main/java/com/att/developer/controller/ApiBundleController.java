@@ -7,38 +7,41 @@ import java.util.Set;
 import java.util.UUID;
 
 import javax.annotation.Resource;
+import javax.inject.Inject;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.security.acls.domain.CumulativePermission;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.att.developer.bean.Organization;
 import com.att.developer.bean.SessionUser;
 import com.att.developer.bean.User;
+import com.att.developer.bean.api.Api;
 import com.att.developer.bean.api.ApiBundle;
+import com.att.developer.bean.api.ApiWrapper;
 import com.att.developer.security.PermissionManager;
 import com.att.developer.service.ApiBundleService;
-import com.wordnik.swagger.annotations.Api;
-import com.wordnik.swagger.annotations.ApiOperation;
-import com.wordnik.swagger.annotations.Authorization;
-import com.wordnik.swagger.annotations.AuthorizationScope;
+import com.att.developer.service.ApiService;
 
-@Controller
+@RestController
 @RequestMapping("/uauth/apiBundle")
-@Api(value = "/apiBundle", description = "Manage bundle and its permissions")
 public class ApiBundleController {
 
     private final Logger logger = LogManager.getLogger();
 
     @Resource
     private ApiBundleService apiBundleService;
+    
+    @Inject
+    private ApiService apiService;
 
     @Resource
     private PermissionManager permissionManager;
@@ -309,6 +312,19 @@ public class ApiBundleController {
 
         return "jsp/apiBundle/resultpage.jsp";
     }
+    
+	@RequestMapping(value="/api", method = RequestMethod.POST)
+	public Api createApi(@RequestBody Api api) {
+		return apiService.createApi(api);
+	}
+	
+	@RequestMapping(value="/apibundle", method = RequestMethod.POST)
+	public ApiBundle createApiBundle(@RequestBody ApiBundle apiBundle) {
+		for(ApiWrapper apiWrapper : apiBundle.getApiWrappers()) {
+			apiWrapper.setApiBundle(apiBundle);
+		}
+		return apiService.createApiBundle(apiBundle);
+	}
             
 }
 
