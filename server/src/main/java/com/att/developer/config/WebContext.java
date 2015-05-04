@@ -38,6 +38,7 @@ import com.att.developer.exception.TimeoutDeferredResultProcessingInterceptor;
 import com.att.developer.service.impl.LocaleAwareResourceBundleMessageSource;
 import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module.Feature;
+import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
 import com.google.common.base.Predicate;
 
 @Configuration
@@ -94,7 +95,7 @@ public class WebContext extends WebMvcConfigurerAdapter {
 	    Jackson2ObjectMapperBuilder builder = new Jackson2ObjectMapperBuilder();
 	    Hibernate4Module module = new Hibernate4Module();
 	    module.disable(Feature.USE_TRANSIENT_ANNOTATION);
-	    builder.indentOutput(true).modules(module);//.modulesToInstall(Hibernate4Module.class);
+	    builder.indentOutput(true).modules(module, new JSR310Module());//.modulesToInstall(Hibernate4Module.class);
 	    converters.add(new MappingJackson2HttpMessageConverter(builder.build()));
 	 }
     
