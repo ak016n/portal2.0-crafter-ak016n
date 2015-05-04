@@ -28,13 +28,13 @@
 		pinGlobalTxToPhysicalConnection="true" >
 	</Resource> -->
 	
-	<Resource 
+ 	<Resource 
        name="jdbc/devcore"
        auth="Container"
-       factory="oracle.ucp.jdbc.PoolDataSourceImpl"
-       type="oracle.ucp.jdbc.PoolDataSource"
+       factory="oracle.ucp.jdbc.PoolXADataSourceImpl"
+       type="oracle.ucp.jdbc.PoolXADataSource"
        description="Pas testing UCP Pool in Tomcat"
-       connectionFactoryClassName="oracle.jdbc.pool.OracleDataSource"
+       connectionFactoryClassName="oracle.jdbc.xa.client.OracleXADataSource"
        minPoolSize="2"
        maxPoolSize="5"
        inactiveConnectionTimeout="20"
@@ -43,8 +43,9 @@
        url="jdbc:oracle:thin:@localhost:1521:xe"
        connectionPoolName="devcore"
        validateConnectionOnBorrow="true"
-       sqlForValidateConnection="select 1 from DUAL" />
-	
+       sqlForValidateConnection="select 1 from DUAL"
+       driverType="thin"/>
+
 	<Resource name="jms/ConnectionFactory" auth="Container"
 		type="org.apache.activemq.ActiveMQConnectionFactory" description="JMS Connection Factory"
 		factory="org.apache.activemq.jndi.JNDIReferenceFactory" brokerURL="vm://localhost"

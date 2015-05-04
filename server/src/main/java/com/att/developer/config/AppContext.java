@@ -7,6 +7,7 @@ import javax.annotation.PreDestroy;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
+import javax.sql.XADataSource;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -33,6 +34,7 @@ import org.springframework.ui.freemarker.FreeMarkerConfigurationFactoryBean;
 
 import com.atomikos.icatch.config.UserTransactionService;
 import com.atomikos.icatch.config.UserTransactionServiceImp;
+import com.atomikos.jdbc.AtomikosDataSourceBean;
 import com.att.developer.service.impl.DatabaseTemplateLoader;
 import com.jamonapi.MonitorFactory;
 
@@ -68,19 +70,22 @@ public class AppContext {
     }
 
     private DataSource getJNDIdataSource() {
-        DataSource dataSource = null;
+    	XADataSource dataSource = null;
         try {
             //Context ctx = new InitialContext();
         	//ClassLoader origLoader = Thread.currentThread().getContextClassLoader();
         	//Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
         	InitialContext ctx = new InitialContext();
             //JndiTemplate jndi = new JndiTemplate();
-            dataSource = (DataSource) ctx.lookup("java:comp/env/jdbc/devcore");
+            dataSource = (XADataSource) ctx.lookup("java:comp/env/jdbc/devcore");
         } catch (NamingException e) {
             logger.error(e);
             new RuntimeException(e);
         }
-        return dataSource;
+        AtomikosDataSourceBean ds = new AtomikosDataSourceBean();
+        ds.setUniqueResourceName("oracle");
+        ds.setXaDataSource(dataSource);
+        return ds;
     }
 
     @Bean
