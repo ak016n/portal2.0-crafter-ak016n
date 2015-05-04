@@ -188,6 +188,12 @@ public class PermissionManagerImpl implements PermissionManager {
         this.createAclWithPermissionsAndOwner(type, identifier, sid, permission, sid);
     }
 
+	@Override
+	@Transactional
+	public void createAclWithPermissionsAndOwner(Class<?> type,	String identifier, Sid grantedAuthoritiesSid,	Permission permission) {
+		createAclWithPermissionsAndOwner(type, identifier, grantedAuthoritiesSid, permission, grantedAuthoritiesSid);
+	}
+    
     private void createAclWithPermissionsAndOwner(Class<?> type, String identifier, Sid owner, Permission permission, Sid permissionRecipient) {
         this.createAcl(type, identifier);
         this.grantPermissions(type, identifier, permissionRecipient, permission);

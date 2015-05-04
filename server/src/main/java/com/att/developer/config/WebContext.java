@@ -37,6 +37,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 import com.att.developer.exception.TimeoutDeferredResultProcessingInterceptor;
 import com.att.developer.service.impl.LocaleAwareResourceBundleMessageSource;
 import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
+import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module.Feature;
 import com.google.common.base.Predicate;
 
 @Configuration
@@ -87,13 +88,13 @@ public class WebContext extends WebMvcConfigurerAdapter {
 		messageSource.setBasename("/WEB-INF/i18n/messages");
 		return messageSource;
 	}
-	
     
-	 @SuppressWarnings("unchecked")
 	 @Override
 	 public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
 	    Jackson2ObjectMapperBuilder builder = new Jackson2ObjectMapperBuilder();
-	    builder.indentOutput(true).modulesToInstall(Hibernate4Module.class);
+	    Hibernate4Module module = new Hibernate4Module();
+	    module.disable(Feature.USE_TRANSIENT_ANNOTATION);
+	    builder.indentOutput(true).modules(module);//.modulesToInstall(Hibernate4Module.class);
 	    converters.add(new MappingJackson2HttpMessageConverter(builder.build()));
 	 }
     

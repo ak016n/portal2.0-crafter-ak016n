@@ -13,9 +13,11 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import com.att.developer.bean.PermissionModel;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
@@ -43,6 +45,9 @@ public class ApiBundle implements Serializable {
 	private Date endDate;
 
 	private String comments;
+	
+	@Transient
+	private PermissionModel permission;
 
 	@OneToMany(cascade={CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "apiBundle")
 	private Set<ApiWrapper> apiWrappers;
@@ -115,6 +120,14 @@ public class ApiBundle implements Serializable {
 
 	public void setApiWrappers(Set<ApiWrapper> apiWrappers) {
 		this.apiWrappers = apiWrappers;
+	}
+	
+	public PermissionModel getPermission() {
+		return permission;
+	}
+
+	public void setPermission(PermissionModel permission) {
+		this.permission = permission;
 	}
 
 	public Instant getCreatedOn() {

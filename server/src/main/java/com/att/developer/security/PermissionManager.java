@@ -45,4 +45,6 @@ import com.att.developer.bean.User;
 
 	void createAclWithParents(Class<?> type, String identifier, Sid owner, Permission permission, Sid permissionRecipient, ObjectIdentity parentOI);
 
+	void createAclWithPermissionsAndOwner(Class<?> type, String identifier, Sid grantedAuthoritiesSid, Permission permission);
+
 }
