@@ -6,5 +6,7 @@ public interface GenericDAO<T> {
 	T update(T bean);
 	T load(T bean);
 	void delete(T bean);
+	
+	//EntityManager getEntityManager();
 
 }

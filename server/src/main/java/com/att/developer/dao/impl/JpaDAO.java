@@ -27,6 +27,10 @@ public class JpaDAO<T> implements GenericDAO<T> {
 	public void setEntityManager(EntityManager entityManager) {
 		this.entityManager = entityManager;
 	}
+	
+	public EntityManager getEntityManager() {
+		return this.entityManager;
+	}
 
 	public JpaDAO(Class<T> c) {
 		beanClass = c;
@@ -120,10 +124,6 @@ public class JpaDAO<T> implements GenericDAO<T> {
 		}
 
 		throw new DAOException(message.toString(), e);
-	}
-
-	public EntityManager getEntityManager() {
-		return this.entityManager;
 	}
 
 }

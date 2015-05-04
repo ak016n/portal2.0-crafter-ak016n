@@ -3,6 +3,7 @@ package com.att.developer.bean.api;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 @Entity
@@ -37,6 +38,4 @@ public class Api {
 		return new ToStringBuilder(this).append("name", this.name)
 				.append("id", this.id).toString();
 	}
-	
-	
 }

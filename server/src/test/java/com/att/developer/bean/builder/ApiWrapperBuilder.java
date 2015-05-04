@@ -1,5 +1,7 @@
 package com.att.developer.bean.builder;
 
+import com.att.developer.bean.api.Api;
+import com.att.developer.bean.api.ApiBundle;
 import com.att.developer.bean.api.ApiWrapper;
 
 public class ApiWrapperBuilder {
@@ -14,6 +16,16 @@ public class ApiWrapperBuilder {
 
 	public ApiWrapper build() {
 		return apiWrapper;
+	}
+	
+	public ApiWrapperBuilder withApi(Api api) {
+		apiWrapper.setApi(api);
+		return this;
+	}
+	
+	public ApiWrapperBuilder withApiBundle(ApiBundle apiBundle) {
+		apiWrapper.setApiBundle(apiBundle);
+		return this;
 	}
 
 	public ApiWrapperBuilder withId(String id) {

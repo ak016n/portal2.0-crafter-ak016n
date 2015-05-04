@@ -7,13 +7,18 @@ import org.hamcrest.CoreMatchers;
 import org.hamcrest.MatcherAssert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 
+import com.att.developer.bean.api.Api;
+import com.att.developer.bean.api.ApiBundle;
 import com.att.developer.bean.api.ApiWrapper;
 import com.att.developer.bean.builder.ApiBuilder;
+import com.att.developer.bean.builder.ApiBundleBuilder;
 import com.att.developer.bean.builder.ApiWrapperBuilder;
 import com.att.developer.config.IntegrationContext;
 import com.att.developer.dao.ApiWrapperDAO;
@@ -26,11 +31,18 @@ public class JpaApiWrapperDAOImplTest {
 
     @Resource
     private ApiWrapperDAO apiWrapperDAO;
+    
+    @Autowired
+    ApplicationContext context;
 	
 	@Test
 	public void testCRUD() throws Exception{
 		// create
-		ApiWrapper apiWrapper = new ApiWrapperBuilder().build();
+		Api api = new ApiBuilder().create(context);
+		ApiBundle apiBundle = new ApiBundleBuilder().create(context);
+		
+		ApiWrapper apiWrapper = new ApiWrapperBuilder().withApi(api).withApiBundle(apiBundle).build();
+		
 		apiWrapperDAO.create(apiWrapper);
 		
 		// read
@@ -42,7 +54,7 @@ public class JpaApiWrapperDAOImplTest {
 		MatcherAssert.assertThat(afterCreateApiWrapper.getApiBundle(), CoreMatchers.equalTo(apiWrapper.getApiBundle()));
 	
 		// update
-		afterCreateApiWrapper.setApi(new ApiBuilder().withName("MMS").build());
+		afterCreateApiWrapper.setApi(new ApiBuilder().withName("MMS").create(context));
 		
 		ApiWrapper afterUpdate = apiWrapperDAO.update(afterCreateApiWrapper);
 		MatcherAssert.assertThat(afterCreateApiWrapper.getId(), CoreMatchers.equalTo(apiWrapper.getId()));

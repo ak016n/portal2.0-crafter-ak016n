@@ -4,8 +4,11 @@ import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.springframework.context.ApplicationContext;
+
 import com.att.developer.bean.api.ApiBundle;
 import com.att.developer.bean.api.ApiWrapper;
+import com.att.developer.dao.ApiBundleDAO;
 
 public class ApiBundleBuilder {
 
@@ -41,6 +44,13 @@ public class ApiBundleBuilder {
 	public ApiBundleBuilder addApiWrapper(ApiWrapper apiWrapper) {
 		this.apiBundle.getApiWrappers().add(apiWrapper);
 		return this;
+	}
+
+	public ApiBundle create(ApplicationContext context) {
+		ApiBundleDAO apiBundleDAO = (ApiBundleDAO) context.getBean("jpaApiBundleDAOImpl");
+        ApiBundle apiBundle = apiBundleDAO.create(this.build());
+        //apiBundleDAO.getEntityManager().refresh(apiBundle);
+        return apiBundle;
 	}
 
 }

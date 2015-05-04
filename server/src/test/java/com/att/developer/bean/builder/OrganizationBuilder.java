@@ -21,6 +21,7 @@ public class OrganizationBuilder {
 			organization.setRelationshipType(OrgRelationshipType.FIRST_PARTY);
 			organizationStates.add(new OrganizationStateBuilder().withState(OrganizationType.PLAYGROUND).build());
 			organization.setOrganizationStates(organizationStates);
+			organization.setOrganizationType(OrganizationType.PLAYGROUND);
 			organization.setLastUpdated(Instant.now());
 		}
 		
