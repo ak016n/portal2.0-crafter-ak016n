@@ -49,7 +49,7 @@ Key: HTTP_PROXY
 Value: http://one.proxy.att.com:8080
 ```
 
-b) Add Proxy to Git
+b) Add Proxy to Git 
 ```
 git config --global http.proxy http://one.proxy.att.com:8080
 git config --global https.proxy http://one.proxy.att.com:8080
