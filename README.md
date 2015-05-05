@@ -152,4 +152,4 @@ Java Remote Debug
 
 cmd> gradlew remote_debug war tomcatRun
 ```
-2. Port to connect is 5005
+2. Port to connect is 5005 
