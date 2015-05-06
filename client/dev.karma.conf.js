@@ -79,7 +79,7 @@ module.exports = function(config) {
     reporters: ['dots', 'junit'],
     
     junitReporter : {
-    	outputFile: '../build/reports/karma/test-results.xml'
+    	outputFile: 'client/build/reports/karma/test-results.xml'
     }
    
   });
