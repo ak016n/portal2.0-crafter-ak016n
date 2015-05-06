@@ -537,16 +537,16 @@
 	font-size:85.7%;
 }
 .community-title {
-  display: inline;
-  font-size: 78.5%;
+	display: inline;
+	font-size: 78.5%;
 }
 .community-list {
-  display: inline;
+	display: inline;
 }
 .community-list li {
-  display: inline;
-  font-size: 78.5%;
-  padding-right: 5px;
+	display: inline;
+	font-size: 78.5%;
+	padding-right: 5px;
 }
 
 /* Responsive Styles Brought In
