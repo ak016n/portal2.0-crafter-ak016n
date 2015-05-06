@@ -1,14 +1,17 @@
 package com.att.developer.service;
 
-import javax.transaction.Transactional;
+import java.util.List;
 
 import com.att.developer.bean.api.Api;
 import com.att.developer.bean.api.ApiBundle;
+import com.att.developer.bean.api.ApiWrapper;
 
 public interface ApiService {
 
-	public abstract Api createApi(Api api);
+	Api createApi(Api api);
 
-	public abstract ApiBundle createApiBundle(ApiBundle apiBundle);
+	ApiBundle createApiBundle(ApiBundle apiBundle);
+
+	List<ApiWrapper> getApis();
 
 }

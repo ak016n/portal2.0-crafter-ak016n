@@ -1,9 +1,12 @@
 package com.att.developer.service.impl;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.security.acls.domain.CumulativePermission;
 import org.springframework.security.acls.domain.GrantedAuthoritySid;
@@ -77,5 +80,11 @@ public class ApiServiceImpl implements ApiService {
 		}
 		
 		return postCreateApiBundle;
+	}
+	
+	@Override
+	@PostFilter("hasPermission(filterObject, 'read')")
+	public List<ApiWrapper> getApis() {
+		return apiWrapperDAO.getAll();
 	}
 }
