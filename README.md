@@ -59,7 +59,7 @@ Key: HTTP_PROXY
 Value: http://one.proxy.att.com:8080
 ```
 
-b) Add Proxy to Git
+b) Add Proxy to Git 
 ```
 git config --global http.proxy http://one.proxy.att.com:8080
 git config --global https.proxy http://one.proxy.att.com:8080
@@ -162,4 +162,4 @@ Java Remote Debug
 
 cmd> gradlew remote_debug war tomcatRun
 ```
-2. Port to connect is 5005
+2. Port to connect is 5005 

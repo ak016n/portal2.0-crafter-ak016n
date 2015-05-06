@@ -5,34 +5,37 @@
 	BlogCtrl.$inject = ['$scope', '$sce', 'blogService', '$state', 'flashMessageService'];
 	
 	function BlogCtrl($scope, $sce, blogService, $state, flashMessageService) {
-		  init($scope, $sce, blogService, $state, flashMessageService);
+		init($scope, $sce, blogService, $state, flashMessageService);
 		 
-		  $scope.pageChanged = function() {
-			  getBlogPosts($scope, $sce, blogService.posts(), {"filter[posts_per_page]" : $scope.blog.postPerPage, page: $scope.pagination.currentPage}, flashMessageService);
-		  };
+		$scope.pageChanged = function() {
+			getBlogPosts($scope, $sce, blogService.posts(), {"filter[posts_per_page]" : $scope.blog.postPerPage, page: $scope.pagination.currentPage}, flashMessageService);
+		};
+
+		$scope.pagerChanged = function() {
+			getCategories($scope, blogService.categories(), flashMessageService);
+		};
+
+		$scope.categorySelected = function(category) {
+			getBlogPosts($scope, $sce, blogService.posts(), {"filter[category_name]" : category}, flashMessageService);
+		};
+
+		$scope.searchSelected = function() {
+			$state.transitionTo('blog.search', {s :  $scope.blog.search.term});
+		};
 		  
-		  $scope.categorySelected = function(category) {
-			  getBlogPosts($scope, $sce, blogService.posts(), {"filter[category_name]" : category}, flashMessageService);
-		  };
+		$scope.postComment = function(postId, parentId) {
+			var comment = {content : $scope.blog.comment.content, type : 'comment', parent: parentId };
+			postComment($scope, blogService.comments(), postId, comment, flashMessageService).then( function () {
+				getComments($scope, $sce, blogService.comments(), $state, flashMessageService);
+			});
+			$scope.blog.comment.content = '';
+		};
 		  
-		  $scope.searchSelected = function() {
-			  $state.transitionTo('blog.search', {s :  $scope.blog.search.term});
-		  };
-		  
-		  $scope.postComment = function(postId, parentId) {
-			  var comment = {content : $scope.blog.comment.content, type : 'comment', parent: parentId };
-			  postComment($scope, blogService.comments(), postId, comment, flashMessageService).then( function () {
-					getComments($scope, $sce, blogService.comments(), $state, flashMessageService);
-			  });
-			  $scope.blog.comment.content = '';
-		  };
-		  
-		  $scope.$on('$stateChangeSuccess', function (event, toState, toParams, fromState, fromParams) {
-			  if(  !$state.params.skip && ! $scope.blog.inProgress && (angular.isUndefinedOrNull($scope.blog.post) || $scope.blog.post.ID != $state.params.id)) {
-				  $state.reload();  
-			  }
-			  
-		  });
+		$scope.$on('$stateChangeSuccess', function (event, toState, toParams, fromState, fromParams) {
+			if(  !$state.params.skip && ! $scope.blog.inProgress && (angular.isUndefinedOrNull($scope.blog.post) || $scope.blog.post.ID != $state.params.id)) {
+				$state.reload();  
+			}
+		});
 	}
 	
 	function init($scope, $sce, blogService, $state, flashMessageService) {
@@ -42,6 +45,12 @@
 				totalItems : 1,
 				currentPage : 1,
 				maxSize : 5
+			};
+			
+			$scope.pager = {
+				totalItems : 1,
+				currentPage : 1,
+				itemsPerPage : 15
 			};
 	
 			$scope.blog = {
@@ -96,32 +105,34 @@
 	
 	function getCategories($scope, blogCategoriesService, flashMessageService) {
 		blogCategoriesService.query({}).$promise.then(
-				  function(success) {
-					  // slicing data into two column sets
-					  var newArr = [];
-					  for (var i=0; i<success.length; i+=2) {
-					    newArr.push(success.slice(i, i+2));
-					  }
-					  $scope.blog.categories =  newArr;
-				  }, 
-				  function(error) {
-					  flashMessageService.setMessage(error.data.errors);
-				  });
+			function(success) {
+				var pager_begin = (($scope.pager.currentPage - 1) * $scope.pager.itemsPerPage);
+				var pager_end = pager_begin + $scope.pager.itemsPerPage;
+				if(success.length < pager_end) {
+					pager_end = success.length;
+				}
+
+				$scope.blog.categories = success.slice(pager_begin,pager_end);
+				$scope.pager.totalItems = success.length;
+			}, 
+			function(error) {
+				flashMessageService.setMessage(error.data.errors);
+			});
 	}
 	
 	function getTags($scope, blogTagService, flashMessageService) {
 		blogTagService.query({}).$promise.then(
-				  function(success) {
-					  // slicing data into two column sets
-					  var newArr = [];
-					  for (var i=0; i<success.length; i+=2) {
-					    newArr.push(success.slice(i, i+2));
-					  }
-					  $scope.blog.tags =  newArr;
-				  }, 
-				  function(error) {
-					  flashMessageService.setMessage(error.data.errors);
-				  });
+			function(success) {
+				// slicing data into two column sets
+				var newArr = [];
+				for (var i=0; i<success.length; i+=2) {
+					newArr.push(success.slice(i, i+2));
+				}
+				$scope.blog.tags =  newArr;
+			}, 
+			function(error) {
+				flashMessageService.setMessage(error.data.errors);
+			});
 	}
 	
 	function postComment($scope, blogCommentsService, postId, comment, flashMessageService) {
