@@ -30,6 +30,16 @@ SQL> GRANT ALL PRIVILEGES TO dev_core;
 
 SQL> create user appdev_core identified by appdev_core;
 SQL> GRANT ALL PRIVILEGES TO appdev_core;
+
+SQL> grant select on sys.dba_pending_transactions to dev_core;
+SQL> grant select on sys.pending_trans$ to dev_core;
+SQL> grant select on sys.dba_2pc_pending to dev_core;
+SQL> grant execute on sys.dbms_system to dev_core;
+
+SQL> grant select on sys.dba_pending_transactions to appdev_core;
+SQL> grant select on sys.pending_trans$ to appdev_core;
+SQL> grant select on sys.dba_2pc_pending to appdev_core;
+SQL> grant execute on sys.dbms_system to appdev_core;
 ```
 
 Step 3: Install STS or Eclipse for IDE
@@ -49,7 +59,7 @@ Key: HTTP_PROXY
 Value: http://one.proxy.att.com:8080
 ```
 
-b) Add Proxy to Git
+b) Add Proxy to Git 
 ```
 git config --global http.proxy http://one.proxy.att.com:8080
 git config --global https.proxy http://one.proxy.att.com:8080
@@ -152,4 +162,4 @@ Java Remote Debug
 
 cmd> gradlew remote_debug war tomcatRun
 ```
-2. Port to connect is 5005
+2. Port to connect is 5005 

@@ -71,6 +71,14 @@ describe('test BlogController', function() {
 					   return {$promise: deferred.promise};
 					}
 				}
+			},
+			users : function() {
+				return {
+					get: function() {
+							deferred = $q.defer();
+						   return {$promise: deferred.promise};
+				    }
+				}
 			}
 		};
 		

@@ -129,4 +129,23 @@ public class CommunityGatewayControllerTest {
     	Assert.assertNotNull(blogPosts);
     	Assert.assertTrue(blogPosts.getBody().size() == 1);
     }
+    
+    @Test
+    public void getUser_happyPath() {
+    	
+    	HttpServletRequest mockRequest = Mockito.mock(HttpServletRequest.class);
+    	
+    	Map<String, String> cookieMap = new HashMap<>();
+    	cookieMap.put(CookieUtil.PORTAL_LOGIN, "raj_test");
+    	cookieMap.put(CookieUtil.PORTAL_USER, "raj");
+    	
+    	Mockito.when(mockRequest.getCookies()).thenReturn(new Cookie[] {new Cookie(CookieUtil.PORTAL_USER, "encrypted")});
+    	Mockito.when(mockCookieUtil.getPortalUserMap(Mockito.any(Cookie[].class))).thenReturn(cookieMap);
+    	
+    	Map<String, String> userMap = communityGatewayController.getUser(mockRequest);
+    	
+    	Assert.assertNotNull(userMap);
+    	Assert.assertEquals("raj_test", userMap.get(CommunityGatewayController.LOGIN));
+    	Assert.assertEquals("raj", userMap.get(CommunityGatewayController.FIRST_NAME));
+    }
 }

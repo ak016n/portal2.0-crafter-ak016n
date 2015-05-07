@@ -1,5 +1,6 @@
 package com.att.developer.controller;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -37,7 +38,10 @@ import com.wordnik.swagger.annotations.ApiParam;
 @Api(value = "/community", description = "Community - Blog and Forums")
 public class CommunityGatewayController {
 	
-    @Inject
+    public static final String FIRST_NAME = "first_name";
+	public static final String LOGIN = "login";
+
+	@Inject
     private CookieUtil cookieUtil;
     
     @Inject
@@ -72,7 +76,6 @@ public class CommunityGatewayController {
 
 		return postCreateComment;
 	}
-	
 	
 	@RequestMapping(value="/posts/{postId}/comments", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<BlogComment> getComments(@PathVariable("postId") String postId) {
@@ -113,4 +116,16 @@ public class CommunityGatewayController {
 	public List<String> getTags() {
 		return blogService.getTags();
 	}
+	
+	@RequestMapping(value="/users", method = RequestMethod.GET)
+	public Map<String, String> getUser(HttpServletRequest request) {
+		
+		Map<String,String> portalCookieMap = cookieUtil.getPortalUserMap(request.getCookies());
+		Map<String, String> userMap = new HashMap<>();
+		
+		userMap.put(LOGIN, portalCookieMap.get(CookieUtil.PORTAL_LOGIN));
+		userMap.put(FIRST_NAME, portalCookieMap.get(CookieUtil.PORTAL_USER));
+		return userMap;
+	}
+	
 }

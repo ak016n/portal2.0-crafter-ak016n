@@ -80,7 +80,8 @@
 				},
 				build: {
 					singleRun: true,
-					browsers: ['PhantomJS']
+					browsers: ['PhantomJS'],
+					reporters: ['junit']
 				}
 			},
 			

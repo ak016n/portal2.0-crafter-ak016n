@@ -9,7 +9,7 @@ import javax.persistence.Table;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-import com.att.developer.typelist.OrganizationStateType;
+import com.att.developer.typelist.OrganizationType;
 
 @Entity
 @Table(name="state")
@@ -35,11 +35,11 @@ public class OrganizationState {
 		this.id = id;
 	}
 
-	public OrganizationStateType getState() {
-		return OrganizationStateType.getEnumValue(state);
+	public OrganizationType getState() {
+		return OrganizationType.getEnumValue(state);
 	}
 
-	public void setState(OrganizationStateType stateType) {
+	public void setState(OrganizationType stateType) {
 		this.state = (stateType != null)? stateType.getId() : null;
 	}
 	

@@ -4,7 +4,7 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 
-public enum OrganizationStateType {
+public enum OrganizationType {
 	BASIC(1),
 	PLAYGROUND(2),
 	FULL_ACCESS(3),
@@ -12,7 +12,7 @@ public enum OrganizationStateType {
 	
     private int id;
 
-    private OrganizationStateType(int id) {
+    private OrganizationType(int id) {
         this.id = id;
     }
 
@@ -28,15 +28,15 @@ public enum OrganizationStateType {
      * Not a big deal in small typeList but would become a performance hit in case of
      * country typeList and likes.
      */
-    private static final Map<Integer, OrganizationStateType> REVERSE_LOOKUP_MAP = new HashMap<>();
+    private static final Map<Integer, OrganizationType> REVERSE_LOOKUP_MAP = new HashMap<>();
 
     static {
-        for (OrganizationStateType s : EnumSet.allOf(OrganizationStateType.class)) {
+        for (OrganizationType s : EnumSet.allOf(OrganizationType.class)) {
             REVERSE_LOOKUP_MAP.put(s.getId(), s);
         }
     }
 
-    public static OrganizationStateType getEnumValue(Integer code) {
+    public static OrganizationType getEnumValue(Integer code) {
         return REVERSE_LOOKUP_MAP.get(code);
     }
 }

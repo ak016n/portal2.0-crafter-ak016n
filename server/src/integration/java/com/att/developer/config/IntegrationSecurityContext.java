@@ -146,7 +146,6 @@ public class IntegrationSecurityContext extends WebSecurityConfigurerAdapter{
     public PermissionManager permissionManager() {
         PermissionManager mgr = new PermissionManagerImpl(
                                     aclService(dataSource), 
-                                    transactionTemplate(), 
                                     organizationService(), 
                                     userService(), 
                                     globalScopedParamService());

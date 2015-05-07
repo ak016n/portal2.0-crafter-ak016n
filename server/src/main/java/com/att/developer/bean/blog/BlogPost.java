@@ -1,6 +1,8 @@
 package com.att.developer.bean.blog;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -29,6 +31,17 @@ public class BlogPost {
 	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	@JsonProperty("date_modified")
 	private Date dateModified;
+	
+	@JsonProperty("terms")
+	private Map<String, List<BlogMetadata>> mapOfTerms;
+
+	public Map<String, List<BlogMetadata>> getMapOfTerms() {
+		return mapOfTerms;
+	}
+
+	public void setMapOfTerms(Map<String, List<BlogMetadata>> mapOfTerms) {
+		this.mapOfTerms = mapOfTerms;
+	}
 	
 	private String slug;
 	

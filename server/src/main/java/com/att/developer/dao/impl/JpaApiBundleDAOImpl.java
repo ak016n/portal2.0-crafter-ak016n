@@ -9,7 +9,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
-import com.att.developer.bean.ApiBundle;
+import com.att.developer.bean.api.ApiBundle;
 import com.att.developer.dao.ApiBundleDAO;
 
 @Component

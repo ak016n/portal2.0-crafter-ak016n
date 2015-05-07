@@ -13,10 +13,10 @@ import org.springframework.security.acls.model.AccessControlEntry;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import com.att.developer.bean.ApiBundle;
 import com.att.developer.bean.EventLog;
 import com.att.developer.bean.Organization;
 import com.att.developer.bean.User;
+import com.att.developer.bean.api.ApiBundle;
 import com.att.developer.dao.ApiBundleDAO;
 import com.att.developer.security.PermissionManager;
 import com.att.developer.service.ApiBundleService;
@@ -59,7 +59,7 @@ public class ApiBundleServiceImpl implements ApiBundleService {
         ApiBundle loadedBundle = apiBundleDAO.load(new ApiBundle(id));
         if (loadedBundle != null) {
             List<AccessControlEntry> accessControlEntries = this.permissionManager.getAccessControlEntries(ApiBundle.class, id);
-            loadedBundle.setAccessControleEntries(accessControlEntries);
+            //loadedBundle.setAccessControleEntries(accessControlEntries);
         }
         return loadedBundle;
     }
@@ -78,7 +78,7 @@ public class ApiBundleServiceImpl implements ApiBundleService {
             for (ApiBundle bundle : apiBundles) {
                 List<AccessControlEntry> accessControlEntries = this.permissionManager.getAccessControlEntries(ApiBundle.class,
                         bundle.getId());
-                bundle.setAccessControleEntries(accessControlEntries);
+               // bundle.setAccessControleEntries(accessControlEntries);
             }
         }
         return apiBundles;

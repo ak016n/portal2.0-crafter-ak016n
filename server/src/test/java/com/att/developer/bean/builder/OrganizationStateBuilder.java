@@ -1,17 +1,17 @@
 package com.att.developer.bean.builder;
 
 import com.att.developer.bean.OrganizationState;
-import com.att.developer.typelist.OrganizationStateType;
+import com.att.developer.typelist.OrganizationType;
 
 public class OrganizationStateBuilder {
 
 	private OrganizationState organizationState = new OrganizationState();
 
 	public OrganizationStateBuilder() {
-		organizationState.setState(OrganizationStateType.PLAYGROUND);
+		organizationState.setState(OrganizationType.PLAYGROUND);
 	}
 
-	public OrganizationStateBuilder withState(OrganizationStateType organizationStateType) {
+	public OrganizationStateBuilder withState(OrganizationType organizationStateType) {
 		organizationState.setState(organizationStateType);
 		return this;
 	}

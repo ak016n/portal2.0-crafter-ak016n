@@ -12,9 +12,19 @@
 			<h5>
 				<a ui-sref="blog.entry({slug: post.slug, id: post.ID})" ui-sref-opts="{reload: true}" ><div ng-bind-html="post.title"></div></a>
 			</h5>
-			<p>
-				by {{post.author.username}}&nbsp;&nbsp;<span class="glyphicon glyphicon-time"></span> Posted on {{post.date_created}}
-			</p>
+			by {{post.author.username}}&nbsp;&nbsp;<span class="glyphicon glyphicon-time"></span> Posted on {{post.date_created}}
+			<div ng-hide="post.terms.category == null">
+				<span class="community-title">Categories:</span>
+				<ul class="community-list">
+					<li ng-repeat="cat in post.terms.category"><a href="/developer/#/blog/categories/{{cat.name}}">{{cat.name}}</a></li>
+				</ul>
+			</div>
+			<div ng-hide="post.terms.post_tag == null">
+				<span class="community-title">Tags:</span>
+				<ul class="community-list">
+					<li ng-repeat="tag in post.terms.post_tag"><a href="/developer/#/blog/tags/{{tag.name}}">{{tag.name}}</a></li>
+				</ul>
+			</div>
 			<p>
 				<img style="float: right; padding: 10px 10px;" ng-show="post.image_url" ng-src="/blog{{post.image_url}}" />
 				<div ng-bind-html="post.excerpt"></div><a ui-sref="blog.entry({slug: post.slug, id: post.ID})" ui-sref-opts="{reload: true}">Read more....</a>

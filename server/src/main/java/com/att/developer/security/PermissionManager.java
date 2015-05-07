@@ -4,31 +4,47 @@ import java.io.Serializable;
 import java.util.List;
 
 import org.springframework.security.acls.model.AccessControlEntry;
+import org.springframework.security.acls.model.MutableAcl;
+import org.springframework.security.acls.model.ObjectIdentity;
 import org.springframework.security.acls.model.Permission;
+import org.springframework.security.acls.model.Sid;
 
 import com.att.developer.bean.Organization;
+import com.att.developer.bean.SessionUser;
 import com.att.developer.bean.User;
 
-public interface PermissionManager {
+ public interface PermissionManager {
 
-	public void createAcl(Class<?> type, Serializable identifier);
+	MutableAcl createAcl(Class<?> type, Serializable identifier);
 
-	public void grantPermissions(Class<?> type, String identifier, Organization org, Permission permission);
+	void grantPermissions(Class<?> type, String identifier, Organization org, Permission permission);
 
-	public void grantPermissions(Class<?> type, String identifier, User user, Permission permission);
+	void grantPermissions(Class<?> type, String identifier, User user, Permission permission);
 
-	public void changeOwner(Class<?> type, String identifier, Organization newOwningOrg);
+	void changeOwner(Class<?> type, String identifier, Organization newOwningOrg);
 
-	public void changeOwner(Class<?> type, String identifier, User newOwner);
+	void changeOwner(Class<?> type, String identifier, User newOwner);
 	
-	public void deleteAllPermissionsForObject(Class<?> type, String identifier);
+	void deleteAllPermissionsForObject(Class<?> type, String identifier);
 
-	public void createAclWithPermissionsAndOwner(Class<?> type, String identifier, Organization ownerAndPermissionHolder, Permission permission);
+	void createAclWithPermissionsAndOwner(Class<?> type, String identifier, Organization ownerAndPermissionHolder, Permission permission);
 
-	public void createAclWithPermissionsAndOwner(Class<?> type, String identifier, User ownerAndPermissionHolder, Permission permission);
+	void createAclWithPermissionsAndOwner(Class<?> type, String identifier, User ownerAndPermissionHolder, Permission permission);
 
-	public List<AccessControlEntry> getAccessControlEntries(Class<?> type, String identifier);
+	List<AccessControlEntry> getAccessControlEntries(Class<?> type, String identifier);
 
-	public void removeAllPermissionForObjectForOrganization(Class<?> type, String identifier, Organization org);
+	void removeAllPermissionForObjectForOrganization(Class<?> type, String identifier, Organization org);
+
+	void denyPermissions(Class<?> type, String identifier, User user, Permission permission);
+
+	void createAclWithDenyPermissionsAndOwner(Class<?> type, String identifier, User ownerAndPermissionHolder, Permission permission);
+
+	void createAclWithDenyPermissionsAndOwner(Class<?> type, String identifier, SessionUser ownerAndPermissionHolder, Permission permission);
+
+	void createAclWithDenyPermissionsAndOwner(Class<?> type, String identifier, Sid grantedAuthoritiesSid, Permission permission);
+
+	void createAclWithParents(Class<?> type, String identifier, Sid owner, Permission permission, Sid permissionRecipient, ObjectIdentity parentOI);
+
+	void createAclWithPermissionsAndOwner(Class<?> type, String identifier, Sid grantedAuthoritiesSid, Permission permission);
 
 }
