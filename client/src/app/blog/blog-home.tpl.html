@@ -12,17 +12,18 @@
 			<h4>
 				<a ui-sref="blog.entry({slug: post.slug, id: post.ID})" ui-sref-opts="{reload: true}" ><div ng-bind-html="post.title"></div></a>
 			</h4>
+			<br>
 			by {{post.author.username}}&nbsp;&nbsp;<span class="glyphicon glyphicon-time"></span> Posted on {{post.date_created}}
 			<div ng-hide="post.terms.category == null">
 				<span class="community-title">Categories:</span>
 				<ul class="community-list">
-					<li ng-repeat="cat in post.terms.category"><a href="/developer/#/blog/categories/{{cat.name}}">{{cat.name}}</a></li>
+					<li ng-repeat="cat in post.terms.category"><a href="/developer/#/blog/categories/{{cat.name}}">{{cat.name}}</a>{{$last ? '' : ', '}}</li>
 				</ul>
 			</div>
 			<div ng-hide="post.terms.post_tag == null">
 				<span class="community-title">Tags:</span>
 				<ul class="community-list">
-					<li ng-repeat="tag in post.terms.post_tag"><a href="/developer/#/blog/tags/{{tag.name}}">{{tag.name}}</a></li>
+					<li ng-repeat="tag in post.terms.post_tag"><a href="/developer/#/blog/tags/{{tag.name}}">{{tag.name}}</a>{{$last ? '' : ', '}}</li>
 				</ul>
 			</div>
 			<p>

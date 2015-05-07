@@ -1,14 +1,13 @@
 /* Initialize Elements  (removing tbody, tfoot, thead, tr, th, td, because of ff bug on table cells next to other table cells that use pre)
 ============================== */
 	div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u,
-	i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+	i, center, dl, dt, dd, li, fieldset, form, label, legend, table, caption, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
 		margin: 0;
 		padding: 0;
 		border: 0;
 		vertical-align: baseline;
 	}
 	article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {	display: block; }
-	ol, ul { list-style: none; }
 	blockquote, q { quotes: none; }
 	blockquote:before, blockquote:after,
 	q:before, q:after {
@@ -74,26 +73,20 @@
 	a, a:visited { outline: 0; }
 	a:hover, a:focus { color: #009add; text-decoration: none; }
 
-/* #Lists (BOOTSTRAP MOST OF THESE PLEASE)
+/* #Lists (on demand bullets, newline flows under text instead of bullet, and no whitespace to left container edge.)
 ============================== */
-	ul, ol { margin-bottom: 8px; }
-	ul { list-style: none outside; }
-	ol { list-style: decimal; }
-	ol { margin-left: 20px; }
-	ul.square, ul.circle, ul.disc { margin-left: 16px; }
-	ul.square { list-style: square outside; }
-	ul.circle { list-style: circle outside; }
-	ul.disc { list-style: disc outside; }
-	ol.decimal { list-style: decimal outside; }
-	ol.lower-alpha { list-style: lower-alpha outside; }
-	ol.upper-alpha { list-style: upper-alpha outside; }
-	ol.lower-roman { list-style: lower-roman outside; }
-	ol.upper-roman { list-style: upper-roman outside; }
-	ul ul, ul.square ul, ul.circle ul, ul.disc ul,
-	ul ol, ul.square ol, ul.circle ol, ul.disc ol,
-	ol ol, ol ul, ol ul.square, ol ul.circle, ol ul.disc { margin-top: 4px; margin-right: 0px; margin-bottom: 5px; margin-left: 30px;  }
-	ul ul li, ul ol li,
-	ol ol li, ol ul li, li { margin-bottom: 2px; }
+	ul.square { list-style: square outside; padding-left:20px; }
+	ul.circle { list-style: circle outside; padding-left:20px; }
+	ul.disc { list-style: disc outside; padding-left:20px; }
+	ol.decimal { list-style: decimal outside; padding-left:20px; }
+	ol.lower-alpha { list-style: lower-alpha outside; padding-left:20px; }
+	ol.upper-alpha { list-style: upper-alpha outside; padding-left:20px; }
+	ol.lower-roman { list-style: lower-roman outside; padding-left:20px; }
+	ol.upper-roman { list-style: upper-roman outside; padding-left:20px; }
+	ul.square ul, ul.circle ul, ul.disc ul,
+	ul.square ol, ol.circle ol, ul.disc ol,
+	ol.decimal ul, ol.lower-alpha ul, ol.upper-alpha ul, ol.lower-roman ul, ol.upper-roman ul,
+	ol.decimal ol, ol.lower-alpha ol, ol.upper-alpha ol, ol.lower-roman ol, ol.upper-roman ol {padding-left:40px;}
 
 /* #Buttons
 ============================== */
@@ -429,6 +422,7 @@
 	.container .sub-header h1 { position: absolute; left: 120px; overflow: hidden; max-height: 90px; max-width: 960px; }
 	.container .sub-header h1 a { color: #666; font-size: 83.33%; line-height: 90px; font-weight: normal; }
 	.container .sub-header nav { position: absolute; right: 120px; margin:0; }
+	.container .sub-header nav ul {padding:0;list-style:none;}
 	.container .sub-header nav ul, .sub-header nav ul li { float:left; margin:0; }
 	.container .sub-header nav ul li a { border-left: 1px solid #eaeaea; color: #fff; display: inline-block; font-size: 92.85%; font-weight: bold; line-height: 88px; padding: 0 30px; }
 	.container .sub-header nav ul li.active a { background-color: #fff; color: #067ab4;}
@@ -546,7 +540,7 @@
 .community-list li {
 	display: inline;
 	font-size: 78.5%;
-	padding-right: 5px;
+	padding-right: 2px;
 }
 
 /* Responsive Styles Brought In
