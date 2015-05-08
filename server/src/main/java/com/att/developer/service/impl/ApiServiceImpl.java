@@ -77,7 +77,7 @@ public class ApiServiceImpl implements ApiService {
 		Sid sid = new GrantedAuthoritySid("API_ACCESS");
 		
 		for(ApiWrapper apiWrapper : postCreateApiBundle.getApiWrappers()) {
-			permissionManager.createAclWithParents(Api.class, apiWrapper.getId(), sid, p, sid, oi);
+			permissionManager.createAclWithParents(ApiWrapper.class, apiWrapper.getId(), sid, p, sid, oi);
 		}
 		
 		return postCreateApiBundle;
