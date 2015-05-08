@@ -1,6 +1,9 @@
 #footer-common	{
 	border-top:1px solid #E9E9E9;
 }
+
+#footer-common ul { padding:0; list-style:none; }
+
 #att-footer {
     background: none repeat scroll 0 0 #FFFFFF;
     padding: 55px 0;
