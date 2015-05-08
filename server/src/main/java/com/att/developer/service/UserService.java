@@ -10,4 +10,8 @@ public interface UserService {
 
 	User getUser(User user);
 
+	User createUser(User user);
+
+	User getUser(String userId);
+
 }

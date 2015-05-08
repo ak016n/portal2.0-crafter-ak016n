@@ -30,4 +30,16 @@ public class UserServiceImpl implements UserService {
 	public User getUser(User user) {
 		return userDAO.load(user);
 	}
+	
+	@Override
+	public User getUser(String userId) {
+		User user = new User();
+		user.setId(userId);
+		return getUser(user);
+	}
+	
+	@Override
+	public User createUser(User user) {
+		return userDAO.create(user);
+	}
 }

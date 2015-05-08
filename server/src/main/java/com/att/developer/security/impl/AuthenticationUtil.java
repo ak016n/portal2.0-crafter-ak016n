@@ -25,6 +25,11 @@ public class AuthenticationUtil {
 		return new CustomAuthentication(organization.getName(), authorities, true);
 	}
 
+	public static Authentication buildUserAuthentication(User user) {
+		org.springframework.security.core.userdetails.User coreUser = buildSecurityUser(user);
+		return new CustomAuthentication(coreUser.getUsername(), coreUser.getAuthorities(), true);
+	}
+	
 	/*
 	 * Build Java user principal
 	 */
