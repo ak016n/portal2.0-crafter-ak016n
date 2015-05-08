@@ -1,14 +1,13 @@
 package com.att.developer.bean;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
+import com.att.developer.security.impl.AuthenticationUtil;
 
 /**
  * We are using userId which is a generated UUID for the 'username' that Spring
@@ -67,49 +66,7 @@ public class SessionUser extends org.springframework.security.core.userdetails.U
 		return userId;
 	}
 
-	/*
-	 * Build Java user principal
-	 */
-	public static org.springframework.security.core.userdetails.User buildSecurityUser(
-			User portalUser) {
-		String userId = portalUser.getId();
-		String password = portalUser.getEncryptedPassword();
-		// There to see if we have to use any information from actual user
-		// object to determine the state of others
-
-		Collection<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-
-		for (UserState userState : portalUser.getUserStates()) {
-			authorities.add(new SimpleGrantedAuthority(userState.getState().name()));
-		}
-
-		addRoles(authorities, portalUser.getRoles());
-
-		List<Organization> orgs = portalUser.getOrganizations();
-
-		addOrgAuthority(authorities, orgs);
-
-		// Note: We are using userId which is a generated UUID for the
-		// 'username' that Spring requires.
-		// TODO hierarchical organization state
-		SessionUser user = new SessionUser(userId, password, authorities, portalUser);
-		return user;
+	public static org.springframework.security.core.userdetails.User buildSecurityUser(User portalUser) {
+		return AuthenticationUtil.buildSecurityUser(portalUser);
 	}
-
-	private static void addOrgAuthority(Collection<GrantedAuthority> authorities, List<Organization> orgs) {
-		if (!CollectionUtils.isEmpty(orgs)) {
-			Organization organization = orgs.get(0);
-			authorities.add(new SimpleGrantedAuthority(organization.getId()));
-			authorities.add(new SimpleGrantedAuthority(organization.getOrganizationType().name()));
-		}
-	}
-
-	private static void addRoles(Collection<GrantedAuthority> authorities, Set<Role> roles) {
-		if (roles != null) {
-			for (Role role : roles) {
-				authorities.add(new SimpleGrantedAuthority(role.getName()));
-			}
-		}
-	}
-
 }

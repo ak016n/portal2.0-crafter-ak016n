@@ -14,6 +14,7 @@ import org.springframework.security.acls.domain.ObjectIdentityImpl;
 import org.springframework.security.acls.model.ObjectIdentity;
 import org.springframework.security.acls.model.Permission;
 import org.springframework.security.acls.model.Sid;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import com.att.developer.bean.api.Api;
@@ -83,8 +84,8 @@ public class ApiServiceImpl implements ApiService {
 	}
 	
 	@Override
-	@PostFilter("hasPermission(filterObject, 'read')")
-	public List<ApiWrapper> getApis() {
+	@PostFilter("@runAsSecurityManager.hasPermission(#auth, filterObject, 'read')")
+	public List<ApiWrapper> getApis(Authentication auth) {
 		return apiWrapperDAO.getAll();
 	}
 }
