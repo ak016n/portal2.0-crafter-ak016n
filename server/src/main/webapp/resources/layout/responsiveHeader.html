@@ -1,6 +1,7 @@
 <script>
 $(document).ready(function() {
-
+	// Function-level strict mode syntax
+	"use strict";
 	/////////////////////////////////////////////////////////////////////////
 	// mobile menu toggle button
 	$mobileMenu = $('#section_nav');
@@ -53,12 +54,10 @@ $(document).ready(function() {
 	var resCookie = 'isResponsive';
 	try {
 		if(getCookie(resCookie) !== 'no' && $('.non_responsive_page_js').length === 0) {
-			//$('body').addClass('responsive');
 			generateMenu();
 		}
 	}
 	catch(ex){
-		//$('body').addClass('responsive');	
 		generateMenu();
 	}
 	// function to bind plus/minus events
