@@ -5,9 +5,11 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import com.att.developer.bean.PermissionModel;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
@@ -26,6 +28,16 @@ public class ApiWrapper {
 	@ManyToOne
 	@JoinColumn(name="api_bundle_id", referencedColumnName = "id")
 	private ApiBundle apiBundle;
+	
+	public ApiWrapper() {
+	}
+	
+	public ApiWrapper(String id) {
+		this.id = id;
+	}
+	
+	@Transient
+	private PermissionModel permission;
 
 	public String getId() {
 		return id;
@@ -49,6 +61,14 @@ public class ApiWrapper {
 
 	public void setApiBundle(ApiBundle apiBundle) {
 		this.apiBundle = apiBundle;
+	}
+	
+	public PermissionModel getPermission() {
+		return permission;
+	}
+
+	public void setPermission(PermissionModel permission) {
+		this.permission = permission;
 	}
 
 	public String toString() {

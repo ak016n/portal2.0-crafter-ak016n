@@ -190,8 +190,14 @@ public class PermissionManagerImpl implements PermissionManager {
 
 	@Override
 	@Transactional
-	public void createAclWithPermissionsAndOwner(Class<?> type,	String identifier, Sid grantedAuthoritiesSid,	Permission permission) {
+	public void createAclWithPermissionsAndOwner(Class<?> type,	String identifier, Sid grantedAuthoritiesSid, Permission permission) {
 		createAclWithPermissionsAndOwner(type, identifier, grantedAuthoritiesSid, permission, grantedAuthoritiesSid);
+	}
+	
+	@Override
+	@Transactional
+	public void createAclWithPermissions(Class<?> type,	String identifier, Sid grantedAuthoritiesSid, Permission permission) {
+		createAclWithPermissions(type, identifier, grantedAuthoritiesSid, permission, grantedAuthoritiesSid);
 	}
     
     private void createAclWithPermissionsAndOwner(Class<?> type, String identifier, Sid owner, Permission permission, Sid permissionRecipient) {
@@ -200,28 +206,34 @@ public class PermissionManagerImpl implements PermissionManager {
         this.changeOwner(type, identifier, owner);
     }
     
+    private void createAclWithPermissions(Class<?> type, String identifier, Sid owner, Permission permission, Sid permissionRecipient) {
+        this.createAcl(type, identifier);
+        this.grantPermissions(type, identifier, permissionRecipient, permission);
+        //this.changeOwner(type, identifier, owner);
+    }
+    
 	@Override
 	@Transactional
-	public void createAclWithDenyPermissionsAndOwner(Class<?> type,	String identifier, User ownerAndPermissionHolder, Permission permission) {
+	public void createAclWithDenyPermissions(Class<?> type,	String identifier, User ownerAndPermissionHolder, Permission permission) {
 		PrincipalSid sid = new PrincipalSid(ownerAndPermissionHolder.getId());
-		createAclWithDenyPermissionsAndOwner(type, identifier, sid, permission, sid);
+		createAclWithDenyPermissions(type, identifier, sid, permission, sid);
 	}
 	
 
 	@Override
 	@Transactional
-	public void createAclWithDenyPermissionsAndOwner(Class<?> type,	String identifier, SessionUser ownerAndPermissionHolder, Permission permission) {
+	public void createAclWithDenyPermissions(Class<?> type,	String identifier, SessionUser ownerAndPermissionHolder, Permission permission) {
 		PrincipalSid sid = new PrincipalSid(ownerAndPermissionHolder.getId());
-		createAclWithDenyPermissionsAndOwner(type, identifier, sid, permission, sid);
+		createAclWithDenyPermissions(type, identifier, sid, permission, sid);
 	}
 
 	@Override
 	@Transactional
-	public void createAclWithDenyPermissionsAndOwner(Class<?> type,	String identifier, Sid grantedAuthoritiesSid, Permission permission) {
-		createAclWithDenyPermissionsAndOwner(type, identifier, grantedAuthoritiesSid, permission, grantedAuthoritiesSid);
+	public void createAclWithDenyPermissions(Class<?> type,	String identifier, Sid grantedAuthoritiesSid, Permission permission) {
+		createAclWithDenyPermissions(type, identifier, grantedAuthoritiesSid, permission, grantedAuthoritiesSid);
 	}
 	
-    private void createAclWithDenyPermissionsAndOwner(Class<?> type, String identifier, Sid owner, Permission permission, Sid permissionRecipient) {
+    private void createAclWithDenyPermissions(Class<?> type, String identifier, Sid owner, Permission permission, Sid permissionRecipient) {
         this.denyPermissions(type, identifier, permissionRecipient, permission);
     }
     

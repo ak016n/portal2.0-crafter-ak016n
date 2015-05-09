@@ -54,18 +54,12 @@ public class ApiServiceImpl implements ApiService {
 		this.apiBundleDAO = apiBundleDAO;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.att.developer.service.impl.ApiService#createApi(com.att.developer.bean.api.Api)
-	 */
 	@Override
 	@Transactional
     public Api createApi(Api api) {
     	return apiDAO.create(api);
     }
 	
-	/* (non-Javadoc)
-	 * @see com.att.developer.service.impl.ApiService#createApiBundle(com.att.developer.bean.api.ApiBundle)
-	 */
 	@Override
 	@Transactional
 	public ApiBundle createApiBundle(ApiBundle apiBundle) {
@@ -81,6 +75,11 @@ public class ApiServiceImpl implements ApiService {
 		}
 		
 		return postCreateApiBundle;
+	}
+	
+	@Override
+	public ApiWrapper getApiWrapper(String id) {
+		return apiWrapperDAO.load(new ApiWrapper(id));
 	}
 	
 	@Override

@@ -18,4 +18,6 @@ public interface ApiService {
 
 	List<ApiWrapper> getApis(Authentication auth);
 
+	ApiWrapper getApiWrapper(String id);
+
 }

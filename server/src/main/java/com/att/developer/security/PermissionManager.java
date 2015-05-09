@@ -37,14 +37,16 @@ import com.att.developer.bean.User;
 
 	void denyPermissions(Class<?> type, String identifier, User user, Permission permission);
 
-	void createAclWithDenyPermissionsAndOwner(Class<?> type, String identifier, User ownerAndPermissionHolder, Permission permission);
+	void createAclWithDenyPermissions(Class<?> type, String identifier, User ownerAndPermissionHolder, Permission permission);
 
-	void createAclWithDenyPermissionsAndOwner(Class<?> type, String identifier, SessionUser ownerAndPermissionHolder, Permission permission);
+	void createAclWithDenyPermissions(Class<?> type, String identifier, SessionUser ownerAndPermissionHolder, Permission permission);
 
-	void createAclWithDenyPermissionsAndOwner(Class<?> type, String identifier, Sid grantedAuthoritiesSid, Permission permission);
+	void createAclWithDenyPermissions(Class<?> type, String identifier, Sid grantedAuthoritiesSid, Permission permission);
 
 	void createAclWithParents(Class<?> type, String identifier, Sid owner, Permission permission, Sid permissionRecipient, ObjectIdentity parentOI);
 
 	void createAclWithPermissionsAndOwner(Class<?> type, String identifier, Sid grantedAuthoritiesSid, Permission permission);
+
+	void createAclWithPermissions(Class<?> type, String identifier, Sid grantedAuthoritiesSid, Permission permission);
 
 }

@@ -3,6 +3,7 @@ package com.att.developer.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Resource;
 import javax.inject.Inject;
 
 import org.springframework.security.core.Authentication;
@@ -13,9 +14,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.att.developer.bean.PermissionModel;
 import com.att.developer.bean.User;
 import com.att.developer.bean.api.Api;
 import com.att.developer.bean.api.ApiWrapper;
+import com.att.developer.security.PermissionManager;
 import com.att.developer.security.impl.AuthenticationUtil;
 import com.att.developer.service.ApiService;
 import com.att.developer.service.UserService;
@@ -29,6 +32,9 @@ public class UserController {
     
     @Inject
     private ApiService apiService;
+    
+    @Resource
+    private PermissionManager permissionManager;
     
 	public void setUserService(UserService userService) {
 		this.userService = userService;
@@ -58,6 +64,23 @@ public class UserController {
 		}
 		
 		return apiColl;
+	}
+	
+	@RequestMapping(value="/{user_id}/apis/{api_id}", method = RequestMethod.POST)
+	public void createApiPermissions(@PathVariable("user_id") String userId, @PathVariable("api_id") String apiId, @RequestBody PermissionModel permissionModel) {
+		User user = userService.getUser(userId);
+		
+		//FIXME: Som: better way to check if apiId exist than pull the whole object - temporary to see logic work
+		ApiWrapper apiWrapper = apiService.getApiWrapper(apiId);
+		String sid = AuthenticationUtil.getUserSid(user);
+		permissionModel.setPrincipalSid(sid);
+		
+		if(permissionModel.isGrant()) {
+			permissionManager.createAclWithPermissions(ApiWrapper.class, apiWrapper.getId(), permissionModel.getSid() , permissionModel.getPermission());
+		} else {
+			permissionManager.createAclWithDenyPermissions(ApiWrapper.class, apiWrapper.getId(), permissionModel.getSid() , permissionModel.getPermission());
+		}
+		
 	}
 	
 }

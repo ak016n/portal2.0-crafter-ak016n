@@ -57,13 +57,7 @@ public class SessionUser extends org.springframework.security.core.userdetails.U
 	}
 
 	public String getId() {
-		String userId = user.getId();
-		List<Organization> orgs = user.getOrganizations();
-
-		if (!CollectionUtils.isEmpty(orgs)) {
-			userId = userId + "_" + orgs.get(0).getId();
-		}
-		return userId;
+		return AuthenticationUtil.getUserSid(user);
 	}
 
 	public static org.springframework.security.core.userdetails.User buildSecurityUser(User portalUser) {

@@ -1,6 +1,7 @@
 package com.att.developer.bean;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.security.acls.domain.GrantedAuthoritySid;
 import org.springframework.security.acls.domain.PrincipalSid;
 import org.springframework.security.acls.model.ObjectIdentity;
@@ -25,8 +26,8 @@ public class PermissionModel {
 		return permission;
 	}
 
-	public void setPermission(Permission permission) {
-		this.permission = permission;
+	public void setPermission(int permission) {
+		this.permission = BasePermission.READ;
 	}
 
 	public boolean isGrant() {

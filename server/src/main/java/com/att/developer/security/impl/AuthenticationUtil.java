@@ -128,4 +128,14 @@ public class AuthenticationUtil {
 		}
 		
 	}
+
+	public static String getUserSid(User user) {
+		String userId = user.getId();
+		List<Organization> orgs = user.getOrganizations();
+
+		if (!CollectionUtils.isEmpty(orgs)) {
+			userId = userId + "_" + orgs.get(0).getId();
+		}
+		return userId;
+	}
 }
