@@ -2,9 +2,7 @@ package com.att.developer.bean;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 
-import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.security.core.GrantedAuthority;
 
 import com.att.developer.security.impl.AuthenticationUtil;

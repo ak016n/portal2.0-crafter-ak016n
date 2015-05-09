@@ -26,8 +26,23 @@ public class PermissionModel {
 		return permission;
 	}
 
-	public void setPermission(int permission) {
-		this.permission = BasePermission.READ;
+	public void setPermission(String permission) {
+		switch (StringUtils.upperCase(permission)) {
+			case "READ":
+				this.permission = BasePermission.READ;
+				break;
+			case "WRITE":
+				this.permission = BasePermission.WRITE;
+				break;
+			case "ADMINSTRATOR":
+				this.permission = BasePermission.ADMINISTRATION;
+				break;
+			case "CREATE":
+				this.permission = BasePermission.CREATE;
+				break;
+			default:
+				this.permission = BasePermission.READ;
+		}
 	}
 
 	public boolean isGrant() {
