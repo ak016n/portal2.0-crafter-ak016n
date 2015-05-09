@@ -6,5 +6,7 @@ import com.att.developer.bean.api.ApiWrapper;
 
 public interface ApiWrapperDAO extends GenericDAO<ApiWrapper> {
 	
-	public List<ApiWrapper> getAll();
+	List<ApiWrapper> getAll();
+
+	boolean isExists(String id);
 }

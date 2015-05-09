@@ -20,4 +20,6 @@ public interface ApiService {
 
 	ApiWrapper getApiWrapper(String id);
 
+	boolean isApiWrapperExist(String id);
+
 }

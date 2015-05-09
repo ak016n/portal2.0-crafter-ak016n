@@ -15,9 +15,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.att.developer.bean.PermissionModel;
+import com.att.developer.bean.ServerSideError;
 import com.att.developer.bean.User;
 import com.att.developer.bean.api.Api;
 import com.att.developer.bean.api.ApiWrapper;
+import com.att.developer.exception.ServerSideException;
 import com.att.developer.security.PermissionManager;
 import com.att.developer.security.impl.AuthenticationUtil;
 import com.att.developer.service.ApiService;
@@ -70,15 +72,18 @@ public class UserController {
 	public void createApiPermissions(@PathVariable("user_id") String userId, @PathVariable("api_id") String apiId, @RequestBody PermissionModel permissionModel) {
 		User user = userService.getUser(userId);
 		
-		//FIXME: Som: better way to check if apiId exist than pull the whole object - temporary to see logic work
-		ApiWrapper apiWrapper = apiService.getApiWrapper(apiId);
+		if(apiService.isApiWrapperExist(apiId)) {
+			ServerSideError error = new ServerSideError.Builder().id("ssGeneralError").message("API doesnot exist.").build();
+			throw new ServerSideException(error);
+		}
+		
 		String sid = AuthenticationUtil.getUserSid(user);
 		permissionModel.setPrincipalSid(sid);
 		
 		if(permissionModel.isGrant()) {
-			permissionManager.createAclWithPermissions(ApiWrapper.class, apiWrapper.getId(), permissionModel.getSid() , permissionModel.getPermission());
+			permissionManager.createAclWithPermissions(ApiWrapper.class, apiId, permissionModel.getSid() , permissionModel.getPermission());
 		} else {
-			permissionManager.createAclWithDenyPermissions(ApiWrapper.class, apiWrapper.getId(), permissionModel.getSid() , permissionModel.getPermission());
+			permissionManager.createAclWithDenyPermissions(ApiWrapper.class, apiId, permissionModel.getSid() , permissionModel.getPermission());
 		}
 		
 	}

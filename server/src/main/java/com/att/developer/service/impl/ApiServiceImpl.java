@@ -83,6 +83,11 @@ public class ApiServiceImpl implements ApiService {
 	}
 	
 	@Override
+	public boolean isApiWrapperExist(String id) {
+		return apiWrapperDAO.isExists(id);
+	}
+	
+	@Override
 	@PostFilter("@runAsSecurityManager.hasPermission(#auth, filterObject, 'read')")
 	public List<ApiWrapper> getApis(Authentication auth) {
 		return apiWrapperDAO.getAll();
