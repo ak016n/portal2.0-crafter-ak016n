@@ -9,9 +9,9 @@
 	
 	<div ng-hide="flashMessages.isError()">
 		<div ng-repeat="post in blog.posts" ui-sref-opts="{reload: true}">
-			<h4>
+			<h5>
 				<a ui-sref="blog.entry({slug: post.slug, id: post.ID})" ui-sref-opts="{reload: true}" ><div ng-bind-html="post.title"></div></a>
-			</h4>
+			</h5>
 			<br>
 			by {{post.author.username}}&nbsp;&nbsp;<span class="glyphicon glyphicon-time"></span> Posted on {{post.date_created}}
 			<div ng-hide="post.terms.category == null">
@@ -51,7 +51,7 @@
 
 			<!-- Blog Categories Well -->
 			<div class="well community_well">
-				<h5>Categories</h4>
+				<h6>Categories</h6>
 				<div class="row">
 					<div class="col-xs-12">
 						<ul class="list-unstyled">
@@ -64,7 +64,7 @@
 
 			<!-- Side Widget Well -->
 			<div class="well community_well">
-				 <h5>Tags</h5>
+				 <h6>Tags</h6>
 				<div class="row">
 					<div class="col-xs-12">
 						<ul class="list-unstyled" ng-repeat="arrays in blog.tags">
