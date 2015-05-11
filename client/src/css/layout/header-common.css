@@ -5,7 +5,7 @@
 	width:960px;
 }
 
-#header-common ul { padding:0; list-style:none; }
+#header-common ul, #section_nav ul  { padding:0; list-style:none; }
 
 #att-header:before, #att-header:after {
     content: "";
