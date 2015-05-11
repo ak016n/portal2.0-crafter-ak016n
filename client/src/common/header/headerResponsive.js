@@ -15,7 +15,7 @@ $(document).ready(function() {
 		
 		// function to bind plus/minus events
 		$('#section_nav').find('a.expands').click(function() {
-			var	animationTime = 0;
+			var animationTime = 0;
 
 			if($(this).parents('li').find('.plus_minus').text() === '-') {
 				$(this).parents('li').find('.menuDepth_2').slideUp(animationTime, function() {
