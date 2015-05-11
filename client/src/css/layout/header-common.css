@@ -4,6 +4,9 @@
 	margin: 0 auto;
 	width:960px;
 }
+
+#header-common ul { padding:0; list-style:none; }
+
 #att-header:before, #att-header:after {
     content: "";
     display: table;

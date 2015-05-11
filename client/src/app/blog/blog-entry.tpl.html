@@ -10,12 +10,24 @@
 	<div ng-hide="flashMessages.isError()">
 
 		<!-- Title -->
-		<h4><div ng-bind-html="blog.post.title"></div></h4>
+		<h4><div ng-bind-html="blog.post.title"></div></h4><br>
 
 		<!-- Author -->
-		<p>
-			by <a href="index.php">{{blog.post.author.username}}</a>&nbsp;&nbsp;<span class="glyphicon glyphicon-time"></span> Posted on {{blog.post.date_created}}
-		</p>
+		by <a href="index.php">{{blog.post.author.username}}</a>&nbsp;&nbsp;<span class="glyphicon glyphicon-time"></span> Posted on {{blog.post.date_created}}
+
+		<!-- Possible Categories and Tags -->
+		<div ng-hide="blog.post.terms.category == null">
+			<span class="community-title">Categories:</span>
+			<ul class="community-list">
+				<li ng-repeat="cat in blog.post.terms.category"><a href="/developer/#/blog/categories/{{cat.name}}">{{cat.name}}</a>{{$last ? '' : ', '}}</li>
+			</ul>
+		</div>
+		<div ng-hide="blog.post.terms.post_tag == null">
+			<span class="community-title">Tags:</span>
+			<ul class="community-list">
+				<li ng-repeat="tag in blog.post.terms.post_tag"><a href="/developer/#/blog/tags/{{tag.name}}">{{tag.name}}</a>{{$last ? '' : ', '}}</li>
+			</ul>
+		</div>
 
 		<hr>
 
