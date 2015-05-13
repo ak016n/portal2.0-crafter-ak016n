@@ -172,7 +172,7 @@ public class PermissionManagerImplTest {
         AclImpl aclImpl = this.buildAclImpl();
         Mockito.when(mockMutableAclService.readAclById(Mockito.any(ObjectIdentity.class))).thenReturn(aclImpl);
         
-        Mockito.when(mockUserService.getUser(Mockito.any())).thenReturn(user);
+        Mockito.when(mockUserService.getUser(Mockito.any(User.class))).thenReturn(user);
         permissionMgr.grantPermissions(ApiBundle.class, "UniqueBundleIdentifier", user, BasePermission.WRITE);
         Mockito.verify(mockMutableAclService, Mockito.times(1)).updateAcl(Mockito.any(MutableAcl.class));
     }
