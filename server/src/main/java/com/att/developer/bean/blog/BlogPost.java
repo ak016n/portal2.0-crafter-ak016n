@@ -39,8 +39,12 @@ public class BlogPost {
 		return mapOfTerms;
 	}
 
-	public void setMapOfTerms(Map<String, List<BlogMetadata>> mapOfTerms) {
-		this.mapOfTerms = mapOfTerms;
+	@SuppressWarnings("unchecked")
+	public void setMapOfTerms(Object mapOfTerms) {
+		//because of weirdness in the way data is returned, need to do it. When empty returns array if not a map. so we only care about non-empty map
+		if(mapOfTerms instanceof Map) {
+			this.mapOfTerms = (Map<String, List<BlogMetadata>>) mapOfTerms;
+		}
 	}
 	
 	private String slug;
