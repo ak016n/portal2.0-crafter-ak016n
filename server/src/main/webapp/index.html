@@ -10,34 +10,44 @@
 	<link type="text/css" rel="stylesheet" href="/developer/resources/css/ext/layout/menu.css?@@TIMESTAMP@@"/>
 	<link type="text/css" rel="stylesheet" href="/developer/resources/css/ext/layout/header-common.css?@@TIMESTAMP@@"/>
 	<link type="text/css" rel="stylesheet" href="/developer/resources/css/ext/layout/footer-common.css?@@TIMESTAMP@@"/>
+
+	<!-- jquery and jquery UI call -->
+	<script type="text/javascript"> var enable_ga_eventtracking=false; </script>
+	<script type="text/javascript" src="/developer/resources/script/vendor/jquery/jquery.js?@@TIMESTAMP@@"></script>
+	<script type="text/javascript" src="/developer/resources/script/vendor/jquery-ui/jquery-ui.js?@@TIMESTAMP@@"></script>
 </head>
 
 <body ng-app="portalApp">
 	<div class="container" id="content-area">
-		<section id="header-common" ng-include="'resources/layout/header.html'"></section>
-		
-		<section id="content-sections">
+	
+		<div ng-include="'resources/layout/responsiveHeader.html'" id="section_nav" class="sidr visible-xs hidden"></div>
 
-			<section class="sub-header">
-				<h1><a href="/community">Community</a></h1>
-				<nav ng-controller="NavigationCtrl">
-					<ul>
-						<li><a href="/community/events" title="Take a look at AT&amp;T Community Events" class="inactive bg-blue-dark">Hackathons &amp; Events</a></li>
-						<li><a href="http://developerboards.att.lithium.com/t5/Forums/ct-p/FURM" title="Be part of our AT&amp;T Community Forums" class="inactive bg-blue-dark">Forums</a></li>
-						<li ng-class="{active: isActive('/blog')}"><a ui-sref="blog.list" ui-sref-opts="{reload: true}" title="Explore the AT&amp;T Community Blog" class="active bg-blue-dark">Blog</a></li>
-					</ul>
-				</nav>
+		<div id="section_content">
+			<div id="header-mobile" class="visible-xs">
+				<div id="header-mobile-container">
+					<a id="mobile-menu" href="javascript: void(0);"><img title="Touch to see menu" alt="Mobile Menu" src="/developer/resources/images/layout/responsive/dropdown-menu.png" width="49" /></a>
+					<a class="logo" href="/" id="home-_2_"><img class="att-logo" title="AT&amp;T Developer" alt="AT&amp;T Developer" src="/developer/resources/images/layout/responsive/logo-developer.png" width="212" /></a>
+				</div>
+			</div>
+			<section class="hidden-xs" id="header-common" ng-include="'resources/layout/defaultHeader.html'"></section>
+			<section id="content-sections">
+				<section class="sub-header">
+					<h1><a href="/community">Community</a></h1>
+					<nav ng-controller="NavigationCtrl">
+						<ul>
+							<li><a href="/community/events" title="Take a look at AT&amp;T Community Events" class="inactive bg-blue-dark">Hackathons &amp; Events</a></li>
+							<li><a href="http://developerboards.att.lithium.com/t5/Forums/ct-p/FURM" title="Be part of our AT&amp;T Community Forums" class="inactive bg-blue-dark">Forums</a></li>
+							<li ng-class="{active: isActive('/blog')}"><a ui-sref="blog.list" ui-sref-opts="{reload: true}" title="Explore the AT&amp;T Community Blog" class="active bg-blue-dark">Blog</a></li>
+						</ul>
+					</nav>
+				</section>
+				<section ui-view class="hMarginBoth vMarginTop30"></section>
 			</section>
-
-			<section ui-view class="hMarginBoth vMarginTop30"></section>
+			<section id="footer-common" ng-include="'resources/layout/footer.html'"></section>
+		</div>		
 		
-		</section>
-
-
-		<section id="footer-common" ng-include="'resources/layout/footer.html'"></section>
 	</div> <!-- /container -->
 	<!-- Best practice to load scripts at the end of body tag -->
-	<script type="text/javascript" src="/developer/resources/script/vendor/jquery/jquery.js?@@TIMESTAMP@@"></script>
 	<script type="text/javascript" src="/developer/resources/script/vendor/angular/angular.js"></script>
 	<script type="text/javascript" src="/developer/resources/script/vendor/angular-resource/angular-resource.js"></script>
 	<script type="text/javascript" src="/developer/resources/script/vendor/angular-translate/angular-translate.js?@@TIMESTAMP@@"></script>
@@ -45,6 +55,7 @@
 	<script type="text/javascript" src="/developer/resources/script/vendor/angular-bootstrap/ui-bootstrap-tpls.js?@@TIMESTAMP@@"></script>
 	<script type="text/javascript" src="/developer/resources/script/vendor/angular-ui-router/angular-ui-router.js?@@TIMESTAMP@@"></script>
 	<script type="text/javascript" src="/developer/resources/script/app/app.js?@@TIMESTAMP@@"></script>
+	<script type="text/javascript" src="/developer/resources/script/vendor/googletagmanager/googletagmanager.js?@@TIMESTAMP@@"></script>
 	<script type="text/javascript" src="/developer/resources/script/vendor/google-diff-match-patch-js/diff_match_patch.js?@@TIMESTAMP@@"></script>
 	<script type="text/javascript" src="/developer/resources/script/vendor/ngstorage/ngStorage.js?@@TIMESTAMP@@"></script>
 	<script type="text/javascript" src="/developer/resources/script/vendor/angular-sanitize/angular-sanitize.js?@@TIMESTAMP@@"></script>
