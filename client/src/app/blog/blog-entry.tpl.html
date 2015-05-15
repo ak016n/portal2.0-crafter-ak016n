@@ -32,15 +32,16 @@
 		<hr>
 
 		<!-- Post Content -->
-		<p class="lead"><div ng-bind-html="blog.post.content"></div></p>
+		<div ng-bind-html="blog.post.content"></div>
 
 		<hr>
 
-		<!-- Blog Comments -->
+		<!-- Posted Comments -->
+		<h5>Comments</h5>
 
 		<!-- Comments Form -->
-		<div class="well">
-			<h4>Leave a Comment:</h4>
+		<div class="well" ng-if="blog.user.login !== null">
+			<h6>Leave a Comment:</h6>
 			<form role="form">
 				<div class="form-group">
 					<textarea class="form-control" rows="3" ng-model="blog.comment.content"></textarea>
@@ -48,11 +49,12 @@
 				<button type="submit" ng-click="postComment(blog.post.ID)">Submit</button>
 			</form>
 		</div>
+		<div class="well" ng-if="blog.user.login === null">
+			<h6>Post a Comment:</h6><br>
+			<a href="/developer/sign-in.jsp?destPage=/developer/#/blog/{{blog.post.slug}}">Sign in</a> is required to comment on this Blog. Not a member?
+			<a href="/developer/flow/apiPlaygroundFlow.do?assetId=12600093&destPage=/developer/#/blog/{{blog.post.slug}}">Join Now &gt;</a>
+		</div>
 
-		<hr>
-
-		<!-- Posted Comments -->
-		<h5>Comments</h5>
 		<!-- Comment -->
 		<div class="media" ng-repeat="comment in blog.comments">
 			<div class="media-body">
@@ -62,6 +64,7 @@
 				<div ng-bind-html="comment.content"></div>
 			</div>
 		</div>
+
 
 	</div>
 
