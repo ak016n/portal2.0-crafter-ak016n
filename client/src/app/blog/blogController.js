@@ -54,7 +54,6 @@
 			};
 	
 			$scope.blog = {
-				user : {},
 				posts : [],
 				postPerPage : 5,
 				inProgress : true
@@ -185,7 +184,7 @@
 	function getUsers($scope, blogUserService) {
 		blogUserService.get({}).$promise.then(
 			function(success) {
-				$scope.blog.user = success;
+				$scope.$root.user = success;
 			},
 			function(error) {
 				flashMessageService.setMessage(error.data.errors);
