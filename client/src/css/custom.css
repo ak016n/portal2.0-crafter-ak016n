@@ -105,7 +105,6 @@
 		background-image: -o-linear-gradient(top,  #0574ac 0%,#0574ac 80%,#006699 100%);
 		background-image: -ms-linear-gradient(top,  #0574ac 0%,#0574ac 80%,#006699 100%);
 		background-image: linear-gradient(to bottom,  #0574ac 0%,#0574ac 80%,#006699 100%);
-	/*	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#0574ac', endColorstr='#006699',GradientType=0 );*/
 		border: 1px solid transparent;
 		border-top: 1px solid #0574ac;
 		border-bottom: 1px solid #006699;
