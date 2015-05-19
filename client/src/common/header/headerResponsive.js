@@ -33,8 +33,8 @@ $(document).ready(function() {
 
 	// updateDisplay: location for event handling when screen is updated to a new type of display
 	function updateDisplay() {
-		// if display is for a mobile device and the mobile menu is open set main content to be fixed, else let it be free.
-		if($(window).width() > 480 && $('#section_content').prop("style").length > 0) {
+		// checks if resolution is for desktop and the mobile menu was left visible at some point.
+		if($(window).width() > 480 && typeof $('#section_content').prop("style") !== "undefined") {
 			$("#section_content").css("position","static");
 			$("#content-area").css("height","auto");
 			$('#section_nav').addClass('hidden');

@@ -173,23 +173,22 @@
 	function getComments($scope, $sce, blogCommentService, $state, flashMessageService) {
 		var postId = $state.params.id !== null ? $state.params.id : $scope.blog.post.ID;
 		blogCommentService.query({postId: postId}).$promise.then(
-				  function(success) {
-					  $scope.blog.comments = success;
-				  }, 
-				  function(error) {
-					  //flashMessageService.setError(true); Not setting because we still want to show the post even if there are comment issues
-					  flashMessageService.setMessage(error.data.errors);
-				  });
+			function(success) {
+				$scope.blog.comments = success;
+			}, 
+			function(error) {
+				//flashMessageService.setError(true); Not setting because we still want to show the post even if there are comment issues
+				flashMessageService.setMessage(error.data.errors);
+			});
 	}
 	
 	function getUsers($scope, blogUserService) {
 		blogUserService.get({}).$promise.then(
-				  function(success) {
-					  $scope.blog.user =  success;
-				  }, 
-				  function(error) {
-					  flashMessageService.setMessage(error.data.errors);
-				  });
+			function(success) {
+				$scope.blog.user = success;
+			},
+			function(error) {
+				flashMessageService.setMessage(error.data.errors);
+			});
 	}
-
 })();
