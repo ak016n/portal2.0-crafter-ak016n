@@ -193,13 +193,30 @@
 	<img src="/developer/resources/images/layout/keep-alive.gif">
 
 	<div class="login-nav">
-		<ul>
+		<ul ng-if="user.login !== null">
 			<li>
-				<a href="/developer/mvc/auth/login?destPage=%2F#%2Fblog" class="login">Sign In</a>
+				<a href="/developer/3300004" class="login expands">
+					{{user.first_name}}
+				</a>
+				<ul>
+					<li>
+						<a href="/developer/10600127">Manage My Account</a>
+					</li>
+					<li>
+						<a href="/developer/sign-out.jsp" class="logout">Sign out</a>
+					</li>
+				</ul>
 			</li>
-			
 			<li>
-				<a class="button default orange getstarted" href="/developer/flow/apiPlaygroundFlow.do?assetId=12600093&amp;destPage=https://matrix.bf.sl.attcompute.com/apps">Get Started Free</a>
+				<a class="button default orange myapps" href="https://matrix.bf.sl.attcompute.com/apps">My Apps</a>
+			</li>
+		</ul>
+		<ul ng-if="user.login === null">
+			<li>
+				<a href="/developer/mvc/auth/login?destPage=/developer/#/blog/" class="login">Sign In</a>
+			</li>
+			<li>
+				<a class="button default orange getstarted" href="/developer/flow/apiPlaygroundFlow.do?assetId=12600093&destPage=https://matrix.bf.sl.attcompute.com/apps">Get Started Free</a>
 			</li>
 		</ul>
 	</div>
