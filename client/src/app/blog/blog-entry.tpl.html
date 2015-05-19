@@ -40,7 +40,7 @@
 		<h5>Comments</h5>
 
 		<!-- Comments Form -->
-		<div class="well" ng-if="blog.user.login !== null">
+		<div class="well" ng-if="user.login !== null">
 			<h6>Leave a Comment:</h6>
 			<form role="form">
 				<div class="form-group">
@@ -49,7 +49,7 @@
 				<button type="submit" ng-click="postComment(blog.post.ID)">Submit</button>
 			</form>
 		</div>
-		<div class="well" ng-if="blog.user.login === null">
+		<div class="well" ng-if="user.login === null">
 			<h6>Post a Comment:</h6><br>
 			<a href="/developer/sign-in.jsp?destPage=/developer/#/blog/{{blog.post.slug}}">Sign in</a> is required to comment on this Blog. Not a member?
 			<a href="/developer/flow/apiPlaygroundFlow.do?assetId=12600093&destPage=/developer/#/blog/{{blog.post.slug}}">Join Now &gt;</a>
