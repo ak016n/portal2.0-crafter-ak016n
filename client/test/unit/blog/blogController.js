@@ -97,6 +97,7 @@ describe('test BlogController', function() {
 		spyOn(mockBlogService, 'categories').andCallThrough();
 		spyOn(mockBlogService, 'tags').andCallThrough();
 		spyOn(mockBlogService, 'comments').andCallThrough();
+		spyOn(mockBlogService, 'users').andCallThrough();
 		
 	}));
 	
@@ -253,6 +254,12 @@ describe('test BlogController', function() {
     	expect(mockFlashMessageService.addMessage).not.toHaveBeenCalled();
     	expect(mockFlashMessageService.setMessage).toHaveBeenCalled();
     	expect(mockBlogService.comments).toHaveBeenCalled();
+    });
+    
+    it('should have called user service for default', function() {
+    	
+    	controller('BlogCtrl', {$scope: scope, blogService: mockBlogService, $sce: sce, $state: state, flashMessageService: mockFlashMessageService});
+    	expect(mockBlogService.users).toHaveBeenCalled();
     });
 	
 });
