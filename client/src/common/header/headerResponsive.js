@@ -31,22 +31,4 @@ $(document).ready(function() {
 		});
 	});
 
-	// updateDisplay: location for event handling when screen is updated to a new type of display
-	function updateDisplay() {
-		// if display is for a mobile device and the mobile menu is open set main content to be fixed, else let it be free.
-		if($(window).width() > 480 && typeof $('#section_content').prop("style") !== "undefined") {
-			$("#section_content").css("position","static");
-			$("#content-area").css("height","auto");
-			$('#section_nav').addClass('hidden');
-		}
-	}
-
-	// resizing events
-	$(window).resize(function(){
-		updateDisplay();
-	});
-
-	// this is when there is no resizing - such as opening in phone or tablet
-	updateDisplay();
-
 });
