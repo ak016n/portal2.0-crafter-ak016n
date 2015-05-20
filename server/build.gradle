@@ -229,7 +229,7 @@ apply plugin: 'com.bmuschko.cargo'
 
 cargo {
     containerId = 'tomcat7x'
-    port = 9090
+    port = 9080
 	
     deployable {
         context = 'developer'
@@ -248,19 +248,9 @@ cargo {
 		extraClasspath = fileTree(dir: 'lib/tomcat');
 		
 		jvmArgs = "-Xdebug -Xrunjdwp:transport=dt_socket,address=8787,server=y,suspend=n -Xnoagent -Djava.compiler=NONE"
-        //outputFile = file('build/output.log')
-        
-       /** FileTree tree = fileTree(dir: 'lib/tomcat')
-        tree.each {File eachFile ->
-			files {
-				file = file(eachFile)
-            	toDir = file("$buildDir/extract/apache-tomcat-7.0.62-windows-x64/apache-tomcat-7.0.62/lib")
-			}
-		}*/
 		
 		configFile {
             file = file('src/main/webapp/resources/tomcat/developer.xml')
-            //toDir = file("$configHomeDir/conf")
             toDir = new File("conf/Catalina/localhost")
         }
 		
