@@ -258,6 +258,12 @@ cargo {
 			}
 		}*/
 		
+		configFile {
+            file = file('src/main/webapp/resources/tomcat/developer.xml')
+            //toDir = file("$configHomeDir/conf")
+            toDir = new File("conf/Catalina/localhost")
+        }
+		
         timeout = 60000
 
         containerProperties {
