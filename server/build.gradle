@@ -3,7 +3,6 @@ loadEnvSpecificConfig()
 apply plugin: "war"
 apply plugin: "eclipse-wtp"
 apply plugin: "groovy"
-apply plugin: "tomcat"
 apply plugin: "java"
 apply plugin: "jacoco"
 
@@ -27,6 +26,8 @@ ext {
 jacoco {
 	toolVersion = "0.7.0.201403182114"
 }
+
+def cargoHome = "$buildDir/cargo"
 
 targetCompatibility = 1.8
 sourceCompatibility = 1.8
@@ -71,21 +72,7 @@ configurations {
 }
 
 dependencies {
-	tomcat "org.apache.tomcat.embed:tomcat-embed-core:${tomcatVersion}",
-		   "org.apache.tomcat.embed:tomcat-embed-logging-juli:${tomcatVersion}",
-		   "org.apache.tomcat:tomcat-jdbc:${tomcatVersion}",
-		   "javax.transaction:javax.transaction-api:1.2",
-		   "com.atomikos:transactions:${atomikosVersion}",
-		   "com.atomikos:transactions-hibernate3:${atomikosVersion}",
-		   "org.apache.activemq:activemq-all:${activeMqVersion}",
-		   "commons-pool:commons-pool:1.6", "com.jamonapi:jamon:${jamonVersion}"
-		   
-	tomcat("org.apache.tomcat.embed:tomcat-embed-jasper:${tomcatVersion}") {
-		exclude group: "org.eclipse.jdt.core.compiler", module: "ecj"
-	}
-	
-	tomcat files("lib/oracle/ojdbc6.jar", "lib/oracle/ucp.jar")
-	
+
 	compile "commons-io:commons-io:2.4"
 	compile "org.springframework:spring-context:${springVersion}"
 	compile "org.springframework:spring-orm:${springVersion}"
@@ -107,7 +94,7 @@ dependencies {
 	
 	compile "org.apache.httpcomponents:httpclient:${httpClientVersion}"
 
-	
+	providedCompile "com.atomikos:transactions:${atomikosVersion}"
 	providedCompile "javax.transaction:javax.transaction-api:1.2"
 	providedCompile "com.atomikos:transactions-hibernate3:${atomikosVersion}" 
 	providedCompile "org.slf4j:jcl-over-slf4j:${slf4jVersion}"
@@ -234,18 +221,64 @@ buildscript {
     }
 
     dependencies {
-        classpath "org.gradle.api.plugins:gradle-tomcat-plugin:1.2.4"
+        classpath 'com.bmuschko:gradle-cargo-plugin:2.1.1'
     }
 }
 
-tomcat {
-	httpPort = 9080
-	httpsPort = 9443
-	stopPort=9008
-	enableSSL = false
+apply plugin: 'com.bmuschko.cargo'
+
+cargo {
+    containerId = 'tomcat7x'
+    port = 9090
+	
+    deployable {
+        context = 'developer'
+    }
+
+    local {
+      installer {
+            installUrl = 'http://mirrors.koehn.com/apache/tomcat/tomcat-7/v7.0.62/bin/apache-tomcat-7.0.62-windows-x64.zip'
+            downloadDir = file("$buildDir/download")
+            extractDir = file("$buildDir/extract")
+        }
+        
+        homeDir = file(cargoHome)
+        configHomeDir = file(cargoHome)
+        logLevel = "low"
+		extraClasspath = fileTree(dir: 'lib/tomcat');
+        //outputFile = file('build/output.log')
+        
+       /** FileTree tree = fileTree(dir: 'lib/tomcat')
+        tree.each {File eachFile ->
+			files {
+				file = file(eachFile)
+            	toDir = file("$buildDir/extract/apache-tomcat-7.0.62-windows-x64/apache-tomcat-7.0.62/lib")
+			}
+		}*/
+		
+		files {
+			file = file('lib/tomcat/javax.transaction-api-1.2.jar')
+			toDir = file("$buildDir/extract/apache-tomcat-7.0.62-windows-x64/apache-tomcat-7.0.62/lib")
+		}
+		
+
+        timeout = 60000
+
+        containerProperties {
+            property 'cargo.tomcat.ajp.port', 9099
+        }
+    }
 }
 
-[tomcatRun, tomcatRunWar]*.contextPath = 'developer'
+task createCargoHome() {
+	doLast {
+		if (!file(cargoHome).exists() && !file(cargoHome).mkdirs()) {
+			println "Failed to create directory '${cargoHome}'"
+		}
+	}
+}
+ 
+cargoStartLocal.dependsOn createCargoHome 
 
 /** Tomcat end of settings */
 
