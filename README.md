@@ -97,10 +97,10 @@ BUILD SUCCESSFUL
 Total time: 15.232 secs
 ```
 
-Step 7: Start embedded tomcat container using
+Step 7: Start tomcat container using
 ``` gradle
 Command Prompt
-cmd> gradlew tomcatStop war tomcatRun
+cmd> gradlew war cargoRunLocal --info
  
 Environment is set to local
 config [flyway:[mysql:[driver:com.mysql.jdbc.Driver, locations:[db.migration.mysql], password:dev_core, schemas:[dev_core], url:jdbc:mysql://localhost:3306, user:dev_core, version:1.0], oracle:[driver:oracle.jdbc.driver.OracleDriver, locations:[db/migration/oracle], password:dev_core, schemas:[dev_core], url:jdbc:oracle:thin:@localhost:1521:XE, user:dev_core, version:1.0]]]
@@ -119,8 +119,9 @@ Failed to open transactions properties file - using default values
 Started Tomcat Server
 The Server is running at http://localhost:9080/developer
 ```
+Step 8: To stop tomcat server use CTRL+C
 
-Step 8: Access Portal 2.0 and start developing http://localhost:9080/developer
+Step 9: Access Portal 2.0 and start developing http://localhost:9080/developer
 
 * Many of the third party binaries (java, mysql) are located on this server :  \\WABOTH9CDFILE05.itservices.sbc.com\DPGM_ONBOARD\Third Party App Installation Files
 
@@ -156,10 +157,5 @@ Code check-in
 
 Java Remote Debug
 =================
-1. gradlew remote_debug <%GRADLE TASKS%>
-
-```gradle
-
-cmd> gradlew remote_debug war tomcatRun
-```
-2. Port to connect is 5005 
+1. Eclipse remote_debug
+2. Port to connect is 8787 
