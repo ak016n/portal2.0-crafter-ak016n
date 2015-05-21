@@ -250,7 +250,12 @@ cargo {
     deployable {
         context = 'developer'
     }
-
+    
+    deployable {
+        file = file('../performance/jamon.war')
+        context = 'jamon'
+    }
+    
     local {
       installer {
             installUrl = 'http://mirrors.koehn.com/apache/tomcat/tomcat-7/v7.0.62/bin/apache-tomcat-7.0.62-windows-x64.zip'
