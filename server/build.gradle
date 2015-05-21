@@ -69,10 +69,16 @@ sourceSets {
 configurations {
 	integrationCompile.extendsFrom testCompile
 	integrationRuntime.extendsFrom testRuntime
+	tomcatRuntime
 }
 
 dependencies {
-
+	tomcatRuntime "javax.transaction:javax.transaction-api:1.2",
+		   "com.atomikos:transactions:${atomikosVersion}",
+		   "com.atomikos:transactions-hibernate3:${atomikosVersion}",
+		   "org.apache.activemq:activemq-all:${activeMqVersion}",
+		   "commons-pool:commons-pool:1.6", "com.jamonapi:jamon:${jamonVersion}"
+		   
 	compile "commons-io:commons-io:2.4"
 	compile "org.springframework:spring-context:${springVersion}"
 	compile "org.springframework:spring-orm:${springVersion}"
@@ -84,7 +90,7 @@ dependencies {
 	compile "org.springframework.security:spring-security-config:${springSecurityVersion}"
 	compile "org.springframework.security:spring-security-web:${springSecurityVersion}"
 	compile "org.springframework.security:spring-security-acl:${springSecurityVersion}"
-	compile ("net.sf.ehcache:ehcache:2.8.3"){
+	compile ("net.sf.ehcache:ehcache:2.8.3") {
 		exclude group: "org.slf4j"
 	}
 	
@@ -165,6 +171,18 @@ test {
 	}
 }
 
+/**
+* Manual task to manage tomcat lib dependencies
+*/
+task manageTomcatLib << {
+  [ 'tomcatRuntime' ].each { mode ->
+    copy {
+      from configurations.getByName(mode).files
+      into file('/lib/tomcat')
+    }
+  }
+}
+
 check.dependsOn integrationTest
 
 def loadEnvSpecificConfig() {
@@ -243,7 +261,8 @@ cargo {
         homeDir = file(cargoHome)
         configHomeDir = file(cargoHome)
         logLevel = "medium"
-		extraClasspath = fileTree(dir: 'lib/tomcat');
+        
+		extraClasspath = fileTree(dir: 'lib', excludes: ['test/**']);
 		
 		jvmArgs = "-Xdebug -Xrunjdwp:transport=dt_socket,address=8787,server=y,suspend=n -Xnoagent -Djava.compiler=NONE"
 		
