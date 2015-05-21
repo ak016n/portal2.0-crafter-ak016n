@@ -344,7 +344,7 @@ eclipse {
 				node.appendNode("classpathentry",[exported:"true",kind:"con",path:"org.eclipse.jdt.launching.JRE_CONTAINER"])
 				node.appendNode("classpathentry",[exported:"true",kind:"con",path:"org.eclipse.jst.j2ee.internal.web.container"])
 				node.appendNode("classpathentry",[exported:"true",kind:"con",path:"org.springsource.ide.eclipse.gradle.classpathcontainer"]).appendNode('attributes').appendNode('attribute', [name:"org.eclipse.jst.component.dependency", value:"/WEB-INF/lib"])
-				node.appendNode("classpathentry",[kind:"output",path:"src/main/webapp/WEB-INF/classes"])
+				node.appendNode("classpathentry",[kind:"output",path:"build/cargo/webapps/developer/WEB-INF/classes"])
 				
 			}
 		}
