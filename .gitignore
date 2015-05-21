@@ -23,7 +23,6 @@ dist
 vendor
 /server/bin
 /server/build
-/server/lib/tomcat
 /server/*.project
 /server/*.classpath
 /server/.settings
