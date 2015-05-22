@@ -238,6 +238,16 @@ eclipse {
 		buildCommand "org.eclipse.wst.common.project.facet.core.builder"
 		buildCommand "org.eclipse.wst.validation.validationbuilder"
 		buildCommand "org.springframework.ide.eclipse.core.springbuilder"
+		
+		linkedResource name: 'output', type: '2', locationUri: 'SERVER_PATH/build/cargo/webapps/developer/WEB-INF/classes'
+		
+		pathVariables 'SERVER_PATH': file('../server')
+		file {
+			withXml {
+				Node node = it.asNode()
+				node.appendNode("variableList").appendNode('variable').appendNode('name', 'SERVER_PATH').parent().appendNode('value', '$%7BPARENT-1-PROJECT_LOC%7D/server')
+			}
+		}				
 	}
 	
 	classpath {
