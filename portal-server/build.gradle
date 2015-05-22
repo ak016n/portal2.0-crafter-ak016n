@@ -306,14 +306,14 @@ task jacocoIntegrationTestReport(type: JacocoReport) {
  * 
  */
 
-build.dependsOn ':client:grunt_build'
-war.dependsOn ':client:grunt_war'
+build.dependsOn ':portal-client:grunt_build'
+war.dependsOn ':portal-client:grunt_war'
 war.baseName = 'developer'
 
 
 eclipse {
 	project {
-		name = 'server'
+		name = 'portal-server'
 		natures.add "org.springframework.ide.eclipse.core.springnature"
 		natures.add "org.springsource.ide.eclipse.gradle.core.nature"
 		natures.add "org.eclipse.jdt.core.javanature"

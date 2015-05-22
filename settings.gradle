@@ -1,2 +1,2 @@
-include 'client'
-include 'server'
+include 'portal-client'
+include 'portal-server'

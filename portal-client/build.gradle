@@ -26,7 +26,7 @@ grunt_build.dependsOn 'npmInstall'
 
 eclipse {
 	project {
-		name = 'client'
+		name = 'portal-client'
 		
 		natures.add "org.springsource.ide.eclipse.gradle.core.nature"
 		natures.add "org.eclipse.jdt.core.javanature"

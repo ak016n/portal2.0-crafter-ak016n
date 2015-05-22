@@ -19,9 +19,9 @@ eclipse {
                 filter.appendNode('type', 26)
                 Node matcher = filter.appendNode('matcher')
                 matcher.appendNode('id', 'org.eclipse.ui.ide.multiFilter')
-                matcher.appendNode('arguments', '1.0-projectRelativePath-equals-true-false-server')
+                matcher.appendNode('arguments', '1.0-projectRelativePath-equals-true-false-portal-server')
 				matcher.appendNode('id', 'org.eclipse.ui.ide.multiFilter')
-                matcher.appendNode('arguments', '1.0-projectRelativePath-equals-true-false-client')
+                matcher.appendNode('arguments', '1.0-projectRelativePath-equals-true-false-portal-client')
 			}
 		}
 	}
