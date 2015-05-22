@@ -27,8 +27,6 @@ jacoco {
 	toolVersion = "0.7.0.201403182114"
 }
 
-def cargoHome = "$buildDir/cargo"
-
 targetCompatibility = 1.8
 sourceCompatibility = 1.8
 
@@ -69,16 +67,9 @@ sourceSets {
 configurations {
 	integrationCompile.extendsFrom testCompile
 	integrationRuntime.extendsFrom testRuntime
-	tomcatRuntime
 }
 
 dependencies {
-	tomcatRuntime "javax.transaction:javax.transaction-api:1.2",
-		   "com.atomikos:transactions:${atomikosVersion}",
-		   "com.atomikos:transactions-hibernate3:${atomikosVersion}",
-		   "org.apache.activemq:activemq-all:${activeMqVersion}",
-		   "commons-pool:commons-pool:1.6", "com.jamonapi:jamon:${jamonVersion}"
-		   
 	compile "commons-io:commons-io:2.4"
 	compile "org.springframework:spring-context:${springVersion}"
 	compile "org.springframework:spring-orm:${springVersion}"
@@ -171,18 +162,6 @@ test {
 	}
 }
 
-/**
-* Manual task to manage tomcat lib dependencies
-*/
-task manageTomcatLib << {
-  [ 'tomcatRuntime' ].each { mode ->
-    copy {
-      from configurations.getByName(mode).files
-      into file('/lib/tomcat')
-    }
-  }
-}
-
 check.dependsOn integrationTest
 
 def loadEnvSpecificConfig() {
@@ -228,73 +207,6 @@ flyway {
 	baselineVersion = env.flyway."${db}".version
 	locations = env.flyway."${db}".locations
 }
-
-/** Tomcat settings */
-
-buildscript {
-    repositories {
-        jcenter()
-    }
-
-    dependencies {
-        classpath 'com.bmuschko:gradle-cargo-plugin:2.1.1'
-    }
-}
-
-apply plugin: 'com.bmuschko.cargo'
-
-cargo {
-    containerId = 'tomcat7x'
-    port = 9080
-	
-    deployable {
-        context = 'developer'
-    }
-    
-    deployable {
-        file = file('../performance/jamon.war')
-        context = 'jamon'
-    }
-    
-    local {
-      installer {
-            installUrl = 'http://mirrors.koehn.com/apache/tomcat/tomcat-7/v7.0.62/bin/apache-tomcat-7.0.62-windows-x64.zip'
-            downloadDir = file("$buildDir/download")
-            extractDir = file("$buildDir/extract")
-        }
-        
-        homeDir = file(cargoHome)
-        configHomeDir = file(cargoHome)
-        logLevel = "medium"
-        
-		extraClasspath = fileTree(dir: 'lib', excludes: ['test/**']);
-		
-		jvmArgs = "-Xdebug -Xrunjdwp:transport=dt_socket,address=8787,server=y,suspend=n -Xnoagent -Djava.compiler=NONE"
-		
-		configFile {
-            file = file('src/main/webapp/resources/tomcat/developer.xml')
-            toDir = new File("conf/Catalina/localhost")
-        }
-		
-        timeout = 60000
-
-        containerProperties {
-            property 'cargo.tomcat.ajp.port', 9099
-        }
-    }
-}
-
-task createCargoHome() {
-	doLast {
-		if (!file(cargoHome).exists() && !file(cargoHome).mkdirs()) {
-			println "Failed to create directory '${cargoHome}'"
-		}
-	}
-}
- 
-cargoRunLocal.dependsOn createCargoHome 
-
-/** Tomcat end of settings */
 
 task jacocoIntegrationTestReport(type: JacocoReport) {
 	sourceSets sourceSets.main

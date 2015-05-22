@@ -30,3 +30,7 @@ vendor
 /portal-client/dist/app.js
 /portal-server/src/main/java/org
 /portal-server/src/main/webapp/WEB-INF/web.xml
+/server/build
+/server/*.project
+/server/*.classpath
+/server/.settings
