@@ -34,3 +34,7 @@ vendor
 /server/*.project
 /server/*.classpath
 /server/.settings
+/performance/build
+/performance/*.project
+/performance/*.classpath
+/performance/.settings
