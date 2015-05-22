@@ -15,21 +15,21 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-	  'client/bower_components/angular/angular.js',
-      'client/bower_components/angular-resource/angular-resource.js',
-      'client/bower_components/angular-translate/angular-translate.js',
-      'client/bower_components/angular-translate-loader-url/angular-translate-loader-url.js',
-      'client/bower_components/jquery/dist/*.js',
-      'client/bower_components/angular-mocks/angular-mocks.js',
-      'client/bower_components/angular-bootstrap/*.js',
-      'client/bower_components/google-diff-match-patch-js/*.js',
-      'client/bower_components/angular-ui-router/**/angular-ui-router.js',
-      'client/bower_components/ngstorage/ngStorage.js',
-      'client/bower_components/angular-sanitize/angular-sanitize.js',
-      'client/test/mock/*.js',
-	  'client/src/**/*.js',
-      'client/src/app/app.js',
-      'client/test/unit/**/*.js'
+	  'portal-client/bower_components/angular/angular.js',
+      'portal-client/bower_components/angular-resource/angular-resource.js',
+      'portal-client/bower_components/angular-translate/angular-translate.js',
+      'portal-client/bower_components/angular-translate-loader-url/angular-translate-loader-url.js',
+      'portal-client/bower_components/jquery/dist/*.js',
+      'portal-client/bower_components/angular-mocks/angular-mocks.js',
+      'portal-client/bower_components/angular-bootstrap/*.js',
+      'portal-client/bower_components/google-diff-match-patch-js/*.js',
+      'portal-client/bower_components/angular-ui-router/**/angular-ui-router.js',
+      'portal-client/bower_components/ngstorage/ngStorage.js',
+      'portal-client/bower_components/angular-sanitize/angular-sanitize.js',
+      'portal-client/test/mock/*.js',
+	  'portal-client/src/**/*.js',
+      'portal-client/src/app/app.js',
+      'portal-client/test/unit/**/*.js'
     ],
 
     // list of files to exclude
@@ -79,7 +79,7 @@ module.exports = function(config) {
     reporters: ['dots', 'junit'],
     
     junitReporter : {
-    	outputFile: 'client/build/reports/karma/test-results.xml'
+    	outputFile: 'portal-client/build/reports/karma/test-results.xml'
     }
    
   });
