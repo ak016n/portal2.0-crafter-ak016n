@@ -52,7 +52,7 @@
 		brokerName="LocalActiveMQBroker" useEmbeddedBroker="true" maximumRedeliveries="5"/>
 	
 	
-	<Environment name="configLocation" value="../../../server/config/" type="java.lang.String" override="false"/>  
+	<Environment name="configLocation" value="../../../portal-server/config/" type="java.lang.String" override="false"/>  
 	
 </Context>
 
