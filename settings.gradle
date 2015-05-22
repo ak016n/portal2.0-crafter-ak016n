@@ -1,3 +1,4 @@
 include 'portal-client'
 include 'portal-server'
 include 'server'
+include 'performance'

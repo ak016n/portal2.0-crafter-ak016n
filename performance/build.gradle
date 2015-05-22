@@ -1,0 +1,27 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+
+eclipse {
+	project {
+		name = 'performance'
+		
+		natures.add "org.eclipse.jdt.core.javanature"
+		natures.add "org.springsource.ide.eclipse.gradle.core.nature"
+		
+		buildCommand "org.eclipse.jdt.core.javabuilder"
+	}
+	
+	classpath {
+		file {
+			whenMerged { classpath ->
+				classpath.entries.removeAll { entry -> true }
+			}
+			withXml {
+				Node node = it.asNode()
+				node.appendNode("classpathentry",[kind:"con",path:"org.eclipse.jdt.launching.JRE_CONTAINER"])
+				node.appendNode("classpathentry",[exported:"true",kind:"con",path:"org.springsource.ide.eclipse.gradle.classpathcontainer"])
+				node.appendNode("classpathentry",[kind:"output",path:"bin/"])	
+			}
+		}
+	}
+}

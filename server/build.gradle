@@ -63,7 +63,7 @@ cargo {
     }
     
     deployable {
-        file = file('../performance/jamon.war')
+        file = file('../performance/lib/jamon.war')
         context = 'jamon'
     }
     
@@ -107,7 +107,7 @@ cargoRunLocal.dependsOn createCargoHome
 
 eclipse {
 	project {
-		name = 'portal2.0'
+		name = 'server'
 		
 		natures.add "org.eclipse.jdt.core.javanature"
 		natures.add "org.springsource.ide.eclipse.gradle.core.nature"
