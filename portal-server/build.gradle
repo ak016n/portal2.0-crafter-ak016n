@@ -140,7 +140,6 @@ dependencies {
 	testCompile "mysql:mysql-connector-java:${mysqlVersion}"
 	testCompile files("lib/oracle/ojdbc6.jar")
 	
-	testCompile "org.glassfish.jersey.test-framework.providers:jersey-test-framework-provider-grizzly2:2.4"
 	
 	integrationCompile sourceSets.main.output
 	integrationCompile configurations.testCompile
