@@ -23,9 +23,9 @@ public class IntegrationContext {
 	@Bean
 	public DataSource dataSource() {
 		DriverManagerDataSource dataSource = new DriverManagerDataSource();
-		//dataSource.setUrl("jdbc:oracle:thin:@localhost:1521:xe");
+		dataSource.setUrl("jdbc:oracle:thin:@localhost:1521:xe");
 		//dataSource.setUrl("jdbc:oracle:thin:@devpgm-db.eng.mobilephone.net:1522:DPCI");
-		dataSource.setUrl("jdbc:oracle:thin:@dfw3-npe17-portal-db1.dfw3:1521:XE");
+//		dataSource.setUrl("jdbc:oracle:thin:@dfw3-npe17-portal-db1.dfw3:1521:XE");
 		 
 		dataSource.setDriverClassName("oracle.jdbc.driver.OracleDriver");
 		dataSource.setUsername("dev_core");
