@@ -13,6 +13,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 
 import com.att.developer.bean.AttProperties;
@@ -160,6 +161,7 @@ public class AdminControllerTest {
 	
 	@Test
 	public void testCreate_happyPath() {
+		SecurityContextHolder.getContext().setAuthentication(null);
 		Mockito.when(mockPrincipal.getName()).thenReturn("sheldon");
 		
 		Mockito.when(mockGlobalScopedParamService.createProperties(Mockito.any(AttProperties.class), Mockito.anyString())).thenReturn(new AttProperties());
