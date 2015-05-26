@@ -49,6 +49,8 @@ public class AdminControllerTest {
 	@Before
 	public void init() {
 		MockitoAnnotations.initMocks(this);
+		//TODO: we should use the SecurityControllerAdvice to get the SessionUser (and change this test!)
+		SecurityContextHolder.getContext().setAuthentication(null);
 	}
 	
 	@Test
@@ -161,7 +163,7 @@ public class AdminControllerTest {
 	
 	@Test
 	public void testCreate_happyPath() {
-		SecurityContextHolder.getContext().setAuthentication(null);
+	
 		Mockito.when(mockPrincipal.getName()).thenReturn("sheldon");
 		
 		Mockito.when(mockGlobalScopedParamService.createProperties(Mockito.any(AttProperties.class), Mockito.anyString())).thenReturn(new AttProperties());

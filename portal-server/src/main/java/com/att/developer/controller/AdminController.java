@@ -236,6 +236,8 @@ public class AdminController {
 		return lclAttProperties;
     }
     
+    
+	//TODO: we should use the SecurityControllerAdvice to get the SessionUser (and change this test!)
     private User getUserFromSecurityContext() {
     	User user = null;
     	Authentication auth = SecurityContextHolder.getContext().getAuthentication();
